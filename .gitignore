@@ -1,0 +1,11 @@
+# /bin/
+/bin/*
+
+# /build/
+/build/*
+
+# /output/
+/output/*
+
+# /src/
+/src/work

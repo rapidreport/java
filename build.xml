@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<project default="main">
+
+	<property name="version" value="4.0" />
+
+	<property name="src_report" value="src" />
+	<property name="src_pdf" value="src.pdf" />
+	<property name="src_xls" value="src.xls" />
+
+	<property name="class_report" value="build/report.classes" />
+	<property name="class_pdf" value="build/pdf.classes" />
+	<property name="class_xls" value="build/xls.classes" />
+
+	<property name="target_report" value="build/systembase.report-${version}.jar" />
+	<property name="target_pdf" value="build/systembase.report.pdf-${version}.jar" />
+	<property name="target_xls" value="build/systembase.report.xls-${version}.jar" />
+
+	<property name="sb_core" value="lib/systembase.core-1.4.jar" />
+	<property name="itext" value="lib/iText-2.1.7.jar" />
+	<property name="zxing_core" value="lib/zxing.core-2.0.jar" />
+	<property name="zxing" value="lib/zxing.javase-2.0.jar" />
+	<property name="poi" value="lib/poi-3.8-20120326.jar" />
+	<property name="barcode" value="lib/systembase.barcode-1.1.jar" />
+	<property name="jsonic" value="lib/jsonic-1.2.11.jar" />
+
+	<target name="main" depends="compile_report, compress_report, compile_pdf, compress_pdf, compile_xls, compress_xls"/>
+
+	<target name="compile_report">
+		<mkdir dir="${class_report}" />
+		<javac srcdir="${src_report}"
+		       destdir="${class_report}"
+		       classpath="${sb_core}"
+		       encoding="UTF-8"
+		       verbose="off"
+		       debug="true"
+		       target="1.5"
+		       debuglevel="lines"/>
+		<copy todir="${class_report}">
+			<fileset dir="${src_report}"/>
+		</copy>
+	</target>
+
+	<target name="compile_pdf">
+		<mkdir dir="${class_pdf}" />
+		<javac srcdir="${src_pdf}"
+		       destdir="${class_pdf}"
+		       classpath="${sb_core};${itext};${zxing_core};${zxing};${target_report}"
+		       encoding="UTF-8"
+		       verbose="off"
+		       debug="true"
+		       target="1.5"
+		       debuglevel="lines"/>
+		<copy todir="${class_pdf}">
+			<fileset dir="${src_pdf}"/>
+		</copy>
+	</target>
+
+	<target name="compile_xls">
+		<mkdir dir="${class_xls}" />
+		<javac srcdir="${src_xls}"
+		       destdir="${class_xls}"
+		       classpath="${sb_core};${poi};${barcode};${zxing_core};${zxing};${target_report}"
+		       encoding="UTF-8"
+		       verbose="off"
+		       debug="true"
+		       target="1.5"
+		       debuglevel="lines"/>
+		<copy todir="${class_xls}">
+			<fileset dir="${src_xls}"/>
+		</copy>
+	</target>
+	<target name="compress_report">
+		<jar jarfile="${target_report}" basedir="${class_report}"/>
+	</target>
+
+	<target name="compress_pdf">
+		<jar jarfile="${target_pdf}" basedir="${class_pdf}"/>
+	</target>
+
+	<target name="compress_xls">
+		<jar jarfile="${target_xls}" basedir="${class_xls}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${class_report}" />
+		<delete dir="${class_pdf}" />
+		<delete dir="${class_xls}" />
+		<delete file="${target_report}" />
+		<delete file="${target_pdf}" />
+		<delete file="${target_xls}" />
+	</target>
+
+</project>
