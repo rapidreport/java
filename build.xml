@@ -34,13 +34,14 @@
 		       verbose="off"
 		       debug="true"
 		       target="1.5"
-		       debuglevel="lines"/>
+		       debuglevel="lines"
+		       includeantruntime="false"/>
 		<copy todir="${class_report}">
 			<fileset dir="${src_report}"/>
 		</copy>
 	</target>
 
-	<target name="compile_pdf">
+	<target name="compile_pdf" depends="compile_report, compress_report">
 		<mkdir dir="${class_pdf}" />
 		<javac srcdir="${src_pdf}"
 		       destdir="${class_pdf}"
@@ -49,13 +50,14 @@
 		       verbose="off"
 		       debug="true"
 		       target="1.5"
-		       debuglevel="lines"/>
+		       debuglevel="lines"
+		       includeantruntime="false"/>
 		<copy todir="${class_pdf}">
 			<fileset dir="${src_pdf}"/>
 		</copy>
 	</target>
 
-	<target name="compile_xls">
+	<target name="compile_xls" depends="compile_report, compress_report">
 		<mkdir dir="${class_xls}" />
 		<javac srcdir="${src_xls}"
 		       destdir="${class_xls}"
@@ -64,7 +66,8 @@
 		       verbose="off"
 		       debug="true"
 		       target="1.5"
-		       debuglevel="lines"/>
+		       debuglevel="lines"
+		       includeantruntime="false"/>
 		<copy todir="${class_xls}">
 			<fileset dir="${src_xls}"/>
 		</copy>
