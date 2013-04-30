@@ -85,6 +85,7 @@ public class XlsRenderer implements IRenderer {
 		case B5:
 			ps.setPaperSize(HSSFPrintSetup.B5_PAPERSIZE);
 			break;
+		default:
 		}
 		ps.setLandscape(reportDesign.paperDesign.landscape);
 		ps.setHeaderMargin(0);
