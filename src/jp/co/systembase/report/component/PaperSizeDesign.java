@@ -4,9 +4,9 @@ import java.util.Map;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.Report;
-import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.Report.EPaperType;
 import jp.co.systembase.report.Report.EScaleUnit;
+import jp.co.systembase.report.ReportUtil;
 
 
 public class PaperSizeDesign {
@@ -57,6 +57,7 @@ public class PaperSizeDesign {
 			this.width = 515;
 			this.height = 728;
 			break;
+		default:
 		}
 	}
 
@@ -82,6 +83,7 @@ public class PaperSizeDesign {
 			this.width = 182;
 			this.height = 257;
 			break;
+		default:
 		}
 	}
 
@@ -107,6 +109,7 @@ public class PaperSizeDesign {
 			this.width = 7.17f;
 			this.height = 10.12f;
 			break;
+		default:
 		}
 	}
 

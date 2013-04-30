@@ -31,6 +31,7 @@ public class MethodExpression implements IExpression {
 		case PAGE:
 			avail = (evaluator.pageContext != null);
 			break;
+		default:
 		}
 		if (!avail){
 			throw new EvalException("'" + this.method.getClass().getName() + "' is not available in this context");

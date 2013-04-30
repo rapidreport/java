@@ -91,6 +91,7 @@ public class ReportUtil {
 			return v * 2.835f;
 		case INCH:
 			return v * 72f;
+		default:
 		}
 		return v;
 	}
@@ -101,6 +102,7 @@ public class ReportUtil {
 			return v * 0.3528f;
 		case INCH:
 			return v * 0.01389f;
+		default:
 		}
 		return v;
 	}
