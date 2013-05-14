@@ -215,6 +215,7 @@ public class TextFormatterUtil {
 		int decZeroLength = 0;
 		int decLength = 0;
 		int camma = 0;
+		boolean negative = false;
 		String intValue = null;
 		String decValue = null;
 		{
@@ -258,7 +259,8 @@ public class TextFormatterUtil {
 		{
 			String _intValue = null;
 			{
-				String _v = Round.round5(v, -decLength).toPlainString();
+				negative = (v.compareTo(BigDecimal.ZERO) < 0);
+				String _v = Round.round5(v.abs(), -decLength).toPlainString();
 				int i = _v.indexOf(".");
 				if (i >= 0){
 					_intValue = _v.substring(0, i);
@@ -299,8 +301,11 @@ public class TextFormatterUtil {
 			}
 		}
 		String ret = "";
+		if (negative){
+			ret = "-";
+		}
 		if (intValue != null){
-			ret = intValue;
+			ret += intValue;
 		}
 		if (decValue != null && decValue.length() > 0){
 			ret += "." + decValue;
