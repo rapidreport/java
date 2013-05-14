@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <project default="main">
 
-	<property name="version" value="4.0" />
+	<property name="version" value="4.0.3" />
 
 	<property name="src_report" value="src" />
 	<property name="src_pdf" value="src.pdf" />
