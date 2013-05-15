@@ -1,6 +1,17 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.Hashtable;
+
+import jp.co.systembase.barcode.YubinCustomer;
+import jp.co.systembase.core.Cast;
+import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.component.ElementDesign;
+import jp.co.systembase.report.component.Region;
+import jp.co.systembase.report.renderer.RenderUtil;
+import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -15,12 +26,6 @@ import com.lowagie.text.pdf.BarcodeCodabar;
 import com.lowagie.text.pdf.BarcodeEAN;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
-import jp.co.systembase.core.Cast;
-import jp.co.systembase.report.ReportDesign;
-import jp.co.systembase.report.component.ElementDesign;
-import jp.co.systembase.report.component.Region;
-import jp.co.systembase.report.renderer.RenderUtil;
-import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
 public class BarcodeRenderer implements IElementRenderer {
 
@@ -117,6 +122,22 @@ public class BarcodeRenderer implements IElementRenderer {
 				}
 				tmp.fill();
 				image = Image.getInstance(tmp);
+			}else if (type != null && type.equals("yubincustomer")){
+				YubinCustomer barcode = new YubinCustomer();
+				float pt = 10.0f;
+				if (!design.isNull("point")){
+					pt = Cast.toFloat(design.get("point"));
+				}
+				final int scale = 5;
+				BufferedImage _image = new BufferedImage((int)(_region.getWidth() * scale),
+						(int)(_region.getHeight() * scale),
+						BufferedImage.TYPE_INT_RGB);
+				Graphics g = _image.getGraphics();
+				g.setColor(Color.WHITE);
+				g.fillRect(0, 0, _image.getWidth(), _image.getHeight());
+				final int dpi = 72 * scale;
+				barcode.render(g, 0, 0, _image.getWidth(), _image.getHeight(), pt, dpi, code);
+				image = Image.getInstance(_image, Color.WHITE);
 			}else{
 				BarcodeEAN barcode = new BarcodeEAN();
 				barcode.setCodeType(Barcode.EAN13);

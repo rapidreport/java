@@ -45,7 +45,7 @@
 		<mkdir dir="${class_pdf}" />
 		<javac srcdir="${src_pdf}"
 		       destdir="${class_pdf}"
-		       classpath="${sb_core};${itext};${zxing_core};${zxing};${target_report}"
+		       classpath="${sb_core};${itext};${zxing_core};${zxing};${target_report};${barcode}"
 		       encoding="UTF-8"
 		       verbose="off"
 		       debug="true"

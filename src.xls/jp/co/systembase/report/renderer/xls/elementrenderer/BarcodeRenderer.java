@@ -9,6 +9,20 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import jp.co.systembase.barcode.Codabar;
+import jp.co.systembase.barcode.Code128;
+import jp.co.systembase.barcode.Code39;
+import jp.co.systembase.barcode.Ean13;
+import jp.co.systembase.barcode.Ean8;
+import jp.co.systembase.barcode.YubinCustomer;
+import jp.co.systembase.core.Cast;
+import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.component.ElementDesign;
+import jp.co.systembase.report.component.Region;
+import jp.co.systembase.report.renderer.xls.XlsRenderer;
+import jp.co.systembase.report.renderer.xls.component.Page;
+import jp.co.systembase.report.renderer.xls.component.Shape;
+
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
@@ -17,19 +31,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import jp.co.systembase.barcode.Codabar;
-import jp.co.systembase.barcode.Code128;
-import jp.co.systembase.barcode.Code39;
-import jp.co.systembase.barcode.Ean13;
-import jp.co.systembase.barcode.Ean8;
-import jp.co.systembase.core.Cast;
-
-import jp.co.systembase.report.ReportDesign;
-import jp.co.systembase.report.component.ElementDesign;
-import jp.co.systembase.report.component.Region;
-import jp.co.systembase.report.renderer.xls.XlsRenderer;
-import jp.co.systembase.report.renderer.xls.component.Page;
-import jp.co.systembase.report.renderer.xls.component.Shape;
 
 public class BarcodeRenderer implements IElementRenderer {
 
@@ -59,9 +60,10 @@ public class BarcodeRenderer implements IElementRenderer {
 			if (this.code == null){
 				return;
 			}
+			final int scale = 5;
 			BufferedImage image = new BufferedImage(
-					(int)(shape.region.getWidth() * 5),
-					(int)(shape.region.getHeight() * 5),
+					(int)(shape.region.getWidth() * scale),
+					(int)(shape.region.getHeight() * scale),
 					BufferedImage.TYPE_INT_RGB);
 			Graphics g = image.getGraphics();
 			g.setColor(Color.WHITE);
@@ -136,6 +138,14 @@ public class BarcodeRenderer implements IElementRenderer {
 							}
 						}
 					}
+				}else if (type != null && type.equals("yubincustomer")){
+					YubinCustomer barcode = new YubinCustomer();
+					float pt = 10.0f;
+					if (!design.isNull("point")){
+						pt = Cast.toFloat(design.get("point"));
+					}
+					final int dpi = 72 * scale;
+					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), pt, dpi, code);
 				}else{
 					Ean13 barcode = new Ean13();
 					if (Cast.toBool(design.get("without_text"))){
