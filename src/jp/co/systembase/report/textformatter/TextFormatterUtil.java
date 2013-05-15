@@ -259,8 +259,9 @@ public class TextFormatterUtil {
 		{
 			String _intValue = null;
 			{
-				negative = (v.compareTo(BigDecimal.ZERO) < 0);
-				String _v = Round.round5(v.abs(), -decLength).toPlainString();
+				BigDecimal __v = Round.round5(v, -decLength);
+				negative = (__v.compareTo(BigDecimal.ZERO) < 0);
+				String _v = __v.abs().toPlainString();
 				int i = _v.indexOf(".");
 				if (i >= 0){
 					_intValue = _v.substring(0, i);
