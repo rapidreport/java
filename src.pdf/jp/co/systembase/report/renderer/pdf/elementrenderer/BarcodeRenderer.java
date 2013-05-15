@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Hashtable;
 
+import jp.co.systembase.barcode.ITF;
 import jp.co.systembase.barcode.YubinCustomer;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
@@ -137,6 +138,21 @@ public class BarcodeRenderer implements IElementRenderer {
 				g.fillRect(0, 0, _image.getWidth(), _image.getHeight());
 				final int dpi = 72 * scale;
 				barcode.render(g, 0, 0, _image.getWidth(), _image.getHeight(), pt, dpi, code);
+				image = Image.getInstance(_image, Color.WHITE);
+			}else if (type != null && type.equals("itf")){
+				ITF barcode = new ITF();
+				if (Cast.toBool(design.get("without_text"))){
+					barcode.withText = false;
+				}
+				final int scale = 5;
+				BufferedImage _image = new BufferedImage((int)(_region.getWidth() * scale),
+						(int)(_region.getHeight() * scale),
+						BufferedImage.TYPE_INT_RGB);
+				Graphics g = _image.getGraphics();
+				g.setColor(Color.WHITE);
+				g.fillRect(0, 0, _image.getWidth(), _image.getHeight());
+				final int dpi = 72 * scale;
+				barcode.render(g, 0, 0, (int)_region.getWidth(), (int)_region.getHeight(), dpi, code);
 				image = Image.getInstance(_image, Color.WHITE);
 			}else{
 				BarcodeEAN barcode = new BarcodeEAN();
