@@ -61,6 +61,8 @@ public class CircleRenderer implements IElementRenderer {
 				if (t != null){
 					sp.setFillColor(t[0], t[1], t[2]);
 				}
+			}else{
+				sp.setNoFill(true);
 			}
 			if (!design.isNull("line_width")){
 				sp.setLineWidth((int)(HSSFSimpleShape.LINEWIDTH_ONE_PT * lineWidth));
