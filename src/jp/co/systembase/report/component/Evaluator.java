@@ -3,6 +3,7 @@ package jp.co.systembase.report.component;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPage;
 import jp.co.systembase.report.ReportPages;
@@ -137,14 +138,16 @@ public class Evaluator {
 			IReportDataSource dataSource = scopeData.getWrapperDataSource(unitGroupDesign);
 			IndexRange indexRange = scopeData.getDataIndexRange(unitGroupDesign);
 			DataCache dataCache = this.basicContext.report.dataCache;
+			IReportLogger logger = this.basicContext.report.design.setting.logger;
 			if (indexRange != null){
 				return new ReportData(
 						dataSource,
 						indexRange.beginIndex,
 						indexRange.endIndex,
-						dataCache);
+						dataCache,
+						logger);
 			}else{
-				return new ReportData(dataSource, dataCache);
+				return new ReportData(dataSource, dataCache, logger);
 			}
 		}
 	}

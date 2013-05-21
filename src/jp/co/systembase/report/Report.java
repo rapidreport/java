@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jp.co.systembase.report.component.ContentHistory;
+import jp.co.systembase.report.component.CustomField;
 import jp.co.systembase.report.component.DataCache;
 import jp.co.systembase.report.component.GroupDesign;
 import jp.co.systembase.report.component.GroupRange;
@@ -74,6 +75,7 @@ public class Report {
 	public Map<String, Object> globalScope = new HashMap<String, Object>();
 	public DataCache dataCache = new DataCache();
 	public boolean filled = false;
+	public CustomField.Stack customFieldStack = new CustomField.Stack();
 
 	public Map<GroupDesign, WrapperDataSource> wrapperDataSourceMap =
 		new HashMap<GroupDesign, WrapperDataSource>();
