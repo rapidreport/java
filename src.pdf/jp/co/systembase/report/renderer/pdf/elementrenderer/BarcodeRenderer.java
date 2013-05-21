@@ -8,8 +8,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import jp.co.systembase.barcode.Barcode.BarContent;
-import jp.co.systembase.barcode.ITF;
 import jp.co.systembase.barcode.YubinCustomer;
+import jp.co.systembase.barcode.Itf;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
@@ -163,7 +163,7 @@ public class BarcodeRenderer implements IElementRenderer {
 				image = Image.getInstance(tmp);
 				scaleMargin = 0.0f;
 			}else if (type != null && type.equals("itf")){
-				ITF barcode = new ITF();
+				Itf barcode = new Itf();
 				if (Cast.toBool(design.get("without_text"))){
 					barcode.withText = false;
 				}

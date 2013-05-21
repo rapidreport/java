@@ -14,7 +14,7 @@ import jp.co.systembase.barcode.Code128;
 import jp.co.systembase.barcode.Code39;
 import jp.co.systembase.barcode.Ean13;
 import jp.co.systembase.barcode.Ean8;
-import jp.co.systembase.barcode.ITF;
+import jp.co.systembase.barcode.Itf;
 import jp.co.systembase.barcode.YubinCustomer;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
@@ -148,7 +148,7 @@ public class BarcodeRenderer implements IElementRenderer {
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), pt, dpi, code);
 				}else if (type != null && type.equals("itf")){
-					ITF barcode = new ITF();
+					Itf barcode = new Itf();
 					if (Cast.toBool(design.get("without_text"))){
 						barcode.withText = false;
 					}
