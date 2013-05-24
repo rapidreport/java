@@ -8,8 +8,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 import jp.co.systembase.barcode.Barcode.BarContent;
-import jp.co.systembase.barcode.YubinCustomer;
+import jp.co.systembase.barcode.Gs1128;
 import jp.co.systembase.barcode.Itf;
+import jp.co.systembase.barcode.YubinCustomer;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
@@ -164,6 +165,37 @@ public class BarcodeRenderer implements IElementRenderer {
 				scaleMargin = 0.0f;
 			}else if (type != null && type.equals("itf")){
 				Itf barcode = new Itf();
+				if (Cast.toBool(design.get("without_text"))){
+					barcode.withText = false;
+				}
+				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
+				BufferedImage _image = new BufferedImage((int)_region.getWidth(),
+						(int)_region.getHeight(),
+						BufferedImage.TYPE_INT_RGB);
+				Graphics g = _image.getGraphics();
+				BarContent c = barcode.createContent(g, 0, 0, (int)tmp.getWidth(), (int)tmp.getHeight(), code);
+				tmp.setColorFill(Color.WHITE);
+				tmp.rectangle(0, 0, tmp.getWidth(), tmp.getHeight());
+				tmp.fill();
+				tmp.setColorFill(Color.BLACK);
+				for (BarContent.Bar b: c.getBars()){
+					float y = tmp.getHeight() - b.getY() - b.getHeight();
+					tmp.rectangle(b.getX(), y, b.getWidth(), b.getHeight());
+				}
+				tmp.fill();
+				BarContent.Text t = c.getText();
+				if (t != null){
+					tmp.beginText();
+					Font f = FontFactory.getFont(t.getFont().getName(), BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+					tmp.setFontAndSize(f.getCalculatedBaseFont(true), t.getFont().getSize());
+					float y = tmp.getHeight() - t.getY() + (t.getFont().getSize() / 10);
+					tmp.showTextAligned(PdfContentByte.ALIGN_LEFT, t.getCode(), t.getX(), y, 0);
+					tmp.endText();
+				}
+				image = Image.getInstance(tmp);
+				scaleMargin = 0.0f;
+			}else if (type != null && type.equals("gs1128")){
+				Gs1128 barcode = new Gs1128();
 				if (Cast.toBool(design.get("without_text"))){
 					barcode.withText = false;
 				}
