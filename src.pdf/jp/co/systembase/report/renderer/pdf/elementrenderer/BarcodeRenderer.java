@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import jp.co.systembase.barcode.Barcode.BarContent;
 import jp.co.systembase.barcode.Gs1128;
 import jp.co.systembase.barcode.Itf;
 import jp.co.systembase.barcode.YubinCustomer;
+import jp.co.systembase.barcode.content.BarContent;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
@@ -193,7 +193,7 @@ public class BarcodeRenderer implements IElementRenderer {
 					tmp.endText();
 				}
 				image = Image.getInstance(tmp);
-				scaleMargin = 0.0f;
+				scaleMargin = 0;
 			}else if (type != null && type.equals("gs1128")){
 				Gs1128 barcode = new Gs1128();
 				if (Cast.toBool(design.get("without_text"))){
@@ -224,7 +224,7 @@ public class BarcodeRenderer implements IElementRenderer {
 					tmp.endText();
 				}
 				image = Image.getInstance(tmp);
-				scaleMargin = 0.0f;
+				scaleMargin = 0;
 			}else{
 				BarcodeEAN barcode = new BarcodeEAN();
 				barcode.setCodeType(Barcode.EAN13);
