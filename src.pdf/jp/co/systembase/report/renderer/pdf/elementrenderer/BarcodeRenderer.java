@@ -131,10 +131,10 @@ public class BarcodeRenderer implements IElementRenderer {
 				}
 				tmp.fill();
 				image = Image.getInstance(tmp);
-			}else if (type != null && type.equals("yubincustomer")){
+			} else if (type != null && type.equals("yubincustomer")) {
 				YubinCustomer barcode = new YubinCustomer();
 				float pt = 10.0f;
-				if (!design.isNull("point")){
+				if (!design.isNull("point")) {
 					pt = Cast.toFloat(design.get("point"));
 				}
 				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
@@ -144,31 +144,41 @@ public class BarcodeRenderer implements IElementRenderer {
 				tmp.fill();
 				tmp.setColorFill(Color.BLACK);
 				List<Character> codes = new ArrayList<Character>();
-				for (String _code: barcode.encode(code)){
-					for (char _c: _code.toCharArray()){
+				for (String _code: barcode.encode(code)) {
+					for (char _c: _code.toCharArray()) {
 						codes.add(_c);
 					}
 				}
 				for (int i = 0; i < c.getBars().size(); i++){
 					BarContent.Bar b = c.getBars().get(i);
-					float y = tmp.getHeight() - b.getHeight();
+					float y = 0;
+					BarContent.Bar startBar = c.getBars().get(0);
 					char _type = codes.get(i);
-					if (_type == '3'){
-						y = tmp.getHeight() - c.getBars().get(0).getHeight();
-					}else if (_type == '4'){
-						y -= b.getHeight();
+					switch (_type) {
+					case '1':
+					case '2':
+						y = tmp.getHeight() - b.getHeight();
+						break;
+					case '3':
+						y = tmp.getHeight() - startBar.getHeight();
+						break;
+					case '4':
+						y = tmp.getHeight() - b.getHeight() - b.getHeight();
+						break;
+					default:
+						throw new IllegalArgumentException("illegal switch case: " + _type);
 					}
 					tmp.rectangle(b.getX(), y, b.getWidth(), b.getHeight());
 				}
 				tmp.fill();
 				image = Image.getInstance(tmp);
 				scaleMargin = 0;
-			}else if (type != null && type.equals("itf")){
+			} else if (type != null && type.equals("itf")) {
 				Itf barcode = new Itf();
-				if (Cast.toBool(design.get("without_text"))){
+				if (Cast.toBool(design.get("without_text"))) {
 					barcode.withText = false;
 				}
-				if (Cast.toBool(design.get("generate_checksum"))){
+				if (Cast.toBool(design.get("generate_checksum"))) {
 					barcode.generateCheckSum = true;
 				}
 				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
@@ -181,13 +191,13 @@ public class BarcodeRenderer implements IElementRenderer {
 				tmp.rectangle(0, 0, tmp.getWidth(), tmp.getHeight());
 				tmp.fill();
 				tmp.setColorFill(Color.BLACK);
-				for (BarContent.Bar b: c.getBars()){
+				for (BarContent.Bar b: c.getBars()) {
 					float y = tmp.getHeight() - b.getY() - b.getHeight();
 					tmp.rectangle(b.getX(), y, b.getWidth(), b.getHeight());
 				}
 				tmp.fill();
 				BarContent.Text t = c.getText();
-				if (t != null){
+				if (t != null) {
 					tmp.beginText();
 					Font f = FontFactory.getFont(t.getFont().getName(), BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 					tmp.setFontAndSize(f.getCalculatedBaseFont(true), t.getFont().getSize());
@@ -197,9 +207,9 @@ public class BarcodeRenderer implements IElementRenderer {
 				}
 				image = Image.getInstance(tmp);
 				scaleMargin = 0;
-			}else if (type != null && type.equals("gs1128")){
+			} else if (type != null && type.equals("gs1128")) {
 				Gs1128 barcode = new Gs1128();
-				if (Cast.toBool(design.get("without_text"))){
+				if (Cast.toBool(design.get("without_text"))) {
 					barcode.withText = false;
 				}
 				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
@@ -212,13 +222,13 @@ public class BarcodeRenderer implements IElementRenderer {
 				tmp.rectangle(0, 0, tmp.getWidth(), tmp.getHeight());
 				tmp.fill();
 				tmp.setColorFill(Color.BLACK);
-				for (BarContent.Bar b: c.getBars()){
+				for (BarContent.Bar b: c.getBars()) {
 					float y = tmp.getHeight() - b.getY() - b.getHeight();
 					tmp.rectangle(b.getX(), y, b.getWidth(), b.getHeight());
 				}
 				tmp.fill();
 				BarContent.Text t = c.getText();
-				if (t != null){
+				if (t != null) {
 					tmp.beginText();
 					Font f = FontFactory.getFont(t.getFont().getName(), BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 					tmp.setFontAndSize(f.getCalculatedBaseFont(true), t.getFont().getSize());

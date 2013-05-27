@@ -140,27 +140,27 @@ public class BarcodeRenderer implements IElementRenderer {
 							}
 						}
 					}
-				}else if (type != null && type.equals("yubincustomer")){
+				} else if (type != null && type.equals("yubincustomer")) {
 					YubinCustomer barcode = new YubinCustomer();
 					float pt = 10.0f;
-					if (!design.isNull("point")){
+					if (!design.isNull("point")) {
 						pt = Cast.toFloat(design.get("point"));
 					}
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), pt, dpi, code);
-				}else if (type != null && type.equals("itf")){
+				} else if (type != null && type.equals("itf")) {
 					Itf barcode = new Itf();
-					if (Cast.toBool(design.get("without_text"))){
+					if (Cast.toBool(design.get("without_text"))) {
 						barcode.withText = false;
 					}
-					if (Cast.toBool(design.get("generate_checksum"))){
+					if (Cast.toBool(design.get("generate_checksum"))) {
 						barcode.generateCheckSum = true;
 					}
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
-				}else if (type != null && type.equals("gs1128")){
+				} else if (type != null && type.equals("gs1128")) {
 					Gs1128 barcode = new Gs1128();
-					if (Cast.toBool(design.get("without_text"))){
+					if (Cast.toBool(design.get("without_text"))) {
 						barcode.withText = false;
 					}
 					final int dpi = 72 * scale;
