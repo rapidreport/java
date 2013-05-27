@@ -153,6 +153,9 @@ public class BarcodeRenderer implements IElementRenderer {
 					if (Cast.toBool(design.get("without_text"))){
 						barcode.withText = false;
 					}
+					if (Cast.toBool(design.get("generate_checksum"))){
+						barcode.generateCheckSum = true;
+					}
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
 				}else if (type != null && type.equals("gs1128")){

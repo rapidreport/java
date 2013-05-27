@@ -162,11 +162,14 @@ public class BarcodeRenderer implements IElementRenderer {
 				}
 				tmp.fill();
 				image = Image.getInstance(tmp);
-				scaleMargin = 0.0f;
+				scaleMargin = 0;
 			}else if (type != null && type.equals("itf")){
 				Itf barcode = new Itf();
 				if (Cast.toBool(design.get("without_text"))){
 					barcode.withText = false;
+				}
+				if (Cast.toBool(design.get("generate_checksum"))){
+					barcode.generateCheckSum = true;
 				}
 				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
 				BufferedImage _image = new BufferedImage((int)_region.getWidth(),
