@@ -203,6 +203,7 @@ public class BarcodeRenderer implements IElementRenderer {
 					tmp.endText();
 				}
 				image = Image.getInstance(tmp);
+				//scaleMargin = 2.723f;
 				scaleMargin = tmp.getWidth() * 0.00499633f;
 			} else if (type != null && type.equals("gs1128")) {
 				Gs1128 barcode = new Gs1128();
@@ -236,6 +237,7 @@ public class BarcodeRenderer implements IElementRenderer {
 					tmp.endText();
 				}
 				image = Image.getInstance(tmp);
+				//scaleMargin = 2.723f;
 				scaleMargin = tmp.getWidth() * 0.00499633f;
 			}else{
 				BarcodeEAN barcode = new BarcodeEAN();

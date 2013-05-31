@@ -62,11 +62,13 @@ public class BarcodeRenderer implements IElementRenderer {
 			if (this.code == null){
 				return;
 			}
-			final int scale = 5;
-			BufferedImage image = new BufferedImage(
-					(int)(shape.region.getWidth() * scale),
-					(int)(shape.region.getHeight() * scale),
-					BufferedImage.TYPE_INT_RGB);
+			int scale = 5;
+			int width = (int)(shape.region.getWidth() * scale);
+			int height = (int)(shape.region.getHeight() * scale);
+			if (width == 0 || height == 0) {
+				return;
+			}
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 			Graphics g = image.getGraphics();
 			g.setColor(Color.WHITE);
 			g.fillRect(0, 0, image.getWidth(), image.getHeight());
@@ -162,6 +164,9 @@ public class BarcodeRenderer implements IElementRenderer {
 					Gs1128 barcode = new Gs1128();
 					if (Cast.toBool(design.get("without_text"))) {
 						barcode.withText = false;
+					}
+					if (Cast.toBool(design.get("convenience_format"))) {
+						barcode.isConvenienceFormat = true;
 					}
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
