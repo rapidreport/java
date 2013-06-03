@@ -142,7 +142,7 @@ public class BarcodeRenderer implements IElementRenderer {
 							}
 						}
 					}
-				} else if (type != null && type.equals("yubincustomer")) {
+				} else if (type != null && type.equals("yubin")) {
 					YubinCustomer barcode = new YubinCustomer();
 					float pt = 10.0f;
 					if (!design.isNull("point")) {
