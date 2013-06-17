@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import jp.co.systembase.barcode.Gs1128;
-import jp.co.systembase.barcode.Itf;
+import jp.co.systembase.barcode.Gs1_128;
 import jp.co.systembase.barcode.YubinCustomer;
 import jp.co.systembase.barcode.content.BarContent;
 import jp.co.systembase.core.Cast;
@@ -31,6 +30,7 @@ import com.lowagie.text.pdf.Barcode128;
 import com.lowagie.text.pdf.Barcode39;
 import com.lowagie.text.pdf.BarcodeCodabar;
 import com.lowagie.text.pdf.BarcodeEAN;
+import com.lowagie.text.pdf.BarcodeInter25;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
@@ -98,6 +98,16 @@ public class BarcodeRenderer implements IElementRenderer {
 				}
 				barcode.setCode(ss + code + ss);
 				image = barcode.createImageWithBarcode(cb, null, null);
+			}else if (type != null && type.equals("itf")){
+				BarcodeInter25 barcode = new BarcodeInter25();
+				if (Cast.toBool(design.get("without_text"))){
+					barcode.setFont(null);
+				}
+				if (Cast.toBool(design.get("generate_checksum"))){
+					barcode.setGenerateChecksum(true);
+				}
+				barcode.setCode(code);
+				image = barcode.createImageWithBarcode(cb, null, null);
 			}else if (type != null && type.equals("qrcode")){
 				QRCodeWriter w = new QRCodeWriter();
 				Hashtable<EncodeHintType, Object> h = new Hashtable<EncodeHintType, Object>();
@@ -131,11 +141,11 @@ public class BarcodeRenderer implements IElementRenderer {
 				}
 				tmp.fill();
 				image = Image.getInstance(tmp);
-			} else if (type != null && type.equals("yubincustomer")) {
+			} else if (type != null && type.equals("yubin")) {
 				YubinCustomer barcode = new YubinCustomer();
 				float pt = 10.0f;
-				if (!design.isNull("point")) {
-					pt = Cast.toFloat(design.get("point"));
+				if (!design.isNull("yubin_point")) {
+					pt = Cast.toFloat(design.get("yubin_point"));
 				}
 				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
 				BarContent c = barcode.createContent(0, 0, (int)tmp.getWidth(), (int)tmp.getHeight(), pt, code);
@@ -171,46 +181,13 @@ public class BarcodeRenderer implements IElementRenderer {
 				tmp.fill();
 				image = Image.getInstance(tmp);
 				scaleMargin = 0;
-			} else if (type != null && type.equals("itf")) {
-				Itf barcode = new Itf();
+			} else if (type != null && type.equals("gs1_128")) {
+				Gs1_128 barcode = new Gs1_128();
 				if (Cast.toBool(design.get("without_text"))) {
 					barcode.withText = false;
 				}
-				if (Cast.toBool(design.get("generate_checksum"))) {
-					barcode.generateCheckSum = true;
-				}
-				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
-				BufferedImage _image = new BufferedImage((int)_region.getWidth(),
-						(int)_region.getHeight(),
-						BufferedImage.TYPE_INT_RGB);
-				Graphics g = _image.getGraphics();
-				BarContent c = barcode.createContent(g, 0, 0, (int)tmp.getWidth(), (int)tmp.getHeight(), code);
-				tmp.setColorFill(Color.WHITE);
-				tmp.rectangle(0, 0, tmp.getWidth(), tmp.getHeight());
-				tmp.fill();
-				tmp.setColorFill(Color.BLACK);
-				for (BarContent.Bar b: c.getBars()) {
-					float y = tmp.getHeight() - b.getY() - b.getHeight();
-					tmp.rectangle(b.getX(), y, b.getWidth(), b.getHeight());
-				}
-				tmp.fill();
-				for (BarContent.Text t: c.getText()) {
-					tmp.beginText();
-					Font f = FontFactory.getFont(t.getFont().getName(), BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-					tmp.setFontAndSize(f.getCalculatedBaseFont(true), t.getFont().getSize() * 1.015f);
-					float y = tmp.getHeight() - t.getY() + (t.getFont().getSize() / 10);
-					tmp.showTextAligned(PdfContentByte.ALIGN_LEFT, t.getCode(), t.getX(), y, 0);
-					tmp.endText();
-				}
-				image = Image.getInstance(tmp);
-				scaleMargin = tmp.getWidth() * 0.00499633f;
-			} else if (type != null && type.equals("gs1128")) {
-				Gs1128 barcode = new Gs1128();
-				if (Cast.toBool(design.get("without_text"))) {
-					barcode.withText = false;
-				}
-				if (Cast.toBool(design.get("convenience_format"))) {
-					barcode.isConvenienceFormat = true;
+				if (Cast.toBool(design.get("conveni_format"))) {
+					barcode.conveniFormat = true;
 				}
 				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
 				BufferedImage _image = new BufferedImage((int)_region.getWidth(),
@@ -253,7 +230,7 @@ public class BarcodeRenderer implements IElementRenderer {
 			}
 		}catch(Exception ex){}
 		if (image != null){
-			if (type.equals("itf") || type.equals("gs1128")){
+			if (type.equals("gs1-128")){
 				image.scaleAbsolute(_region.getWidth() + scaleMargin, _region.getHeight() + scaleMargin);
 			} else {
 				image.scaleAbsolute(_region.getWidth() - scaleMargin, _region.getHeight() - scaleMargin);

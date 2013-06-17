@@ -14,7 +14,7 @@ import jp.co.systembase.barcode.Code128;
 import jp.co.systembase.barcode.Code39;
 import jp.co.systembase.barcode.Ean13;
 import jp.co.systembase.barcode.Ean8;
-import jp.co.systembase.barcode.Gs1128;
+import jp.co.systembase.barcode.Gs1_128;
 import jp.co.systembase.barcode.Itf;
 import jp.co.systembase.barcode.YubinCustomer;
 import jp.co.systembase.core.Cast;
@@ -142,11 +142,11 @@ public class BarcodeRenderer implements IElementRenderer {
 							}
 						}
 					}
-				} else if (type != null && type.equals("yubincustomer")) {
+				} else if (type != null && type.equals("yubin")) {
 					YubinCustomer barcode = new YubinCustomer();
 					float pt = 10.0f;
-					if (!design.isNull("point")) {
-						pt = Cast.toFloat(design.get("point"));
+					if (!design.isNull("yubin_point")) {
+						pt = Cast.toFloat(design.get("yubin_point"));
 					}
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), pt, dpi, code);
@@ -160,13 +160,13 @@ public class BarcodeRenderer implements IElementRenderer {
 					}
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
-				} else if (type != null && type.equals("gs1128")) {
-					Gs1128 barcode = new Gs1128();
+				} else if (type != null && type.equals("gs1_128")) {
+					Gs1_128 barcode = new Gs1_128();
 					if (Cast.toBool(design.get("without_text"))) {
 						barcode.withText = false;
 					}
-					if (Cast.toBool(design.get("convenience_format"))) {
-						barcode.isConvenienceFormat = true;
+					if (Cast.toBool(design.get("conveni_format"))) {
+						barcode.conveniFormat = true;
 					}
 					final int dpi = 72 * scale;
 					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
