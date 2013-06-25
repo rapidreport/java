@@ -16,7 +16,7 @@ import jp.co.systembase.barcode.Ean13;
 import jp.co.systembase.barcode.Ean8;
 import jp.co.systembase.barcode.Gs1_128;
 import jp.co.systembase.barcode.Itf;
-import jp.co.systembase.barcode.YubinCustomer;
+import jp.co.systembase.barcode.Yubin;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
@@ -75,25 +75,19 @@ public class BarcodeRenderer implements IElementRenderer {
 			g.setColor(Color.BLACK);
 			String type = (String)design.get("barcode_type");
 			try{
-				if (type != null && type.equals("code39")){
+				if (type != null && type.equals("ean8")){
+					Ean8 barcode = new Ean8();
+					if (Cast.toBool(design.get("without_text"))){
+						barcode.withText = false;
+					}
+					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), this.code);
+				}else if (type != null && type.equals("code39")){
 					Code39 barcode = new Code39();
 					if (Cast.toBool(design.get("without_text"))){
 						barcode.withText = false;
 					}
 					if (Cast.toBool(design.get("generate_checksum"))){
 						barcode.generateCheckSum = true;
-					}
-					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), this.code);
-				}else if (type != null && type.equals("ean8")){
-					Ean8 barcode = new Ean8();
-					if (Cast.toBool(design.get("without_text"))){
-						barcode.withText = false;
-					}
-					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), this.code);
-				}else if (type != null && type.equals("code128")){
-					Code128 barcode = new Code128();
-					if (Cast.toBool(design.get("without_text"))){
-						barcode.withText = false;
 					}
 					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), this.code);
 				}else if (type != null && type.equals("codabar")){
@@ -109,6 +103,34 @@ public class BarcodeRenderer implements IElementRenderer {
 						ss = (String)design.get("codabar_startstop_code");
 					}
 					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), ss + this.code + ss);
+				} else if (type != null && type.equals("itf")) {
+					Itf barcode = new Itf();
+					if (Cast.toBool(design.get("without_text"))) {
+						barcode.withText = false;
+					}
+					if (Cast.toBool(design.get("generate_checksum"))) {
+						barcode.generateCheckSum = true;
+					}
+					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), code);
+				}else if (type != null && type.equals("code128")){
+					Code128 barcode = new Code128();
+					if (Cast.toBool(design.get("without_text"))){
+						barcode.withText = false;
+					}
+					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), this.code);
+				} else if (type != null && type.equals("gs1_128")) {
+					Gs1_128 barcode = new Gs1_128();
+					if (Cast.toBool(design.get("without_text"))) {
+						barcode.withText = false;
+					}
+					if (Cast.toBool(design.get("conveni_format"))) {
+						barcode.conveniFormat = true;
+					}
+					final int dpi = 72 * scale;
+					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
+				} else if (type != null && type.equals("yubin")) {
+					Yubin barcode = new Yubin();
+					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), code);
 				}else if (type != null && type.equals("qrcode")){
 					QRCodeWriter w = new QRCodeWriter();
 					Hashtable<EncodeHintType, Object> h = new Hashtable<EncodeHintType, Object>();
@@ -142,34 +164,6 @@ public class BarcodeRenderer implements IElementRenderer {
 							}
 						}
 					}
-				} else if (type != null && type.equals("yubin")) {
-					YubinCustomer barcode = new YubinCustomer();
-					float pt = 10.0f;
-					if (!design.isNull("yubin_point")) {
-						pt = Cast.toFloat(design.get("yubin_point"));
-					}
-					final int dpi = 72 * scale;
-					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), pt, dpi, code);
-				} else if (type != null && type.equals("itf")) {
-					Itf barcode = new Itf();
-					if (Cast.toBool(design.get("without_text"))) {
-						barcode.withText = false;
-					}
-					if (Cast.toBool(design.get("generate_checksum"))) {
-						barcode.generateCheckSum = true;
-					}
-					final int dpi = 72 * scale;
-					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
-				} else if (type != null && type.equals("gs1_128")) {
-					Gs1_128 barcode = new Gs1_128();
-					if (Cast.toBool(design.get("without_text"))) {
-						barcode.withText = false;
-					}
-					if (Cast.toBool(design.get("conveni_format"))) {
-						barcode.conveniFormat = true;
-					}
-					final int dpi = 72 * scale;
-					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
 				}else{
 					Ean13 barcode = new Ean13();
 					if (Cast.toBool(design.get("without_text"))){
