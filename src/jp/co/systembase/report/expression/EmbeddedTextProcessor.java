@@ -89,7 +89,7 @@ public class EmbeddedTextProcessor {
 		boolean escaped = false;
 		while(true){
 			if (i == source.length()){
-				throw new EvalException("embedded expression isnot terminated : " + source);
+				throw new EvalException("埋め込まれた式が閉じられていません : " + source);
 			}
 			if (quoted){
 				if (escaped){

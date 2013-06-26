@@ -110,7 +110,7 @@ public class Evaluator {
 			if (ex instanceof EvalException){
 				_ex = (EvalException)ex;
 			}else{
-				_ex = new EvalException("an error occurred while evaluating exp : " + exp, ex);
+				_ex = new EvalException("式の評価中にエラーが発生しました : " + exp, ex);
 			}
 			if (this.basicContext.report.design.setting.logger != null){
 				this.basicContext.report.design.setting.logger.evaluateError(exp, _ex);
@@ -126,14 +126,14 @@ public class Evaluator {
 	public ReportData getData(String scope, String unit){
 		ReportData scopeData = this.basicContext.data.findScope(scope);
 		if (scopeData == null){
-			throw new IllegalArgumentException("invalid scope" + (!scope.equals("") ? ": " + scope : ""));
+			throw new IllegalArgumentException("集計範囲が不正です" + (!scope.equals("") ? ": " + scope : ""));
 		}
 		if (unit == null){
 			return scopeData;
 		}else{
 			GroupDesign unitGroupDesign = scopeData.findUnit(unit);
 			if (unitGroupDesign == null){
-				throw new IllegalArgumentException("invalid unit" + (!unit.equals("") ? ": " + unit : ""));
+				throw new IllegalArgumentException("集計単位が不正です" + (!unit.equals("") ? ": " + unit : ""));
 			}
 			IReportDataSource dataSource = scopeData.getWrapperDataSource(unitGroupDesign);
 			IndexRange indexRange = scopeData.getDataIndexRange(unitGroupDesign);

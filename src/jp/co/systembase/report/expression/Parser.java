@@ -41,7 +41,7 @@ public class Parser {
 		this.index = 0;
         IExpression ret = this._parse_aux(_source);
         if (this.index < _source.length()){
-            throw new EvalException("'" + _source.substring(this.index) + "' is unexpected : " + source);
+            throw new EvalException("'" + _source.substring(this.index) + "' は予期せぬ文字です : " + source);
         }
 		return ret;
 	}
@@ -116,7 +116,7 @@ public class Parser {
 					}
 					method = this.setting.getMethod(methodKey);
 					if (method == null){
-						throw new EvalException("method '" + methodKey + "' is not found : " + source);
+						throw new EvalException("メソッド '" + methodKey + "' は見つかりません : " + source);
 					}
 					if (param != null && param.length() == 0){
 						param = null;
@@ -133,20 +133,20 @@ public class Parser {
 		this.skipSpace(source);
 		String operatorKey = nextToken(source);
 		if (operatorKey.length() == 0){
-			throw new EvalException("operator is missing : " + source);
+			throw new EvalException("オペレータがありません : " + source);
 		}
 		if (operatorKey.startsWith("(")){
-			throw new EvalException("'(' is unexpected : " + source);
+			throw new EvalException("'(' は予期せぬ文字です : " + source);
 		}
 		IOperator operator = this.setting.getOperator(operatorKey);
 		if (operator == null){
-			throw new EvalException("operator '" + operatorKey + "' is not found : " + source);
+			throw new EvalException("オペレータ '" + operatorKey + "' は見つかりません : " + source);
 		}
 		List<IExpression> params = new ArrayList<IExpression>();
 		while(true){
 			this.skipSpace(source);
 			if (this.index == source.length()){
-				throw new EvalException(") is missing");
+				throw new EvalException("')' がありません");
 			}
 			if (source.charAt(this.index) == ')'){
 				this.index += 1;
@@ -163,7 +163,7 @@ public class Parser {
 		boolean escaped = false;
 		while(true){
 			if (i >= source.length()){
-				throw new EvalException("text not terminated : " + source);
+				throw new EvalException("文字列が閉じられていません : " + source);
 			}
 			char c = source.charAt(i);
 			if (c == '\'' && !escaped){
@@ -185,7 +185,7 @@ public class Parser {
 					sb.append('\n');
 					break;
 				default:
-					throw new EvalException("invlid escape sequence: \\" + c + " (valid ones are \\' \\\\ \\n) : " + source);
+					throw new EvalException("不正なエスケープ文字です: \\" + c + " (有効なもの \\' \\\\ \\n) : " + source);
 				}
 				escaped = false;
 				this.index = i + 1;

@@ -21,7 +21,7 @@ public class MethodExpression implements IExpression {
 	}
 	public Object eval(Evaluator evaluator) throws Throwable {
 		if (this.unit != null && !evaluator.basicContext.data.isFilled()){
-			throw new EvalException("a method with '#' is not available in yet unfilled report");
+			throw new EvalException("'#'付きのメソッドは report.fill() の実行後にのみ呼び出すことができます");
 		}
 		boolean avail = true;
 		switch(method.getAvailableContext()){
@@ -34,7 +34,7 @@ public class MethodExpression implements IExpression {
 		default:
 		}
 		if (!avail){
-			throw new EvalException("'" + this.method.getClass().getName() + "' is not available in this context");
+			throw new EvalException("メソッド '" + this.method.getClass().getName() + "' は、このコンテキストでは呼び出すことができません");
 		}
 		return this.method.exec(
 				evaluator,
