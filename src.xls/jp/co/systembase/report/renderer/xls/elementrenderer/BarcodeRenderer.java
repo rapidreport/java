@@ -123,11 +123,10 @@ public class BarcodeRenderer implements IElementRenderer {
 					if (Cast.toBool(design.get("without_text"))) {
 						barcode.withText = false;
 					}
-					if (Cast.toBool(design.get("conveni_format"))) {
+					if (Cast.toBool(design.get("gs1_conveni"))) {
 						barcode.conveniFormat = true;
 					}
-					final int dpi = 72 * scale;
-					barcode.render(g, 0, 0, (int)shape.region.getWidth(), (int)shape.region.getHeight(), dpi, code);
+					barcode.render(g, 0, 0, (int)image.getWidth(), (int)image.getHeight(), code);
 				} else if (type != null && type.equals("yubin")) {
 					Yubin barcode = new Yubin();
 					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), code);

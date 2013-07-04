@@ -1,28 +1,15 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.util.Hashtable;
-import java.util.List;
-
-import jp.co.systembase.barcode.Gs1_128;
-import jp.co.systembase.barcode.Yubin;
-import jp.co.systembase.barcode.content.BarContent;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.renderer.RenderUtil;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
+import jp.co.systembase.report.renderer.pdf.barcode.Gs1_128;
+import jp.co.systembase.report.renderer.pdf.barcode.QRCode;
+import jp.co.systembase.report.renderer.pdf.barcode.Yubin;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.Barcode;
 import com.lowagie.text.pdf.Barcode128;
@@ -30,9 +17,7 @@ import com.lowagie.text.pdf.Barcode39;
 import com.lowagie.text.pdf.BarcodeCodabar;
 import com.lowagie.text.pdf.BarcodeEAN;
 import com.lowagie.text.pdf.BarcodeInter25;
-import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfTemplate;
 
 public class BarcodeRenderer implements IElementRenderer {
 
@@ -50,7 +35,6 @@ public class BarcodeRenderer implements IElementRenderer {
 		Image image = null;
 		PdfContentByte cb = renderer.writer.getDirectContent();
 		String type = (String)design.get("barcode_type");
-		float scaleMargin = 2.0f;
 		try{
 			if (type != null && type.equals("ean8")){
 				BarcodeEAN barcode = new BarcodeEAN();
@@ -118,107 +102,11 @@ public class BarcodeRenderer implements IElementRenderer {
 				barcode.setCode(code);
 				image = barcode.createImageWithBarcode(cb, null, null);
 			}else if (type != null && type.equals("gs1_128")){
-				Gs1_128 barcode = new Gs1_128();
-				if (Cast.toBool(design.get("without_text"))) {
-					barcode.withText = false;
-				}
-				if (Cast.toBool(design.get("conveni_format"))) {
-					barcode.conveniFormat = true;
-				}
-				PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
-				BufferedImage _image = new BufferedImage((int)_region.getWidth(),
-						(int)_region.getHeight(),
-						BufferedImage.TYPE_INT_RGB);
-				Graphics g = _image.getGraphics();
-				BarContent c = barcode.createContent(g, 0, 0, (int)tmp.getWidth(), (int)tmp.getHeight(), code);
-				tmp.setColorFill(Color.WHITE);
-				tmp.rectangle(0, 0, tmp.getWidth(), tmp.getHeight());
-				tmp.fill();
-				tmp.setColorFill(Color.BLACK);
-				for (BarContent.Bar b: c.getBars()) {
-					float y = tmp.getHeight() - b.getY() - b.getHeight();
-					tmp.rectangle(b.getX(), y, b.getWidth(), b.getHeight());
-				}
-				tmp.fill();
-				for (BarContent.Text t: c.getText()) {
-					tmp.beginText();
-					Font f = FontFactory.getFont(t.getFont().getName(), BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-					tmp.setFontAndSize(f.getCalculatedBaseFont(true), t.getFont().getSize() * 1.015f);
-					float y = tmp.getHeight() - t.getY() + (t.getFont().getSize() / 10);
-					tmp.showTextAligned(PdfContentByte.ALIGN_LEFT, t.getCode(), t.getX(), y, 0);
-					tmp.endText();
-				}
-				image = Image.getInstance(tmp);
-				scaleMargin = tmp.getWidth() * 0.00499633f;
+				image = Gs1_128.getImage(cb, _region, design, code);
 			}else if (type != null && type.equals("yubin")){
-				Yubin barcode = new Yubin();
-				List<Byte> codes = barcode.encode(code);
-				float uw = _region.getWidth() / (codes.size() * 2);
-				float x = 0;
-				float y = _region.getHeight() / 2;
-				if (codes != null){
-					PdfTemplate tmp = cb.createTemplate(_region.getWidth(), _region.getHeight());
-					tmp.setColorFill(Color.BLACK);
-					for(Byte c: codes){
-						float by = 0;
-						float bh = 0;
-						switch(c){
-						case 1:
-							by = y - uw * 3;
-							bh = uw * 6;
-							break;
-						case 2:
-							by = y - uw;
-							bh = uw * 4;
-							break;
-						case 3:
-							by = y - uw * 3;
-							bh = uw * 4;
-							break;
-						case 4:
-							by = y - uw;
-							bh = uw * 2;
-							break;
-						}
-						tmp.rectangle(x, by, uw, bh);
-						x += uw * 2;
-					}
-					tmp.fill();
-					image = Image.getInstance(tmp);
-				}
+				image = Yubin.getImage(cb, _region, design, code);
 			}else if (type != null && type.equals("qrcode")){
-				QRCodeWriter w = new QRCodeWriter();
-				Hashtable<EncodeHintType, Object> h = new Hashtable<EncodeHintType, Object>();
-				if (!design.isNull("qr_charset")){
-					h.put(EncodeHintType.CHARACTER_SET, design.get("qr_charset"));
-				}else{
-					h.put(EncodeHintType.CHARACTER_SET, "shift_jis");
-				}
-				if (!design.isNull("qr_correction_level")){
-					String l = (String)design.get("qr_correction_level");
-					if (l.equals("L")){
-						h.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
-					}else if(l.equals("Q")){
-						h.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
-					}else if(l.equals("H")){
-						h.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-					}else{
-						h.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-					}
-				}else{
-					h.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-				}
-				BitMatrix bm =  w.encode(code, BarcodeFormat.QR_CODE, 0, 0, h);
-				PdfTemplate tmp = cb.createTemplate(bm.getWidth(), bm.getHeight());
-				for(int y = 0;y < bm.getHeight();y++){
-					for(int x = 0;x < bm.getWidth();x++){
-						if (bm.get(x, y)){
-							tmp.rectangle(x, bm.getHeight() - y, 1, 1);
-						}
-					}
-				}
-				tmp.fill();
-				image = Image.getInstance(tmp);
+				image = QRCode.getImage(cb, _region, design, code);
 			}else{
 				BarcodeEAN barcode = new BarcodeEAN();
 				barcode.setCodeType(Barcode.EAN13);
@@ -235,11 +123,7 @@ public class BarcodeRenderer implements IElementRenderer {
 			}
 		}catch(Exception ex){}
 		if (image != null){
-			if (type.equals("gs1-128")){
-				image.scaleAbsolute(_region.getWidth() + scaleMargin, _region.getHeight() + scaleMargin);
-			} else {
-				image.scaleAbsolute(_region.getWidth() - scaleMargin, _region.getHeight() - scaleMargin);
-			}
+			image.scaleAbsolute(_region.getWidth() - 2f, _region.getHeight() - 2f);
 			image.setAbsolutePosition(
 					renderer.trans.x(_region.left + 1),
 					renderer.trans.y(_region.bottom + 1));
