@@ -7,7 +7,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/iText-2.1.7.jar" sourcepath="C:/home/lib/itext217"/>
 	<classpathentry kind="lib" path="lib/iTextAsian.jar"/>
-	<classpathentry kind="lib" path="lib/systembase.barcode-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/systembase.barcode-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.8-20120326.jar"/>
 	<classpathentry kind="lib" path="lib/zxing.core-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/zxing.javase-2.0.jar"/>

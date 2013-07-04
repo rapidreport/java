@@ -20,7 +20,7 @@
 	<property name="zxing_core" value="lib/zxing.core-2.0.jar" />
 	<property name="zxing" value="lib/zxing.javase-2.0.jar" />
 	<property name="poi" value="lib/poi-3.8-20120326.jar" />
-	<property name="barcode" value="lib/systembase.barcode-1.1.jar" />
+	<property name="barcode" value="lib/systembase.barcode-1.2.jar" />
 	<property name="jsonic" value="lib/jsonic-1.2.11.jar" />
 
 	<target name="main" depends="compile_report, compress_report, compile_pdf, compress_pdf, compile_xls, compress_xls"/>
