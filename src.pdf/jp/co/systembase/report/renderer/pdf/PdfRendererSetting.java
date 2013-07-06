@@ -20,6 +20,7 @@ public class PdfRendererSetting {
 
 	public IElementRenderer dummyElementRenderer;
 	public BaseFont defaultFont;
+	public BaseFont gaijiFont;
 	public Map<String, IElementRenderer> elementRendererMap = new HashMap<String, IElementRenderer>();
 	public Map<String, BaseFont> fontMap = new HashMap<String, BaseFont>();
 	public boolean replaceBackslashToYen;
@@ -36,6 +37,7 @@ public class PdfRendererSetting {
 		this.elementRendererMap.put("subpage", new SubPageRenderer());
 		try {
 			this.defaultFont = BaseFont.createFont("HeiseiKakuGo-W5", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED);
+			this.gaijiFont = null;
 			this.fontMap.put("gothic", this.defaultFont);
 			this.fontMap.put("mincho", BaseFont.createFont("HeiseiMin-W3", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
 		} catch (Exception e) {

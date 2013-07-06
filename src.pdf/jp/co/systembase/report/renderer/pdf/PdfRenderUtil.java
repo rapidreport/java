@@ -54,30 +54,30 @@ public class PdfRenderUtil {
 			}
 			if (textDesign.distribute){
 				if (textDesign.vertical){
-					_drawText_distribute_vertical(cb, region, renderer.trans, textDesign, font, text);
+					_drawText_distribute_vertical(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 				}else{
-					_drawText_distribute(cb, region, renderer.trans, textDesign, font, text);
+					_drawText_distribute(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 				}
 			}else if (textDesign.vertical){
 				if (textDesign.shrinkToFit){
-					_drawText_vertical_shrink(cb, region, renderer.trans, textDesign, font, text);
+					_drawText_vertical_shrink(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 				}else if (textDesign.wrap){
-					_drawText_vertical_wrap(cb, region, renderer.trans, textDesign, font, text);
+					_drawText_vertical_wrap(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 				}else{
-					_drawText_vertical(cb, region, renderer.trans, textDesign, font, text);
+					_drawText_vertical(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 				}
 			}else if (textDesign.decimalPlace > 0){
 				if (textDesign.shrinkToFit){
-					_drawText_fixdec_shrink(cb, region, renderer.trans, textDesign, font, text);
+					_drawText_fixdec_shrink(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 				}else{
-					_drawText_fixdec(cb, region, renderer.trans, textDesign, font, text);
+					_drawText_fixdec(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 				}
 			}else if (textDesign.shrinkToFit){
-				_drawText_shrink(cb, region, renderer.trans, textDesign, font, text);
+				_drawText_shrink(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 			}else if (textDesign.wrap){
-				_drawText_wrap(cb, region, renderer.trans, textDesign, font, text);
+				_drawText_wrap(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 			}else{
-				_drawText(cb, region, renderer.trans, textDesign, font, text);
+				_drawText(cb, region, renderer.trans, textDesign, font, renderer.setting.gaijiFont, text);
 			}
 		}finally{
 			cb.restoreState();
@@ -90,6 +90,7 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
 		float fontSize = textDesign.font.size;
 		float y = 0;
@@ -111,9 +112,8 @@ public class PdfRenderUtil {
             cb.beginText();
             for(int i = 0;i < text.length();i++){
             	String c = text.substring(i, i + 1);
-                setTextMatrix(cb, region, trans, textDesign, fontSize,
-                              m.get(i) - getTextWidth(font, textDesign, fontSize, c) / 2 + MARGIN_X, y);
-                cb.showText(c);
+                showText(cb, region, trans, textDesign, font, gaijiFont, fontSize, c,
+                              m.get(i) - getTextWidth(font, gaijiFont, textDesign, fontSize, c) / 2 + MARGIN_X, y);
             }
             cb.endText();
         }
@@ -128,6 +128,7 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
 		float fontSize = textDesign.font.size;
 		float x = 0;
@@ -150,17 +151,8 @@ public class PdfRenderUtil {
 			cb.setFontAndSize(font, fontSize);
 			cb.beginText();
 			for(int i = 0;i < text.length();i++){
-				String c = text.substring(i, i + 1);
-				float w = getTextWidth(font, textDesign, fontSize, c);
-				float y = m.get(i) - fontSize / 2 + OFFSET_Y;
-				if (VERTICAL_ROTATE_CHARS.indexOf(c) >= 0){
-					setRotateTextMatrix(cb, region, trans, textDesign, fontSize, x - fontSize / 3, y - w);
-				}else if (VERTICAL_SHIFT_CHARS.indexOf(c) >= 0){
-					setTextMatrix(cb, region, trans, textDesign, fontSize, x, y - fontSize / 2);
-				}else{
-					setTextMatrix(cb, region, trans, textDesign, fontSize, x - w / 2, y);
-				}
-				cb.showText(c);
+				showVerticalChar(cb, region, trans, textDesign, font, gaijiFont, fontSize, text.substring(i, i + 1),
+						x, m.get(i) - fontSize / 2 + OFFSET_Y);
             }
             cb.endText();
 		}
@@ -172,9 +164,10 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
 		List<String> texts = splitVerticalText(region, textDesign, text, false);
-		_drawText_vertical_aux(cb, region, trans, textDesign, font, textDesign.font.size, texts);
+		_drawText_vertical_aux(cb, region, trans, textDesign, font, gaijiFont, textDesign.font.size, texts);
 	}
 
 	public static void _drawText_vertical_shrink(
@@ -183,6 +176,7 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
 		float fontSize = textDesign.font.size;
 		List<String> texts = splitVerticalText(region, textDesign, text, false);
@@ -198,7 +192,7 @@ public class PdfRenderUtil {
 				fontSize = Math.min(fontSize, _fontSize);
 			}
         }
-        _drawText_vertical_aux(cb, region, trans, textDesign, font, fontSize, texts);
+        _drawText_vertical_aux(cb, region, trans, textDesign, font, gaijiFont, fontSize, texts);
 	}
 
 	public static void _drawText_vertical_wrap(
@@ -207,9 +201,10 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
 		List<String> texts = splitVerticalText(region, textDesign, text, true);
-		_drawText_vertical_aux(cb, region, trans, textDesign, font, textDesign.font.size, texts);
+		_drawText_vertical_aux(cb, region, trans, textDesign, font, gaijiFont, textDesign.font.size, texts);
 	}
 
 	public static void _drawText_fixdec(
@@ -218,11 +213,12 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
 		_FixDec fd = new _FixDec(text);
 		List<String> texts = new ArrayList<String>();
 		texts.add(fd.getFullText(textDesign.decimalPlace));
-		fd.drawText(cb, region, trans, textDesign, font, textDesign.font.size);
+		fd.drawText(cb, region, trans, textDesign, font, gaijiFont, textDesign.font.size);
 	}
 
 	public static void _drawText_fixdec_shrink(
@@ -231,12 +227,13 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
 		_FixDec fd = new _FixDec(text);
 		List<String> texts = new ArrayList<String>();
 		texts.add(fd.getFullText(textDesign.decimalPlace));
-		float fontSize = getFitFontSize(region, font, textDesign, texts);
-		fd.drawText(cb, region, trans, textDesign, font, fontSize);
+		float fontSize = getFitFontSize(region, font, gaijiFont, textDesign, texts);
+		fd.drawText(cb, region, trans, textDesign, font, gaijiFont, fontSize);
 	}
 
 	public static void _drawText_shrink(
@@ -245,10 +242,11 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
-		List<String> texts = splitText(region, textDesign, font, text, false);
-		float fontSize = getFitFontSize(region, font, textDesign, texts);
-		_drawText_aux(cb, region, trans, textDesign, font, fontSize, texts);
+		List<String> texts = splitText(region, textDesign, font, gaijiFont, text, false);
+		float fontSize = getFitFontSize(region, font, gaijiFont, textDesign, texts);
+		_drawText_aux(cb, region, trans, textDesign, font, gaijiFont, fontSize, texts);
 	}
 
 	public static void _drawText_wrap(
@@ -257,9 +255,10 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
-		List<String> texts = splitText(region, textDesign, font, text, true);
-		_drawText_aux(cb, region, trans, textDesign, font, textDesign.font.size, texts);
+		List<String> texts = splitText(region, textDesign, font, gaijiFont, text, true);
+		_drawText_aux(cb, region, trans, textDesign, font, gaijiFont, textDesign.font.size, texts);
 	}
 
 	public static void _drawText(
@@ -268,9 +267,10 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text){
-		List<String> texts = splitText(region, textDesign, font, text, false);
-		_drawText_aux(cb, region, trans, textDesign, font, textDesign.font.size, texts);
+		List<String> texts = splitText(region, textDesign, font, gaijiFont, text, false);
+		_drawText_aux(cb, region, trans, textDesign, font, gaijiFont, textDesign.font.size, texts);
 	}
 
     public static void _drawText_aux(
@@ -279,6 +279,7 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			float fontSize,
 			List<String> texts){
 		float y = 0;
@@ -297,10 +298,9 @@ public class PdfRenderUtil {
 		}
 		y += OFFSET_Y;
 		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
-		cb.setFontAndSize(font, fontSize);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), rows), 1);i++){
 			String t = texts.get(i);
-			float w = getTextWidth(font, textDesign, fontSize, t);
+			float w = getTextWidth(font, gaijiFont, textDesign, fontSize, t);
 			{
 				float cw = region.getWidth() - MARGIN_X * 2;
 				if (w > cw){
@@ -308,7 +308,7 @@ public class PdfRenderUtil {
 					float _w = 0;
 					for(int j = 1;j <= t.length();j++){
 						String __t = t.substring(0, j);
-						float __w = getTextWidth(font, textDesign, fontSize, __t);
+						float __w = getTextWidth(font, gaijiFont, textDesign, fontSize, __t);
 						if (__w <= cw + TOLERANCE){
 							_t = __t;
 							_w = __w;
@@ -334,9 +334,9 @@ public class PdfRenderUtil {
 				x = Math.max(x, MARGIN_X);
 				break;
 			}
+			cb.setFontAndSize(font, fontSize);
 			cb.beginText();
-			setTextMatrix(cb, region, trans, textDesign, fontSize, x, y);
-			cb.showText(t);
+			showText(cb, region, trans, textDesign, font, gaijiFont, fontSize, t, x, y);
 			cb.endText();
 			if (textDesign.font.underline){
 				drawUnderline(cb, region, trans, fontSize, x, y, w);
@@ -351,6 +351,7 @@ public class PdfRenderUtil {
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			float fontSize,
 			List<String> texts){
 		float x = 0;
@@ -367,7 +368,6 @@ public class PdfRenderUtil {
 			x = region.getWidth() - fontSize / 2 - MARGIN_X;
 			break;
 		}
-		cb.setFontAndSize(font, fontSize);
 		int cols = (int)(((region.getWidth() - MARGIN_X * 2) + TOLERANCE) / fontSize);
 		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), cols), 1);i++){
@@ -387,24 +387,14 @@ public class PdfRenderUtil {
 				break;
 			}
 			y += OFFSET_Y;
-            int _yc = Math.min(t.length(), rows);
-            if (textDesign.font.underline){
-                drawVerticalUnderLine(cb, region, trans, fontSize, x + fontSize / 2, y, _yc * fontSize);
-            }
+			int _yc = Math.min(t.length(), rows);
+			if (textDesign.font.underline){
+				drawVerticalUnderLine(cb, region, trans, fontSize, x + fontSize / 2, y, _yc * fontSize);
+			}
+			cb.setFontAndSize(font, fontSize);
 			cb.beginText();
 			for(int j = 0;j < _yc;j++){
-				String c  = t.substring(j, j + 1);
-				if (VERTICAL_ROTATE_CHARS.indexOf(c) >= 0){
-					setRotateTextMatrix(cb, region, trans, textDesign, fontSize,
-							x - fontSize / 3,
-							y - getTextWidth(font, textDesign, fontSize, c));
-				}else if (VERTICAL_SHIFT_CHARS.indexOf(c) >= 0){
-					setTextMatrix(cb, region, trans, textDesign, fontSize, x, y - fontSize / 2);
-				}else{
-					setTextMatrix(cb, region, trans, textDesign, fontSize,
-	                		x - getTextWidth(font, textDesign, fontSize, c) / 2, y);
-				}
-				cb.showText(c);
+				showVerticalChar(cb, region, trans, textDesign, font, gaijiFont, fontSize, t.substring(j, j + 1), x, y);
 				y += fontSize;
 			}
 			cb.endText();
@@ -459,6 +449,7 @@ public class PdfRenderUtil {
 				PdfRenderer.Trans trans,
 				TextDesign textDesign,
 				BaseFont font,
+				BaseFont gaijiFont,
 				float fontSize){
 			float y = 0;
 			switch(textDesign.valign){
@@ -476,8 +467,8 @@ public class PdfRenderUtil {
 			{
 				String t = this.text1 + this.getFullText2(textDesign.decimalPlace);
 				String ft = t + this.text3;
-				float w = getTextWidth(font, textDesign, fontSize, t);
-				float fw = getTextWidth(font, textDesign, fontSize, ft);
+				float w = getTextWidth(font, gaijiFont, textDesign, fontSize, t);
+				float fw = getTextWidth(font, gaijiFont, textDesign, fontSize, ft);
 				float x = 0;
 				switch(textDesign.halign){
 				case LEFT:
@@ -494,9 +485,9 @@ public class PdfRenderUtil {
 				}
 				cb.setFontAndSize(font, fontSize);
 				cb.beginText();
-				drawText_aux(cb, region, trans, textDesign, font, fontSize, x, y, this.text1 + this.text2);
+				drawText_aux(cb, region, trans, textDesign, font, gaijiFont, fontSize, x, y, this.text1 + this.text2);
 				if (this.text3.length() > 0){
-					drawText_aux(cb, region, trans, textDesign, font, fontSize, x + w, y, this.text3);
+					drawText_aux(cb, region, trans, textDesign, font, gaijiFont, fontSize, x + w, y, this.text3);
 				}
 				cb.endText();
 				if (textDesign.font.underline){
@@ -511,6 +502,7 @@ public class PdfRenderUtil {
 				PdfRenderer.Trans trans,
 				TextDesign textDesign,
 				BaseFont font,
+				BaseFont gaijiFont,
 				float fontSize,
 				float x,
 				float y,
@@ -521,12 +513,12 @@ public class PdfRenderUtil {
 			if (w < 0){
 				return;
 			}
-			if (getTextWidth(font, textDesign, fontSize, t) > w + TOLERANCE){
+			if (getTextWidth(font, gaijiFont, textDesign, fontSize, t) > w + TOLERANCE){
 				String _t = "";
 				String __t = "";
 				for(int i = 0;i <= t.length();i++){
 					__t = t.substring(0, i);
-					if (getTextWidth(font, textDesign, fontSize, __t) <= w + TOLERANCE){
+					if (getTextWidth(font, gaijiFont, textDesign, fontSize, __t) <= w + TOLERANCE){
 						_t = __t;
 					}else{
 						break;
@@ -535,8 +527,7 @@ public class PdfRenderUtil {
 				t = _t;
 			}
 			if (t.length() > 0){
-				setTextMatrix(cb, region, trans, textDesign, fontSize, _x, y);
-				cb.showText(t);
+				showText(cb, region, trans, textDesign, font, gaijiFont, fontSize, t, _x, y);
 			}
 		}
 
@@ -562,6 +553,7 @@ public class PdfRenderUtil {
 	private static float getFitFontSize(
 			Region region,
 			BaseFont font,
+			BaseFont gaijiFont,
 			TextDesign textDesign,
 			List<String> texts){
 		float fontSize = textDesign.font.size;
@@ -569,7 +561,7 @@ public class PdfRenderUtil {
 		float w = 0f;
 		float rw = region.getWidth() - MARGIN_X * 2;
 		for(String _t: texts){
-			float _w = getTextWidth(font, textDesign, fontSize, _t);
+			float _w = getTextWidth(font, gaijiFont, textDesign, fontSize, _t);
 			if (w < _w){
 				w = _w;
 				t = _t;
@@ -584,7 +576,7 @@ public class PdfRenderUtil {
 		}
 		for(int i = _i - 1;i >= 1;i--){
 		  float s = SHRINK_FONT_SIZE_MIN + i * 0.5f;
-		  if (getTextWidth(font, textDesign, s, t) <= rw){
+		  if (getTextWidth(font, gaijiFont, textDesign, s, t) <= rw){
 			  return s;
 		  }
 		}
@@ -595,6 +587,7 @@ public class PdfRenderUtil {
 			Region region,
 			TextDesign textDesign,
 			BaseFont font,
+			BaseFont gaijiFont,
 			String text,
 			boolean wrap){
 		float fontSize = textDesign.font.size;
@@ -602,12 +595,12 @@ public class PdfRenderUtil {
 		List<String> ret = new ArrayList<String>();
 		for(String t: text.split("\n")){
 			t = t.replace("\r", "");
-			if (wrap && getTextWidth(font, textDesign, fontSize, t) > cw + TOLERANCE){
+			if (wrap && getTextWidth(font, gaijiFont, textDesign, fontSize, t) > cw + TOLERANCE){
 				String _t  = t;
 				while(_t.length() > 0){
 					int i;
 					for(i = 2;i <= _t.length();i++){
-						if (getTextWidth(font, textDesign, fontSize, _t.substring(0, i)) > cw + TOLERANCE){
+						if (getTextWidth(font, gaijiFont, textDesign, fontSize, _t.substring(0, i)) > cw + TOLERANCE){
 							break;
 						}
 					}
@@ -651,10 +644,30 @@ public class PdfRenderUtil {
 
 	private static float getTextWidth(
 			BaseFont font,
+			BaseFont gaijiFont,
 			TextDesign textDesign,
 			float fontSize,
 			String text){
-		float ret = font.getWidthPoint(text, fontSize);
+		List<String> _texts = null;
+		if (gaijiFont != null){
+			_texts = detectGaiji(text);
+		}
+		float ret = 0;
+		if (_texts == null){
+			ret = font.getWidthPoint(text, fontSize);
+		}else{
+			boolean g = false;
+			for(String t: _texts){
+				if (t.length() > 0){
+					if (!g){
+						ret += font.getWidthPoint(t, fontSize);
+					}else{
+						ret += gaijiFont.getWidthPoint(t, fontSize);
+					}
+				}
+				g = !g;
+			}
+		}
 		if (textDesign.font.italic){
 			ret += fontSize / 6;
 		}
@@ -695,6 +708,79 @@ public class PdfRenderUtil {
 		}
 	}
 
+	private static void showText(
+			PdfContentByte cb,
+			Region region,
+			PdfRenderer.Trans trans,
+			TextDesign textDesign,
+			BaseFont font,
+			BaseFont gaijiFont,
+			float fontSize,
+			String text,
+			float x,
+			float y){
+		List<String> _texts = null;
+		if (gaijiFont != null){
+			_texts = detectGaiji(text);
+		}
+		if (_texts == null){
+			setTextMatrix(cb, region, trans, textDesign, fontSize, x, y);
+			cb.showText(text);
+		}else{
+			boolean gaiji = false;
+			float _x = x;
+			for(String t: _texts){
+				if (t.length() > 0){
+					if (!gaiji){
+						setTextMatrix(cb, region, trans, textDesign, fontSize, _x, y);
+						cb.showText(t);
+						_x += font.getWidthPoint(t, fontSize);
+					}else{
+						cb.setFontAndSize(gaijiFont, fontSize);
+						setTextMatrix(cb, region, trans, textDesign, fontSize, _x, y);
+						cb.showText(t);
+						cb.setFontAndSize(font, fontSize);
+						_x += gaijiFont.getWidthPoint(t, fontSize);
+					}
+				}
+				gaiji = !gaiji;
+			}
+		}
+	}
+
+	private static void showVerticalChar(
+			PdfContentByte cb,
+			Region region,
+			PdfRenderer.Trans trans,
+			TextDesign textDesign,
+			BaseFont font,
+			BaseFont gaijiFont,
+			float fontSize,
+			String c,
+			float x,
+			float y){
+		boolean gaiji = false;
+		if (gaijiFont != null && isGaiji(c.charAt(0))){
+			cb.setFontAndSize(gaijiFont, fontSize);
+			gaiji = true;
+		}
+		if (VERTICAL_ROTATE_CHARS.indexOf(c) >= 0){
+			setRotateTextMatrix(cb, region, trans, textDesign, 
+					fontSize, x - fontSize / 3, 
+					y - getTextWidth(font, gaijiFont, textDesign, fontSize, c));
+		}else if (VERTICAL_SHIFT_CHARS.indexOf(c) >= 0){
+			setTextMatrix(cb, region, trans, textDesign, fontSize, x, y - fontSize / 2);
+		}else{
+			setTextMatrix(cb, region, trans, textDesign, 
+					fontSize, x - getTextWidth(font, gaijiFont, textDesign, fontSize, c) / 2, 
+					y);
+		}
+		cb.showText(c);
+		if (gaiji){
+			cb.setFontAndSize(font, fontSize);
+		}
+	}
+
 	private static void drawUnderline(
 			PdfContentByte cb,
 			Region region,
@@ -732,6 +818,38 @@ public class PdfRenderUtil {
 		cb.moveTo(trans.x(_x), trans.y(_y));
 		cb.lineTo(trans.x(_x), trans.y(_y + h));
 		cb.stroke();
+	}
+
+	private static List<String> detectGaiji(String text){
+		List<String> ret = null;
+		boolean g = false;
+		int last = 0;
+		for(int i = 0;i < text.length();i++){
+			if (isGaiji(text.charAt(i))){
+				if (!g){
+					if (ret == null){
+						ret = new ArrayList<String>();
+					}
+					ret.add(text.substring(last, i));
+					last = i;
+					g = true;
+				}
+			}else{
+				if (g){
+					ret.add(text.substring(last, i));
+					last = i;
+					g = false;
+				}
+			}
+		}
+		if (ret != null){
+			ret.add(text.substring(last));
+		}
+		return ret;
+	}
+
+	private static boolean isGaiji(char c){
+		return c >= '\ue000' && c <= '\uf8ff';
 	}
 
 	public static Color getColor(String v){
