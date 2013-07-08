@@ -4,7 +4,7 @@ import java.io.FileOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import com.lowagie.text.pdf.BaseFont;
+//import com.lowagie.text.pdf.BaseFont;
 
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPages;
@@ -22,7 +22,7 @@ public class Test3 {
 			FileOutputStream fos = new FileOutputStream("output/test3.pdf");
 			try{
 				PdfRenderer renderer = new PdfRenderer(fos);
-				renderer.setting.gaijiFont = BaseFont.createFont("C:\\home\\EUDC.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+				//renderer.setting.gaijiFont = BaseFont.createFont("EUDC.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 				pages.render(renderer);
 			}finally{
 				fos.close();
