@@ -662,7 +662,7 @@ public class PdfRenderUtil {
 					if (!g){
 						ret += font.getWidthPoint(t, fontSize);
 					}else{
-						ret += gaijiFont.getWidthPoint(t, fontSize);
+						ret += t.length() * fontSize;
 					}
 				}
 				g = !g;
@@ -737,10 +737,12 @@ public class PdfRenderUtil {
 						_x += font.getWidthPoint(t, fontSize);
 					}else{
 						cb.setFontAndSize(gaijiFont, fontSize);
-						setTextMatrix(cb, region, trans, textDesign, fontSize, _x, y);
-						cb.showText(t);
+						for(int i = 0;i < t.length();i++){
+							setTextMatrix(cb, region, trans, textDesign, fontSize, _x, y);
+							cb.showText(t.substring(i, i + 1));
+							_x += fontSize;
+						}
 						cb.setFontAndSize(font, fontSize);
-						_x += gaijiFont.getWidthPoint(t, fontSize);
 					}
 				}
 				gaiji = !gaiji;
