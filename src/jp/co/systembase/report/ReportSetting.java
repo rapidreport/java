@@ -50,6 +50,7 @@ import jp.co.systembase.report.operator.NotEqOperator;
 import jp.co.systembase.report.operator.NotOperator;
 import jp.co.systembase.report.operator.NvlOperator;
 import jp.co.systembase.report.operator.OrOperator;
+import jp.co.systembase.report.operator.Round5EOperator;
 import jp.co.systembase.report.operator.Round5Operator;
 import jp.co.systembase.report.operator.Round6Operator;
 import jp.co.systembase.report.operator.RoundDownOperator;
@@ -121,6 +122,7 @@ public class ReportSetting  implements Cloneable{
 		this.operatorMap.put("if", new IfOperator());
 		this.operatorMap.put("nvl", new NvlOperator());
 		this.operatorMap.put("round5", new Round5Operator());
+		this.operatorMap.put("round5e", new Round5EOperator());
 		this.operatorMap.put("round6", new Round6Operator());
 		this.operatorMap.put("roundup", new RoundUpOperator());
 		this.operatorMap.put("roundup2", new RoundUp2Operator());

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <project default="main">
 
-	<property name="version" value="4.2" />
+	<property name="version" value="4.3" />
 
 	<property name="src_report" value="src" />
 	<property name="src_pdf" value="src.pdf" />
@@ -15,7 +15,7 @@
 	<property name="target_pdf" value="build/systembase.report.pdf-${version}.jar" />
 	<property name="target_xls" value="build/systembase.report.xls-${version}.jar" />
 
-	<property name="sb_core" value="lib/systembase.core-1.4.jar" />
+	<property name="sb_core" value="lib/systembase.core-1.5.jar" />
 	<property name="itext" value="lib/iText-2.1.7.jar" />
 	<property name="zxing_core" value="lib/zxing.core-2.0.jar" />
 	<property name="zxing" value="lib/zxing.javase-2.0.jar" />
