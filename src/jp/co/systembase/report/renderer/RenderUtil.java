@@ -1,5 +1,6 @@
 package jp.co.systembase.report.renderer;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,8 +157,30 @@ public class RenderUtil {
 		return colorMap;
 	}
 
-    public static String format(ReportDesign reportDesign, ElementDesign formatterDesign, Object value){
-    	return reportDesign.setting.getTextFormatter((String)formatterDesign.get("type")).format(value, formatterDesign);
-    }
+	public static Color getColor(String v){
+		if (v.startsWith("#") && v.length() == 7){
+			String _v = v.substring(1).toLowerCase();
+			for(int i = 0;i < 6;i++){
+				if ("0123456789abcdef".indexOf(_v.charAt(i)) < 0){
+					return null;
+				}
+			}
+			return new Color(
+					Integer.parseInt(_v.substring(0, 2), 16),
+					Integer.parseInt(_v.substring(2, 4), 16),
+					Integer.parseInt(_v.substring(4, 6), 16));
+		}else{
+			Map<String, short[]> colorMap = getColorMap();
+			if (colorMap.containsKey(v)){
+				short[] c = colorMap.get(v);
+				return new Color(c[0], c[1], c[2]);
+			}
+		}
+		return null;
+	}
+
+	public static String format(ReportDesign reportDesign, ElementDesign formatterDesign, Object value){
+		return reportDesign.setting.getTextFormatter((String)formatterDesign.get("type")).format(value, formatterDesign);
+	}
 
 }

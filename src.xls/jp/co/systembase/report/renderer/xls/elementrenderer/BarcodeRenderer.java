@@ -21,6 +21,7 @@ import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
+import jp.co.systembase.report.renderer.RenderUtil;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xls.component.Page;
 import jp.co.systembase.report.renderer.xls.component.Shape;
@@ -43,8 +44,7 @@ public class BarcodeRenderer implements IElementRenderer {
 			ElementDesign design,
 			Object data) throws Throwable{
 		Region _region = region.toPointScale(reportDesign);
-		ElementDesign fd = design.child("formatter");
-		String code = renderer.setting.getTextFormatter((String)fd.get("type")).format(data, fd);
+		String code = RenderUtil.format(reportDesign, design.child("formatter"), data);
 		Shape shape = new Shape();
 		shape.region = _region;
 		shape.renderer = new BarcodeShapeRenderer(design, code);

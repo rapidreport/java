@@ -10,7 +10,7 @@ import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
-import jp.co.systembase.report.renderer.pdf.PdfRenderUtil;
+import jp.co.systembase.report.renderer.RenderUtil;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
 public class LineRenderer implements IElementRenderer {
@@ -34,7 +34,7 @@ public class LineRenderer implements IElementRenderer {
 			}
 			cb.setLineWidth(lw);
 			if (!design.isNull("color")){
-				Color c = PdfRenderUtil.getColor((String)design.get("color"));
+				Color c = RenderUtil.getColor((String)design.get("color"));
 				if (c != null){
 					cb.setColorStroke(c);
 				}

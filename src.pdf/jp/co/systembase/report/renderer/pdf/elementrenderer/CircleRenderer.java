@@ -8,7 +8,7 @@ import java.util.List;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
-import jp.co.systembase.report.renderer.pdf.PdfRenderUtil;
+import jp.co.systembase.report.renderer.RenderUtil;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
 import com.lowagie.text.pdf.PdfContentByte;
@@ -37,7 +37,7 @@ public class CircleRenderer implements IElementRenderer {
 			if (stroke){
 				cb.setLineWidth(lw);
 				if (!design.isNull("color")){
-					Color c = PdfRenderUtil.getColor((String)design.get("color"));
+					Color c = RenderUtil.getColor((String)design.get("color"));
 					if (c != null){
 						cb.setColorStroke(c);
 					}
@@ -72,7 +72,7 @@ public class CircleRenderer implements IElementRenderer {
 				}
 			}
 			if (!design.isNull("fill_color")){
-				Color c = PdfRenderUtil.getColor((String)design.get("fill_color"));
+				Color c = RenderUtil.getColor((String)design.get("fill_color"));
 				if (c != null){
 					fill = true;
 					cb.setColorFill(c);

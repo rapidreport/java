@@ -4,6 +4,7 @@ import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
+import jp.co.systembase.report.renderer.RenderUtil;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xls.component.Field;
 import jp.co.systembase.report.renderer.xls.component.FieldStyle;
@@ -27,8 +28,7 @@ public class FieldRenderer implements IElementRenderer {
 			if (field.style.textDesign.xlsFormat != null){
 				field.data = data;
 			}else{
-				ElementDesign fd = design.child("formatter");
-				field.data = renderer.setting.getTextFormatter((String)fd.get("type")).format(data, fd);
+				field.data = RenderUtil.format(reportDesign, design.child("formatter"), data);
 			}
 		}
 

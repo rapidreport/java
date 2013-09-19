@@ -3,7 +3,6 @@ package jp.co.systembase.report.renderer.pdf;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +39,7 @@ public class PdfRenderUtil {
 		cb.saveState();
 		try{
 			if (textDesign.color != null){
-				Color c = getColor(textDesign.color);
+				Color c = RenderUtil.getColor(textDesign.color);
 				if (c != null){
 					cb.setColorFill(c);
 					cb.setColorStroke(c);
@@ -854,26 +853,5 @@ public class PdfRenderUtil {
 		return c >= '\ue000' && c <= '\uf8ff';
 	}
 
-	public static Color getColor(String v){
-		if (v.startsWith("#") && v.length() == 7){
-			String _v = v.substring(1).toLowerCase();
-			for(int i = 0;i < 6;i++){
-				if ("0123456789abcdef".indexOf(_v.charAt(i)) < 0){
-					return null;
-				}
-			}
-			return new Color(
-					Integer.parseInt(_v.substring(0, 2), 16),
-					Integer.parseInt(_v.substring(2, 4), 16),
-					Integer.parseInt(_v.substring(4, 6), 16));
-		}else{
-			Map<String, short[]> colorMap = RenderUtil.getColorMap();
-			if (colorMap.containsKey(v)){
-				short[] c = colorMap.get(v);
-				return new Color(c[0], c[1], c[2]);
-			}
-		}
-		return null;
-	}
 
 }

@@ -47,7 +47,6 @@ public class XlsRendererSetting {
 		this.fontMap.put("gothic", "ＭＳ ゴシック");
 		this.fontMap.put("mincho", "ＭＳ 明朝");
 		this.defaultTextFormatter = new DefaultTextFormatter();
-		this.textFormatterMap.put("default", new DefaultTextFormatter());
 		this.customPalette = false;
 		this.colWidthMax = 800f;
 		this.rowHeightMax = 350f;
@@ -70,14 +69,6 @@ public class XlsRendererSetting {
 			return this.fontMap.get(key);
 		}else{
 			return this.defaultFont;
-		}
-	}
-
-	public ITextFormatter getTextFormatter(String key){
-		if (key != null && this.textFormatterMap.containsKey(key)){
-			return this.textFormatterMap.get(key);
-		}else{
-			return this.defaultTextFormatter;
 		}
 	}
 
