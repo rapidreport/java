@@ -79,7 +79,13 @@ public class CellMap {
 					_cell.mergedCell = cell;
 				}
 			}
-			cell.data = field.data;
+			if (field.data instanceof String){
+				String t = (String)field.data;
+				t = t.replaceAll("\r\n", "\n");
+				cell.data = t;
+			}else{
+				cell.data = field.data;
+			}
 			cell.range.row2 = field.cellRange.row2;
 			cell.range.col2 = field.cellRange.col2;
 		}
