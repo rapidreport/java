@@ -26,7 +26,7 @@ public class CustomField {
 			Node n = this.top;
 			while(n != null){
 				if (n.field.key.equals(field.key) && n.field.data == field.data){
-					throw new EvalException("circular reference : " + n.field.key);
+					throw new EvalException("循環参照が含まれています : " + n.field.key);
 				}
 				n = n.caller;
 			}
