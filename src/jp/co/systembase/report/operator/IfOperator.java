@@ -12,6 +12,7 @@ public class IfOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 2);
 		if (ReportUtil.condition(evaluator.eval(params.get(0)))){
 			return evaluator.eval(params.get(1));
 		}else{

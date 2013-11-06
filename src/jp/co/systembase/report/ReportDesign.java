@@ -2,6 +2,7 @@ package jp.co.systembase.report;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class ReportDesign {
 	public int pageCapacity;
 	public boolean resetPageCount;
 	public Map<String, String> customFields;
+	public List<String> customFieldsKeyList;
 	public GroupDesign groupDesign;
 
 	private Map<Map<?, ?>, Map<String, BufferedImage>> imageCache =
@@ -62,15 +64,18 @@ public class ReportDesign {
 		this.resetPageCount = Cast.toBool(desc.get("reset_page_count"));
 		if (desc.containsKey("custom_fields")){
 			this.customFields = new HashMap<String, String>();
+			this.customFieldsKeyList = new ArrayList<String>();
 			for(Map<?, ?> d: (List<Map<?, ?>>)desc.get("custom_fields")){
 				if (d.containsKey("key") && d.containsKey("exp")){
 					if (!this.customFields.containsKey((String)d.get("key"))){
 						this.customFields.put((String)d.get("key"), (String)d.get("exp"));
+						this.customFieldsKeyList.add((String)d.get("key"));
 					}
 				}
 			}
 		}else{
 			this.customFields = null;
+			this.customFieldsKeyList = null;
 		}
 	}
 

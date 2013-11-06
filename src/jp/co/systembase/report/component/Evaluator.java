@@ -1,6 +1,7 @@
 package jp.co.systembase.report.component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jp.co.systembase.report.IReportLogger;
@@ -158,6 +159,12 @@ public class Evaluator {
 
 	public ReportData getPresentData(String scope, String unit){
 		return this.pageContext.dataContainer.getPresentData(this.contentContext.content, scope);
+	}
+
+	public void ValidateParamCount(List<IExpression> params, int count){
+		if (params.size() < count){
+			throw new IllegalArgumentException("引数が足りません");
+		}
 	}
 
 }

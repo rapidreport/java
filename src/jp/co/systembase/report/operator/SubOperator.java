@@ -12,6 +12,7 @@ public class SubOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 1);
 		if (params.size() == 1){
 			Object o = evaluator.eval(params.get(0));
 			if (o != null){

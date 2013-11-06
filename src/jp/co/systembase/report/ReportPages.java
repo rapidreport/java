@@ -18,7 +18,7 @@ public class ReportPages extends ArrayList<ReportPage> {
 
 	public void render(IRenderer renderer) throws RenderException{
 		if (this.size() == 0){
-			throw new RenderException("there is no page");
+			throw new RenderException("ページがありません");
 		}
 		try{
 			this.setUpCountingPages();
@@ -31,7 +31,7 @@ public class ReportPages extends ArrayList<ReportPage> {
 			if (ex instanceof RenderException){
 				throw (RenderException)ex;
 			}else{
-				String message = "an error occurred while rendering report";
+				String message = "帳票のレンダリング中にエラーが発生しました";
 				throw new RenderException(message, ex);
 			}
 		}

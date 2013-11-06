@@ -12,6 +12,7 @@ public class AndOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 2);
 		for(int i = 0;i < params.size();i++){
 			if (!ReportUtil.condition(evaluator.eval(params.get(i)))){
 				return false;

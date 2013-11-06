@@ -21,8 +21,9 @@ public class ContentDesign {
 	public int weight;
 	public String elementsVisibilityCond;
 	public Map<String, String> variables;
+	public List<String> variablesKeyList;
 	public GroupDesign groupDesign;
-	public List<ContentDesign> subContentDesigns = null;
+	public List<ContentDesign> subContentDesigns;
 
 	public GroupDesign parentGroupDesign;
 	public ContentDesign baseContentDesign;
@@ -61,15 +62,18 @@ public class ContentDesign {
 		this.elementsVisibilityCond = (String)desc.get("elements_visibility_cond");
 		if (desc.containsKey("variables")){
 			this.variables = new HashMap<String, String>();
+			this.variablesKeyList = new ArrayList<String>();
 			for(Map<?, ?> d: (List<Map<?, ?>>)desc.get("variables")){
 				if (d.containsKey("key") && d.containsKey("exp")){
 					if (!this.variables.containsKey((String)d.get("key"))){
 						this.variables.put((String)d.get("key"), (String)d.get("exp"));
+						this.variablesKeyList.add((String)d.get("key"));
 					}
 				}
 			}
 		}else{
 			this.variables = null;
+			this.variablesKeyList = null;
 		}
 	}
 

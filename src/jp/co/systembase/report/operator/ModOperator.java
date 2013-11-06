@@ -11,6 +11,7 @@ public class ModOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 2);
 		Object v1 = evaluator.eval(params.get(0));
 		Object v2 = evaluator.eval(params.get(1));
 		if (v1 == null || v2 == null){

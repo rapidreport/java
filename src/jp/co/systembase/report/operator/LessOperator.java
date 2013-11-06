@@ -12,6 +12,7 @@ public class LessOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 2);
 		return ReportUtil.compareTo(
 				evaluator.eval(params.get(0)),
 				evaluator.eval(params.get(1))) < 0;

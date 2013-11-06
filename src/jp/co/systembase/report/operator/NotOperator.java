@@ -12,6 +12,7 @@ public class NotOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 1);
 		return !ReportUtil.condition(evaluator.eval(params.get(0)));
 	}
 

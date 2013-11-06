@@ -25,6 +25,7 @@ public class GroupDesign {
 	public List<String> sortKeys;
 	public GroupLayoutDesign layout;
 	public Map<String, String> customFields;
+	public List<String> customFieldsKeyList;
 	public List<ContentDesign> contentDesigns;
 
 	public ReportDesign reportDesign;
@@ -83,15 +84,18 @@ public class GroupDesign {
 		}
 		if (desc.containsKey("custom_fields")){
 			this.customFields = new HashMap<String, String>();
+			this.customFieldsKeyList = new ArrayList<String>();
 			for(Map<?, ?> d: (List<Map<?, ?>>)desc.get("custom_fields")){
 				if (d.containsKey("key") && d.containsKey("exp")){
 					if (!this.customFields.containsKey((String)d.get("key"))){
 						this.customFields.put((String)d.get("key"), (String)d.get("exp"));
+						this.customFieldsKeyList.add((String)d.get("key"));
 					}
 				}
 			}
 		}else{
 			this.customFields = null;
+			this.customFieldsKeyList = null;
 		}
 	}
 

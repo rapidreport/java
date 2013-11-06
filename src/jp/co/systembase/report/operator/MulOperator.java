@@ -12,6 +12,7 @@ public class MulOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 2);
 		BigDecimal ret;
 		{
 			Object o = evaluator.eval(params.get(0));

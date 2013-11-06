@@ -11,6 +11,7 @@ public class CatOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 2);
 		String ret = "";
 		for(int i = 0;i < params.size();i++){
 			Object v = evaluator.eval(params.get(i));

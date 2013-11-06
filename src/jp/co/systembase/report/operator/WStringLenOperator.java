@@ -11,6 +11,7 @@ public class WStringLenOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 1);
 		String str = ReportUtil.objectToString(evaluator.eval(params.get(0)));
 		if (str == null){
 			return null;

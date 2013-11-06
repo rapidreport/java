@@ -13,6 +13,7 @@ public class MinuteOperator implements IOperator {
 	public Object exec(
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
+		evaluator.ValidateParamCount(params, 1);
 		Object o = evaluator.eval(params.get(0));
 		if (o instanceof Date){
 			Calendar c = Calendar.getInstance();
