@@ -28,7 +28,7 @@ public class ImageRenderer implements IElementRenderer {
 			}
 		}
 		if (image == null){
-			image = reportDesign.getImage(design.base, "image");
+			image = renderer.getImage(reportDesign, design.base, "image");
 		}
 		Shape shape = new Shape();
 		shape.region = _region;

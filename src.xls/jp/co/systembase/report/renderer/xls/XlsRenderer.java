@@ -1,6 +1,7 @@
 package jp.co.systembase.report.renderer.xls;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import jp.co.systembase.report.renderer.xls.component.RowColUtil;
 import jp.co.systembase.report.renderer.xls.component.Shape;
 import jp.co.systembase.report.renderer.xls.imageloader.IXlsImageLoader;
 
-
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -42,6 +42,9 @@ public class XlsRenderer implements IRenderer {
 	public CellStylePool cellStylePool;
 	public FontPool fontPool;
 	public ColorPool colorPool;
+	
+	private Map<Map<?, ?>, Map<String, BufferedImage>> imageCache =
+			new HashMap<Map<?, ?>, Map<String, BufferedImage>>();
 
 	public XlsRenderer(HSSFWorkbook workbook){
 		this(workbook, new XlsRendererSetting());
@@ -171,6 +174,29 @@ public class XlsRenderer implements IRenderer {
 			return 0;
 		}
 		return this.imagePool.get(image);
+	}
+
+	public BufferedImage getImage(ReportDesign reportDesign, Map<?, ?> desc, String key){
+		if (!this.imageCache.containsKey(desc) || !this.imageCache.get(desc).containsKey(key)){
+			this.createImage(reportDesign, desc, key);
+		}
+		return this.imageCache.get(desc).get(key);
+	}
+
+	private void createImage(ReportDesign reportDesign, Map<?, ?> desc, String key){
+		if (!this.imageCache.containsKey(desc)){
+			this.imageCache.put(desc, new HashMap<String, BufferedImage>());
+		}
+		BufferedImage image = null;
+		if (desc.containsKey(key)){
+			try{
+				byte[] b = reportDesign.getImageBytes(desc, key);
+				if (b != null){
+					image = ImageIO.read(new ByteArrayInputStream(b));
+				}
+			}catch(Exception e){}
+		}
+		this.imageCache.get(desc).put(key, image);
 	}
 
 }

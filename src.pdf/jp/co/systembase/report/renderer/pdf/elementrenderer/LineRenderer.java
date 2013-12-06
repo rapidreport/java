@@ -1,6 +1,5 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +32,11 @@ public class LineRenderer implements IElementRenderer {
 				}
 			}
 			cb.setLineWidth(lw);
+			short[] color = null;
 			if (!design.isNull("color")){
-				Color c = RenderUtil.getColor((String)design.get("color"));
-				if (c != null){
-					cb.setColorStroke(c);
+				color = RenderUtil.getColorRGB((String)design.get("color"));
+				if (color != null){
+					cb.setRGBColorStroke(color[0], color[1], color[2]);
 				}
 			}
 			if (!design.isNull("line_pattern")){
@@ -121,6 +121,9 @@ public class LineRenderer implements IElementRenderer {
 				}
 				cb.stroke();
 				if (startArrow){
+					if (color != null){
+						cb.setRGBColorFill(color[0], color[1], color[2]);	
+					}
 					cb.moveTo(
 							renderer.trans.x(_region.left + tx(r, w * 2, -w)),
 							renderer.trans.y(_region.top + ty(r, w * 2, -w)));
@@ -133,6 +136,9 @@ public class LineRenderer implements IElementRenderer {
 					cb.fill();
 				}
 				if (endArrow){
+					if (color != null){
+						cb.setRGBColorFill(color[0], color[1], color[2]);	
+					}
 					cb.moveTo(
 							renderer.trans.x(_region.right + tx(r, -w * 2, -w)),
 							renderer.trans.y(_region.bottom + ty(r, -w * 2, -w)));

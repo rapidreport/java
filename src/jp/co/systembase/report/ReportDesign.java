@@ -1,13 +1,9 @@
 package jp.co.systembase.report;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.component.ContentDesign;
@@ -31,8 +27,8 @@ public class ReportDesign {
 	public List<String> customFieldsKeyList;
 	public GroupDesign groupDesign;
 
-	private Map<Map<?, ?>, Map<String, BufferedImage>> imageCache =
-		new HashMap<Map<?, ?>, Map<String, BufferedImage>>();
+	private Map<Map<?, ?>, Map<String, byte[]>> imageCache =
+		new HashMap<Map<?, ?>, Map<String, byte[]>>();
 
 	public ReportDesign(Map<?, ?> desc){
 		this(desc, new ReportSetting());
@@ -106,21 +102,20 @@ public class ReportDesign {
 		return null;
 	}
 
-	public BufferedImage getImage(Map<?, ?> desc, String key){
+	public byte[] getImageBytes(Map<?, ?> desc, String key){
 		if (!this.imageCache.containsKey(desc) || !this.imageCache.get(desc).containsKey(key)){
-			this.createImage(desc, key);
+			this.createImageBytes(desc, key);
 		}
 		return this.imageCache.get(desc).get(key);
 	}
 
-	private void createImage(Map<?, ?> desc, String key){
+	private void createImageBytes(Map<?, ?> desc, String key){
 		if (!this.imageCache.containsKey(desc)){
-			this.imageCache.put(desc, new HashMap<String, BufferedImage>());
+			this.imageCache.put(desc, new HashMap<String, byte[]>());
 		}
 		if (desc.containsKey(key)){
 			try{
-				BufferedImage image = ImageIO.read(new ByteArrayInputStream(Base64.decode((String)desc.get(key))));
-				this.imageCache.get(desc).put(key, image);
+				this.imageCache.get(desc).put(key, Base64.decode((String)desc.get(key)));
 			}catch(Exception e){
 				this.imageCache.get(desc).put(key, null);
 			}

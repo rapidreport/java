@@ -158,6 +158,15 @@ public class RenderUtil {
 	}
 
 	public static Color getColor(String v){
+		short[] c = getColorRGB(v);
+		if (c != null){
+			return new Color(c[0], c[1], c[2]);
+		}else{
+			return null;
+		}
+	}
+
+	public static short[] getColorRGB(String v){
 		if (v.startsWith("#") && v.length() == 7){
 			String _v = v.substring(1).toLowerCase();
 			for(int i = 0;i < 6;i++){
@@ -165,15 +174,14 @@ public class RenderUtil {
 					return null;
 				}
 			}
-			return new Color(
-					Integer.parseInt(_v.substring(0, 2), 16),
-					Integer.parseInt(_v.substring(2, 4), 16),
-					Integer.parseInt(_v.substring(4, 6), 16));
+			return new short[]{
+					Short.parseShort(_v.substring(0, 2), 16),
+					Short.parseShort(_v.substring(2, 4), 16),
+					Short.parseShort(_v.substring(4, 6), 16)};
 		}else{
 			Map<String, short[]> colorMap = getColorMap();
 			if (colorMap.containsKey(v)){
-				short[] c = colorMap.get(v);
-				return new Color(c[0], c[1], c[2]);
+				return colorMap.get(v);
 			}
 		}
 		return null;

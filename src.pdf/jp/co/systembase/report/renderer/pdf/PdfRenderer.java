@@ -109,16 +109,16 @@ public class PdfRenderer implements IRenderer {
 		if (!this.imageCache.containsKey(desc)){
 			this.imageCache.put(desc, new HashMap<String, Image>());
 		}
+		Image image = null;
 		if (desc.containsKey(key)){
 			try{
-				Image image = Image.getInstance(reportDesign.getImage(desc, key), null);
-				this.imageCache.get(desc).put(key, image);
-			}catch(Exception e){
-				this.imageCache.get(desc).put(key, null);
-			}
-		}else{
-			this.imageCache.get(desc).put(key, null);
+				byte[] b = reportDesign.getImageBytes(desc, key);
+				if (b != null){
+					image = Image.getInstance(b);
+				}
+			}catch(Exception e){}
 		}
+		this.imageCache.get(desc).put(key, image);
 	}
 
 }

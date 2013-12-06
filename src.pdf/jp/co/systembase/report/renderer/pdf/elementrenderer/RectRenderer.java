@@ -1,6 +1,5 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -152,9 +151,9 @@ public class RectRenderer implements IElementRenderer {
 		}
 		cb.setLineWidth(lw);
 		if (!design.isNull("color")){
-			Color c = RenderUtil.getColor((String)design.get("color"));
+			short[] c = RenderUtil.getColorRGB((String)design.get("color"));
 			if (c != null){
-				cb.setColorStroke(c);
+				cb.setRGBColorStroke(c[0], c[1], c[2]);
 			}
 		}
 		if (!design.isNull("line_pattern")){
@@ -190,9 +189,9 @@ public class RectRenderer implements IElementRenderer {
 
 	private boolean setupFill(PdfContentByte cb, ElementDesign d){
 		if (!d.isNull("fill_color")){
-			Color c = RenderUtil.getColor((String)d.get("fill_color"));
+			short[] c = RenderUtil.getColorRGB((String)d.get("fill_color"));
 			if (c != null){
-				cb.setColorFill(c);
+				cb.setRGBColorFill(c[0], c[1], c[2]);
 				return true;
 			}
 		}

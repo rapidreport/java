@@ -1,6 +1,5 @@
 package jp.co.systembase.report.renderer.pdf;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,10 +38,10 @@ public class PdfRenderUtil {
 		cb.saveState();
 		try{
 			if (textDesign.color != null){
-				Color c = RenderUtil.getColor(textDesign.color);
+				short[] c = RenderUtil.getColorRGB(textDesign.color);
 				if (c != null){
-					cb.setColorFill(c);
-					cb.setColorStroke(c);
+					cb.setRGBColorFill(c[0], c[1], c[2]);
+					cb.setRGBColorStroke(c[0], c[1], c[2]);
 				}
 			}
 			BaseFont font = renderer.setting.getFont(textDesign.font.name);

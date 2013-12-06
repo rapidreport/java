@@ -1,6 +1,5 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,9 @@ public class CircleRenderer implements IElementRenderer {
 			if (stroke){
 				cb.setLineWidth(lw);
 				if (!design.isNull("color")){
-					Color c = RenderUtil.getColor((String)design.get("color"));
+					short[] c = RenderUtil.getColorRGB((String)design.get("color"));
 					if (c != null){
-						cb.setColorStroke(c);
+						cb.setRGBColorStroke(c[0], c[1], c[2]);
 					}
 				}
 				if (!design.isNull("line_pattern")){
@@ -65,17 +64,17 @@ public class CircleRenderer implements IElementRenderer {
 					if (ls.equals("dot")){
 						cb.setLineDash(new float[]{1 * lw, 1 * lw}, 0);
 					}else if (ls.equals("dash")){
-						cb.setLineDash(new float[]{3, 1 * lw}, 0);
+						cb.setLineDash(new float[]{3 * lw, 1 * lw}, 0);
 					}else if (ls.equals("dashdot")){
 						cb.setLineDash(new float[]{3 * lw, 1 * lw, 1 * lw, 1 * lw}, 0);
 					}
 				}
 			}
 			if (!design.isNull("fill_color")){
-				Color c = RenderUtil.getColor((String)design.get("fill_color"));
+				short[] c = RenderUtil.getColorRGB((String)design.get("fill_color"));
 				if (c != null){
 					fill = true;
-					cb.setColorFill(c);
+					cb.setRGBColorFill(c[0], c[1], c[2]);
 				}
 			}
 			cb.ellipse(
