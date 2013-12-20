@@ -20,10 +20,11 @@ public class PdfRendererSetting {
 
 	public IElementRenderer dummyElementRenderer;
 	public BaseFont defaultFont;
-	public BaseFont gaijiFont;
+	public BaseFont gaijiFont = null;
 	public Map<String, IElementRenderer> elementRendererMap = new HashMap<String, IElementRenderer>();
 	public Map<String, BaseFont> fontMap = new HashMap<String, BaseFont>();
 	public boolean replaceBackslashToYen;
+	public static boolean skipInitialFontCreate = false;
 
 	public PdfRendererSetting(){
 		this.dummyElementRenderer = new DummyRenderer();
@@ -36,10 +37,14 @@ public class PdfRendererSetting {
 		this.elementRendererMap.put("image", new ImageRenderer());
 		this.elementRendererMap.put("subpage", new SubPageRenderer());
 		try {
-			this.defaultFont = BaseFont.createFont("HeiseiKakuGo-W5", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED);
-			this.gaijiFont = null;
-			this.fontMap.put("gothic", this.defaultFont);
-			this.fontMap.put("mincho", BaseFont.createFont("HeiseiMin-W3", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
+			if (!skipInitialFontCreate){
+				this.defaultFont = BaseFont.createFont("HeiseiKakuGo-W5", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED);
+				this.fontMap.put("gothic", this.defaultFont);
+				this.fontMap.put("mincho", BaseFont.createFont("HeiseiMin-W3", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
+			}
+			else{
+				this.defaultFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
