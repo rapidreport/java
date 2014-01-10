@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jp.co.systembase.report.Report;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.renderer.RenderUtil;
@@ -47,6 +48,9 @@ public class PdfRenderUtil {
 			BaseFont font = renderer.setting.getFont(textDesign.font.name);
 			if (textDesign.font.bold){
 				cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE);
+				if (!Report.Compatibility._4_6_PdfFontBold){
+					cb.setLineWidth(textDesign.font.size * 0.01f);
+                }
 			}else{
 				cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
 			}

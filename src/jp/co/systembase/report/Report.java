@@ -67,6 +67,10 @@ public class Report {
 		NO_SPLIT
 	}
 
+	public static class Compatibility{
+		public static boolean _4_6_PdfFontBold = false;
+	}
+
 	public ReportDesign design;
 	public IReportCustomizer customizer;
 	public ReportData data = null;
