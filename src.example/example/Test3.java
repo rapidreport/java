@@ -6,11 +6,15 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 //import com.lowagie.text.pdf.BaseFont;
 
+
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.data.DummyDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
+import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
 public class Test3 {
 
@@ -41,6 +45,18 @@ public class Test3 {
 				fos.close();
 			}
 		}
+		{
+			FileOutputStream fos = new FileOutputStream("output/test3.xlsx");
+			try{
+				XSSFWorkbook workBook = new XSSFWorkbook();
+				XlsxRenderer renderer = new XlsxRenderer(workBook);
+				renderer.newSheet("test3");
+				pages.render(renderer);
+				workBook.write(fos);
+			}finally{
+				fos.close();
+			}
+		}		
 	}
 
 }

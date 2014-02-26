@@ -1,0 +1,15 @@
+package jp.co.systembase.report.renderer.xlsx.elementrenderer;
+
+import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.component.ElementDesign;
+import jp.co.systembase.report.component.Region;
+import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
+
+public interface IElementRenderer {
+	void collect(
+			XlsxRenderer renderer,
+			ReportDesign reportDesign,
+			Region region,
+			ElementDesign design,
+			Object data) throws Throwable;
+}

@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import jp.co.systembase.core.DataTable;
 import jp.co.systembase.report.Report;
@@ -17,6 +18,8 @@ import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.pdf.imageloader.PdfImageLoader;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xls.imageloader.XlsImageLoader;
+import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
+import jp.co.systembase.report.renderer.xlsx.imageloader.XlsxImageLoader;
 
 public class Example1 {
 
@@ -50,6 +53,19 @@ public class Example1 {
 				fos.close();
 			}
 		}
+		{
+			FileOutputStream fos = new FileOutputStream("output/example1.xlsx");
+			try{
+				XSSFWorkbook workBook = new XSSFWorkbook();
+				XlsxRenderer renderer = new XlsxRenderer(workBook);
+				renderer.imageLoaderMap.put("image", new XlsxImageLoader(imageMap));
+				renderer.newSheet("example1");
+				pages.render(renderer);
+				workBook.write(fos);
+			}finally{
+				fos.close();
+			}
+		}		
 	}
 
 	private static DataTable getDataTable(){

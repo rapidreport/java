@@ -3,6 +3,7 @@ package example;
 import java.io.FileOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import jp.co.systembase.core.DataTable;
 import jp.co.systembase.report.Report;
@@ -11,6 +12,7 @@ import jp.co.systembase.report.data.ReportDataSource;
 import jp.co.systembase.report.data.SubPageDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
+import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
 public class ExampleSubPage {
 
@@ -18,12 +20,10 @@ public class ExampleSubPage {
 		Report subReport = new Report(ReadUtil.readJson("report/example_subpage2.rrpt"));
 		subReport.fill(new ReportDataSource(getDataTable()));
 		ReportPages subPages = subReport.getPages();
-
 		Report report = new Report(ReadUtil.readJson("report/example_subpage1.rrpt"));
 		report.addSubPages("subpage", subPages);
 		report.fill(new SubPageDataSource(subPages, "group1", "page1", "page2"));
 		ReportPages pages = report.getPages();
-
 		{
 			FileOutputStream fos = new FileOutputStream("output/example_subpage.pdf");
 			try{
@@ -33,7 +33,6 @@ public class ExampleSubPage {
 				fos.close();
 			}
 		}
-
 		{
 			FileOutputStream fos = new FileOutputStream("output/example_subpage.xls");
 			try{
@@ -46,6 +45,18 @@ public class ExampleSubPage {
 				fos.close();
 			}
 		}
+		{
+			FileOutputStream fos = new FileOutputStream("output/example_subpage.xlsx");
+			try{
+				XSSFWorkbook workBook = new XSSFWorkbook();
+				XlsxRenderer renderer = new XlsxRenderer(workBook);
+				renderer.newSheet("example_subpage");
+				pages.render(renderer);
+				workBook.write(fos);
+			}finally{
+				fos.close();
+			}
+		}		
 	}
 
 	private static DataTable getDataTable(){

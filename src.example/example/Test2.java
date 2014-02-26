@@ -3,6 +3,7 @@ package example;
 import java.io.FileOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import jp.co.systembase.core.DataTable;
 import jp.co.systembase.report.Report;
@@ -10,6 +11,7 @@ import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.data.ReportDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
+import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
 
 public class Test2 {
@@ -38,6 +40,18 @@ public class Test2 {
 				fos.close();
 			}
 		}
+		{
+			FileOutputStream fos = new FileOutputStream("output/test2.xlsx");
+			try{
+				XSSFWorkbook workBook = new XSSFWorkbook();
+				XlsxRenderer renderer = new XlsxRenderer(workBook);
+				renderer.newSheet("test2");
+				pages.render(renderer);
+				workBook.write(fos);
+			}finally{
+				fos.close();
+			}
+		}		
 	}
 
 	private static DataTable getDataTable(){

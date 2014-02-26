@@ -1,29 +1,34 @@
 <?xml version="1.0" ?>
 <project default="main">
 
-	<property name="version" value="4.7" />
+	<property name="version" value="4.8" />
 
 	<property name="src_report" value="src" />
 	<property name="src_pdf" value="src.pdf" />
 	<property name="src_xls" value="src.xls" />
+	<property name="src_xlsx" value="src.xlsx" />
 
 	<property name="class_report" value="build/report.classes" />
 	<property name="class_pdf" value="build/pdf.classes" />
 	<property name="class_xls" value="build/xls.classes" />
+	<property name="class_xlsx" value="build/xlsx.classes" />
 
 	<property name="target_report" value="build/systembase.report-${version}.jar" />
 	<property name="target_pdf" value="build/systembase.report.pdf-${version}.jar" />
 	<property name="target_xls" value="build/systembase.report.xls-${version}.jar" />
+	<property name="target_xlsx" value="build/systembase.report.xlsx-${version}.jar" />
 
 	<property name="sb_core" value="lib/systembase.core-1.6.jar" />
 	<property name="itext" value="lib/iText-2.1.7.jar" />
 	<property name="zxing_core" value="lib/zxing.core-2.0.jar" />
 	<property name="zxing" value="lib/zxing.javase-2.0.jar" />
-	<property name="poi" value="lib/poi-3.9-20121203.jar" />
+	<property name="poi" value="lib/poi-3.10-FINAL-20140208.jar" />
+	<property name="poi_ooxml" value="lib/poi-ooxml-3.10-FINAL-20140208.jar" />
+	<property name="poi_ooxml_schemas" value="lib/poi-ooxml-schemas-3.10-FINAL-20140208.jar" />
 	<property name="barcode" value="lib/systembase.barcode-1.2.jar" />
 	<property name="jsonic" value="lib/jsonic-1.3.0.jar" />
 
-	<target name="main" depends="compile_report, compress_report, compile_pdf, compress_pdf, compile_xls, compress_xls"/>
+	<target name="main" depends="compile_report, compress_report, compile_pdf, compress_pdf, compile_xls, compress_xls, compile_xlsx, compress_xlsx"/>
 
 	<target name="compile_report">
 		<mkdir dir="${class_report}" />
@@ -72,6 +77,23 @@
 			<fileset dir="${src_xls}"/>
 		</copy>
 	</target>
+	
+	<target name="compile_xlsx" depends="compile_report, compress_report">
+		<mkdir dir="${class_xlsx}" />
+		<javac srcdir="${src_xlsx}"
+		       destdir="${class_xlsx}"
+		       classpath="${sb_core};${poi};${poi_ooxml};${poi_ooxml_schemas};${barcode};${zxing_core};${zxing};${target_report}"
+		       encoding="UTF-8"
+		       verbose="off"
+		       debug="true"
+		       target="1.5"
+		       debuglevel="lines"
+		       includeantruntime="false"/>
+		<copy todir="${class_xlsx}">
+			<fileset dir="${src_xlsx}"/>
+		</copy>
+	</target>
+	
 	<target name="compress_report">
 		<jar jarfile="${target_report}" basedir="${class_report}"/>
 	</target>
@@ -84,6 +106,10 @@
 		<jar jarfile="${target_xls}" basedir="${class_xls}"/>
 	</target>
 
+	<target name="compress_xlsx">
+		<jar jarfile="${target_xlsx}" basedir="${class_xlsx}"/>
+	</target>
+
 	<target name="clean">
 		<delete dir="${class_report}" />
 		<delete dir="${class_pdf}" />
@@ -91,6 +117,7 @@
 		<delete file="${target_report}" />
 		<delete file="${target_pdf}" />
 		<delete file="${target_xls}" />
+		<delete file="${target_xlsx}" />
 	</target>
 
 </project>

@@ -7,8 +7,10 @@ import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.data.DummyDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
+import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Test5 {
 
@@ -36,6 +38,18 @@ public class Test5 {
 				fos.close();
 			}
 		}
+		{
+			FileOutputStream fos = new FileOutputStream("output/test5.xlsx");
+			try{
+				XSSFWorkbook workBook = new XSSFWorkbook();
+				XlsxRenderer renderer = new XlsxRenderer(workBook);
+				renderer.newSheet("test5");
+				pages.render(renderer);
+				workBook.write(fos);
+			}finally{
+				fos.close();
+			}
+		}		
 	}
 
 }
