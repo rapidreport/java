@@ -163,15 +163,17 @@ public class XlsRenderer implements IRenderer {
 		if (image == null){
 			return 0;
 		}
-		try{
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ImageIO.write(image, "png", bos);
-			int index = workbook.addPicture(
-					bos.toByteArray(),
-					HSSFWorkbook.PICTURE_TYPE_PNG);
-			this.imagePool.put(image, index);
-		}catch(Exception e){
-			return 0;
+		if (!this.imagePool.containsKey(image)){
+			try{
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ImageIO.write(image, "png", bos);
+				int index = workbook.addPicture(
+						bos.toByteArray(),
+						HSSFWorkbook.PICTURE_TYPE_PNG);
+				this.imagePool.put(image, index);
+			}catch(Exception e){
+				return 0;
+			}
 		}
 		return this.imagePool.get(image);
 	}
