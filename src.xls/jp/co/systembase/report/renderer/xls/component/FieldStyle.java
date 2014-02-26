@@ -4,8 +4,6 @@ import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.record.ExtendedFormatRecord;
-
 
 public class FieldStyle {
 
@@ -53,13 +51,7 @@ public class FieldStyle {
 			cellStyle.setWrapText(true);
 		}
 		if (this.textDesign.shrinkToFit){
-			Class<HSSFCellStyle> c = HSSFCellStyle.class;
-			java.lang.reflect.Field f;
-			try {
-				f = c.getDeclaredField("_format");
-				f.setAccessible(true);
-				((ExtendedFormatRecord)f.get(cellStyle)).setShrinkToFit(true);
-			} catch (Exception e) {}
+			cellStyle.setShrinkToFit(true);
 		}
 		if (this.textDesign.vertical){
 			cellStyle.setRotation((short)0xff);
