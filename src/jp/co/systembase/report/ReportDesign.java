@@ -26,6 +26,7 @@ public class ReportDesign {
 	public Map<String, String> customFields;
 	public List<String> customFieldsKeyList;
 	public GroupDesign groupDesign;
+	public String memo;
 
 	private Map<Map<?, ?>, Map<String, byte[]>> imageCache =
 		new HashMap<Map<?, ?>, Map<String, byte[]>>();
@@ -73,6 +74,7 @@ public class ReportDesign {
 			this.customFields = null;
 			this.customFieldsKeyList = null;
 		}
+		this.memo = (String)desc.get("memo");
 	}
 
 	public void loadSubDesc(){
