@@ -62,7 +62,7 @@ public class BarcodeRenderer implements IElementRenderer {
 			if (this.code == null){
 				return;
 			}
-			int scale = 5;
+			int scale = 10;
 			int width = (int)(shape.region.getWidth() * scale);
 			int height = (int)(shape.region.getHeight() * scale);
 			if (width == 0 || height == 0) {
@@ -156,10 +156,12 @@ public class BarcodeRenderer implements IElementRenderer {
 					BitMatrix bm =  w.encode(this.code, BarcodeFormat.QR_CODE, 0, 0, h);
 					int mw = image.getWidth() / bm.getWidth();
 					int mh = image.getHeight() / bm.getHeight();
+					int mgw = (image.getWidth() - (mw * bm.getWidth())) / 2;
+					int mgh = (image.getHeight() - (mh * bm.getHeight())) / 2;
 					for(int y = 0;y < bm.getHeight();y++){
 						for(int x = 0;x < bm.getWidth();x++){
 							if (bm.get(x, y)){
-								g.fillRect(x * mw, y * mh, mw, mh);
+								g.fillRect(mgw + x * mw, mgh + y * mh, mw, mh);
 							}
 						}
 					}
