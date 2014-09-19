@@ -94,29 +94,35 @@ public class PdfRenderUtil {
 			BaseFont font,			
 			String text){
 		float fontSize = textDesign.font.size;
+		List<String> texts = splitByCr(region, textDesign, text, false);
 		float y = 0;
 		switch(textDesign.valign){
 		case TOP:
 			y = 0;
 			break;
 		case CENTER:
-			y = (region.getHeight() - fontSize) / 2;
+			y = (region.getHeight() - (fontSize * texts.size())) / 2;
+			y = Math.max(y, 0);
 			break;
 		case BOTTOM:
-			y = region.getHeight() - fontSize - MARGIN_BOTTOM;
+			y = region.getHeight() - (fontSize * texts.size()) - MARGIN_BOTTOM;
+			y = Math.max(y, 0);
 			break;
 		}
 		y += OFFSET_Y;
-		{
-			List<Float> m  = getDistributeMap(region.getWidth() - MARGIN_X * 2, text.length(), fontSize);
+		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
+		for(int i = 0;i < Math.min(texts.size(), rows);i++){
+			String t = texts.get(i);
+			List<Float> m  = getDistributeMap(region.getWidth() - MARGIN_X * 2, t.length(), fontSize);
             cb.setFontAndSize(font, fontSize);
             cb.beginText();
-            for(int i = 0;i < text.length();i++){
-            	String c = text.substring(i, i + 1);
+            for(int j = 0;j < t.length();j++){
+            	String c = t.substring(j, j + 1);
                 showText(cb, region, setting, trans, textDesign, font, fontSize, c,
-                              m.get(i) - getTextWidth(setting, textDesign, font, fontSize, c) / 2 + MARGIN_X, y);
+                              m.get(j) - getTextWidth(setting, textDesign, font, fontSize, c) / 2 + MARGIN_X, y);
             }
             cb.endText();
+            y += fontSize;
         }
 		if (textDesign.font.underline){
 			drawUnderline(cb, region, trans, fontSize, MARGIN_X, y, region.getWidth() - MARGIN_X * 2);
@@ -132,30 +138,38 @@ public class PdfRenderUtil {
 			BaseFont font,
 			String text){
 		float fontSize = textDesign.font.size;
+		List<String> texts = splitByCr(region, textDesign, text, false);
 		float x = 0;
 		switch(textDesign.halign){
 		case LEFT:
-			x = fontSize / 2 + MARGIN_X;
+			x = fontSize * (texts.size() - 1) + fontSize / 2 + MARGIN_X;
+			x = Math.min(x, region.getWidth() - fontSize / 2 - MARGIN_X);
 			break;
 		case CENTER:
-			x = region.getWidth() / 2;
+			x = (region.getWidth() + (texts.size() - 1) * fontSize) / 2;
+			x = Math.min(x, region.getWidth() - fontSize / 2 - MARGIN_X);
 			break;
 		case RIGHT:
 			x = region.getWidth() - fontSize / 2 - MARGIN_X;
 			break;
 		}
-        if (textDesign.font.underline){
-        	drawVerticalUnderLine(cb, region, trans, fontSize, x + fontSize / 2, 0, region.getHeight());
-        }
-		{
-			List<Float> m = getDistributeMap(region.getHeight() - MARGIN_BOTTOM, text.length(), fontSize);
-			cb.setFontAndSize(font, fontSize);
-			cb.beginText();
-			for(int i = 0;i < text.length();i++){
-				showVerticalChar(cb, region, setting, trans, textDesign, font, fontSize, text.substring(i, i + 1),
-						x, m.get(i) - fontSize / 2 + OFFSET_Y);
-            }
-            cb.endText();
+		int cols = (int)(((region.getWidth() - MARGIN_X * 2) + TOLERANCE) / fontSize);
+		for(int i = 0;i < Math.max(Math.min(texts.size(), cols), 1);i++){
+			String t = texts.get(i);
+			if (textDesign.font.underline){
+	        	drawVerticalUnderLine(cb, region, trans, fontSize, x + fontSize / 2, 0, region.getHeight());
+	        }
+			{
+				List<Float> m = getDistributeMap(region.getHeight() - MARGIN_BOTTOM, t.length(), fontSize);
+				cb.setFontAndSize(font, fontSize);
+				cb.beginText();
+				for(int j = 0;j < t.length();j++){
+					showVerticalChar(cb, region, setting, trans, textDesign, font, fontSize, t.substring(j, j + 1),
+							x, m.get(j) - fontSize / 2 + OFFSET_Y);
+	            }
+	            cb.endText();
+			}
+			x -= fontSize;
 		}
 	}
 
@@ -167,7 +181,7 @@ public class PdfRenderUtil {
 			TextDesign textDesign,
 			BaseFont font,
 			String text){
-		List<String> texts = splitVerticalText(region, textDesign, text, false);
+		List<String> texts = splitByCr(region, textDesign, text, false);
 		_drawText_vertical_aux(cb, region, setting, trans, textDesign, font, textDesign.font.size, texts);
 	}
 
@@ -180,7 +194,7 @@ public class PdfRenderUtil {
 			BaseFont font,
 			String text){
 		float fontSize = textDesign.font.size;
-		List<String> texts = splitVerticalText(region, textDesign, text, false);
+		List<String> texts = splitByCr(region, textDesign, text, false);
 		{
 			int m = 0;
 			for(String t: texts){
@@ -204,7 +218,7 @@ public class PdfRenderUtil {
 			TextDesign textDesign,
 			BaseFont font,
 			String text){
-		List<String> texts = splitVerticalText(region, textDesign, text, true);
+		List<String> texts = splitByCr(region, textDesign, text, true);
 		_drawText_vertical_aux(cb, region, setting, trans, textDesign, font, textDesign.font.size, texts);
 	}
 
@@ -615,7 +629,7 @@ public class PdfRenderUtil {
 		return ret;
 	}
 
-	private static List<String> splitVerticalText(
+	private static List<String> splitByCr(
 			Region region,
 			TextDesign textDesign,
 			String text,
