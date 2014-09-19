@@ -24,7 +24,8 @@ public class PdfRendererSetting {
 	public Map<String, IElementRenderer> elementRendererMap = new HashMap<String, IElementRenderer>();
 	public Map<String, BaseFont> fontMap = new HashMap<String, BaseFont>();
 	public boolean replaceBackslashToYen;
-	public static boolean skipInitialFontCreate = false;
+	public float shrinkFontSizeMin;
+	public static boolean skipInitialFontCreate = false;	
 
 	public PdfRendererSetting(){
 		this.dummyElementRenderer = new DummyRenderer();
@@ -49,6 +50,7 @@ public class PdfRendererSetting {
 			e.printStackTrace();
 		}
 		this.replaceBackslashToYen = false;
+		this.shrinkFontSizeMin = 4.0f;
 	}
 
 	public IElementRenderer getElementRenderer(String key){
