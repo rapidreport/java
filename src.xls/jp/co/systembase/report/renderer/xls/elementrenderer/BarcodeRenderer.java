@@ -102,6 +102,9 @@ public class BarcodeRenderer implements IElementRenderer {
 					if (!design.isNull("codabar_startstop_code")){
 						ss = (String)design.get("codabar_startstop_code");
 					}
+					if (Cast.toBool(design.get("codabar_startstop_show"))){
+						barcode.withStartStopText = true;
+					}
 					barcode.render(g, 0, 0, image.getWidth(), image.getHeight(), ss + this.code + ss);
 				} else if (type != null && type.equals("itf")) {
 					Itf barcode = new Itf();
