@@ -8,7 +8,7 @@ import jp.co.systembase.report.renderer.RenderUtil;
 
 public class ColorUtil {
 
-	public static byte[] getTriplet(String v){
+	public static short[] getTriplet(String v){
 		if (v.startsWith("#") && v.length() == 7){
 			String _v = v.substring(1).toLowerCase();
 			for(int i = 0;i < 6;i++){
@@ -16,26 +16,26 @@ public class ColorUtil {
 					return null;
 				}
 			}
-			return new byte[] {
-					Byte.parseByte(_v.substring(0, 2), 16),
-					Byte.parseByte(_v.substring(2, 4), 16),
-					Byte.parseByte(_v.substring(4, 6), 16)};
+			return new short[] {
+					Short.parseShort(_v.substring(0, 2), 16),
+					Short.parseShort(_v.substring(2, 4), 16),
+					Short.parseShort(_v.substring(4, 6), 16)};
 		}else{
 			Map<String, short[]> colorMap = RenderUtil.getColorMap();
 			if (colorMap.containsKey(v)){
-				return new byte[] {
-						(byte)colorMap.get(v)[0],
-						(byte)colorMap.get(v)[1],
-						(byte)colorMap.get(v)[2]};
+				return new short[] {
+						colorMap.get(v)[0],
+						colorMap.get(v)[1],
+						colorMap.get(v)[2]};
 			}
 		}
 		return null;
 	}
 
 	public static XSSFColor getColor(String v){
-		byte t[] = getTriplet(v);
-		if (t != null){
-			return new XSSFColor(t);
+		short t[] = getTriplet(v);
+		if (t != null){			
+			return new XSSFColor(new byte[] {(byte)t[0], (byte)t[1], (byte)t[2]});
 		}else{
 			return null;
 		}

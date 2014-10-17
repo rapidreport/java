@@ -56,7 +56,7 @@ public class CircleRenderer implements IElementRenderer {
 				sp.setLineStyleColor(0, 0, 0);
 				sp.setLineWidth(lineWidth);
 				if (!this.design.isNull("color")){
-					byte[] t = ColorUtil.getTriplet((String)this.design.get("color"));
+					short[] t = ColorUtil.getTriplet((String)this.design.get("color"));
 					if (t != null){
 						sp.setLineStyleColor(t[0], t[1], t[2]);
 					}
@@ -73,7 +73,7 @@ public class CircleRenderer implements IElementRenderer {
 				}
 			}
 			if (!this.design.isNull("fill_color")){
-				byte[] t = ColorUtil.getTriplet((String)this.design.get("fill_color"));
+				short[] t = ColorUtil.getTriplet((String)this.design.get("fill_color"));
 				if (t != null){
 					sp.setFillColor(t[0], t[1], t[2]);
 				}
