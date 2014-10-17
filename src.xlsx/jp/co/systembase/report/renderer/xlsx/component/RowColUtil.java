@@ -16,7 +16,7 @@ public class RowColUtil {
 		int last = 0;
 		for(int i = 1;i < cols.size();i++){
 			int t = (int)(cols.get(i) * coefficent);
-			ret.add((int)((t - last) * 36.55));
+			ret.add((int)((t - last) * 36.3));
 			last = t;
 		}
 		return ret;
