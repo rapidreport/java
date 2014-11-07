@@ -111,7 +111,7 @@ public class PdfRenderUtil {
 		}
 		y += OFFSET_Y;
 		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
-		for(int i = 0;i < Math.min(texts.size(), rows);i++){
+		for(int i = 0;i < Math.max(Math.min(texts.size(), rows), 1);i++){
 			String t = texts.get(i);
 			List<Float> m  = getDistributeMap(region.getWidth() - MARGIN_X * 2, t.length(), fontSize);
             cb.setFontAndSize(font, fontSize);
