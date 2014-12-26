@@ -25,8 +25,9 @@ public class PdfRendererSetting {
 	public Map<String, BaseFont> fontMap = new HashMap<String, BaseFont>();
 	public boolean replaceBackslashToYen;
 	public float shrinkFontSizeMin;
-	public static boolean skipInitialFontCreate = false;	
-
+	public float underlineWidthCoefficent = 1.0f;
+	public static boolean skipInitialFontCreate = false;
+	
 	public PdfRendererSetting(){
 		this.dummyElementRenderer = new DummyRenderer();
 		this.elementRendererMap.put("rect", new RectRenderer());
