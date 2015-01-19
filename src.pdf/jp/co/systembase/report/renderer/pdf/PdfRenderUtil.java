@@ -125,7 +125,7 @@ public class PdfRenderUtil {
             y += fontSize;
         }
 		if (textDesign.font.underline){
-			float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficent;
+			float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficient;
 			drawUnderline(cb, region, trans, fontSize, MARGIN_X, y, region.getWidth() - MARGIN_X * 2, lw);
 		}
 	}
@@ -158,7 +158,7 @@ public class PdfRenderUtil {
 		for(int i = 0;i < Math.max(Math.min(texts.size(), cols), 1);i++){
 			String t = texts.get(i);
 			if (textDesign.font.underline){
-				float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficent;
+				float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficient;
 	        	drawVerticalUnderLine(cb, region, trans, fontSize, x + fontSize / 2, 0, region.getHeight(), lw);
 	        }
 			{
@@ -356,7 +356,7 @@ public class PdfRenderUtil {
 			showText(cb, region, setting, trans, textDesign, font, fontSize, t, x, y);
 			cb.endText();
 			if (textDesign.font.underline){
-				float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficent;
+				float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficient;
 				drawUnderline(cb, region, trans, fontSize, x, y, w, lw);
 			}
 			y += fontSize;
@@ -407,7 +407,7 @@ public class PdfRenderUtil {
 			y += OFFSET_Y;
 			int _yc = Math.min(t.length(), rows);
 			if (textDesign.font.underline){
-				float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficent;
+				float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficient;
 				drawVerticalUnderLine(cb, region, trans, fontSize, x + fontSize / 2, y, _yc * fontSize, lw);
 			}
 			cb.setFontAndSize(font, fontSize);
@@ -510,7 +510,7 @@ public class PdfRenderUtil {
 				}
 				cb.endText();
 				if (textDesign.font.underline){
-					float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficent;
+					float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficient;
 					drawUnderline(cb, region, trans, fontSize, x, y, fw, lw);
 				}
 			}
