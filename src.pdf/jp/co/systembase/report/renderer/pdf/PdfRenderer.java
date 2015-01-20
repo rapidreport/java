@@ -57,6 +57,7 @@ public class PdfRenderer implements IRenderer {
 		this.setting = setting;
 		this.document = new Document();
 		this.writer = PdfWriter.getInstance(this.document, os);
+		this.writer.createXmpMetadata();
 		this.writer.addViewerPreference(PdfName.PRINTSCALING, PdfName.NONE);
 	}
 

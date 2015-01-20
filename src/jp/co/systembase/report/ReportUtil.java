@@ -188,7 +188,7 @@ public class ReportUtil {
 		}
 	}
 
-	private static int getWIndex(String str, int base, int w){
+	public static int getWIndex(String str, int base, int w){
 		int _w = 0;
 		for(int i = base;i < str.length();i++){
 			char c = str.charAt(i);
@@ -204,7 +204,7 @@ public class ReportUtil {
 		return str.length();
 	}
 
-	private static int getWRevIndex(String str, int base, int w){
+	public static int getWRevIndex(String str, int base, int w){
 		int _w = 0;
 		for(int i = base - 1;i >= 0;i--){
 			char c = str.charAt(i);
