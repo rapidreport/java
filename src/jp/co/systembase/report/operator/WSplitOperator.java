@@ -19,13 +19,21 @@ public class WSplitOperator implements IOperator {
 		}
 		int w = Cast.toInt(evaluator.eval(params.get(1)));
 		int i = Cast.toInt(evaluator.eval(params.get(2)));
-		int b = 0;
-		int e = 0;
-		for(int j = 0;j <= i;j++){
-			b = e;
-			e = ReportUtil.getWIndex(str, b, w);
+		int j = 0;
+		for(String t: str.split("\n")){
+			t = t.replace("\r", "");
+			int b = 0;
+			int e = 0;
+			do{
+				b = e;
+				e = ReportUtil.getWIndex(t, b, w);
+				if (j == i){
+					return ReportUtil.subString(t, b, e - b);
+				}
+				j++;
+			}while(e < t.length());
 		}
-		return ReportUtil.subString(str, b, e - b);
+		return null;
 	}
 
 }
