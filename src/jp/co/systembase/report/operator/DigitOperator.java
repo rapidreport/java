@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import jp.co.systembase.core.Cast;
+import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.Evaluator;
 import jp.co.systembase.report.expression.IExpression;
 
@@ -15,6 +16,10 @@ public class DigitOperator implements IOperator {
 		evaluator.ValidateParamCount(params, 2);
 		BigDecimal v = Cast.toBigDecimal(evaluator.eval(params.get(0)));
 		int d = Cast.toInt(evaluator.eval(params.get(1)));
+		String ns = null;
+		if (params.size() >= 3){
+			ns = ReportUtil.objectToString(evaluator.eval(params.get(2)));
+		}
 		if (v != null){
 			String _v = v.toPlainString();
 			int l = _v.length();
@@ -25,7 +30,12 @@ public class DigitOperator implements IOperator {
 			}else if (j >= l){
 				return "0";
 			}else{
-				return _v.substring(j, j + 1);
+				String c = _v.substring(j, j + 1);
+				if (ns != null && c.equals("-")){
+					return ns;
+				}else{
+					return c;
+				}
 			}			
 		}else{
 			return null;
