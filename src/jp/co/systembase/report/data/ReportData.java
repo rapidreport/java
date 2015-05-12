@@ -405,7 +405,10 @@ public class ReportData implements IReportDataSource {
 								o = this.dataSource.get(_i, key);
 							}
 							if (o != null){
-								_summary = _summary.add(Cast.toBigDecimal(o));
+								BigDecimal _o = Cast.toBigDecimal(o);
+								if (_o != null){
+									_summary = _summary.add(_o);
+								}
 								_count++;
 							}
 						}
@@ -448,7 +451,10 @@ public class ReportData implements IReportDataSource {
 						o = this.dataSource.get(i + this.beginIndex, key);
 					}
 					if (o != null){
-						summary = summary.add(Cast.toBigDecimal(o));
+						BigDecimal _o = Cast.toBigDecimal(o);
+						if (_o != null){
+							summary = summary.add(_o);
+						}
 						count++;
 					}
 				}
