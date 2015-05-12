@@ -122,12 +122,12 @@ public class PdfRenderUtil {
                               m.get(j) - getTextWidth(setting, textDesign, font, fontSize, c) / 2 + MARGIN_X, y);
             }
             cb.endText();
+            if (textDesign.font.underline){
+    			float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficient;
+    			drawUnderline(cb, region, trans, fontSize, MARGIN_X, y, region.getWidth() - MARGIN_X * 2, lw);
+    		}
             y += fontSize;
         }
-		if (textDesign.font.underline){
-			float lw = (fontSize / 13.4f) * setting.underlineWidthCoefficient;
-			drawUnderline(cb, region, trans, fontSize, MARGIN_X, y, region.getWidth() - MARGIN_X * 2, lw);
-		}
 	}
 
 	public static void _drawText_distribute_vertical(
