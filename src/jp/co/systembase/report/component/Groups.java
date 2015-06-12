@@ -34,6 +34,10 @@ public class Groups {
 	public void fill(ReportData data){
 		this.groups = new ArrayList<Group>();
 		ReportData _data = data;
+		if (this.design.blankData){
+			_data = new ReportData(BlankDataSource.getInstance(),
+					_data.report, _data.group);
+		}
 		if (this.report.groupDataProvider != null){
 			IReportDataSource dataSource =
 				this.report.groupDataProvider.getGroupDataSource(this, data);
@@ -41,10 +45,6 @@ public class Groups {
 				_data = new ReportData(dataSource, data.report, data.group);
 				this.dataOverridden = true;
 			}
-		}
-		if (!this.dataOverridden && this.design.blankData){
-			_data = new ReportData(BlankDataSource.getInstance(),
-					_data.report, _data.group);
 		}
 		if (this.design.sortKeys != null){
 			_data = new ReportData(
