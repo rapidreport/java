@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.co.systembase.report.Report;
+import jp.co.systembase.report.data.BlankDataSource;
 import jp.co.systembase.report.data.DummyDataSource;
 import jp.co.systembase.report.data.IReportDataSource;
 import jp.co.systembase.report.data.ReportData;
@@ -40,6 +41,10 @@ public class Groups {
 				_data = new ReportData(dataSource, data.report, data.group);
 				this.dataOverridden = true;
 			}
+		}
+		if (!this.dataOverridden && this.design.blankData){
+			_data = new ReportData(BlankDataSource.getInstance(),
+					_data.report, _data.group);
 		}
 		if (this.design.sortKeys != null){
 			_data = new ReportData(

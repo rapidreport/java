@@ -16,6 +16,7 @@ public class ContentDesign {
 	public ContentSizeDesign size;
 	public boolean aggregateSrc;
 	public boolean everyPage;
+	public String existenceCond;
 	public String visibilityCond;
 	public boolean unbreakable;
 	public int weight;
@@ -56,6 +57,7 @@ public class ContentDesign {
 		}
 		this.aggregateSrc = Cast.toBool(desc.get("aggregate_src"));
 		this.everyPage = Cast.toBool(desc.get("every_page"));
+		this.existenceCond = (String)desc.get("existence_cond");
 		this.visibilityCond = (String)desc.get("visibility_cond");
 		this.unbreakable = Cast.toBool(desc.get("unbreakable"));
 		this.weight = Cast.toInt(desc.get("weight"));

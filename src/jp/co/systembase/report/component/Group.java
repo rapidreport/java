@@ -7,6 +7,7 @@ import java.util.Map;
 
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportUtil;
+import jp.co.systembase.report.data.DummyDataSource;
 import jp.co.systembase.report.data.ReportData;
 import jp.co.systembase.report.scanner.IScanner;
 
@@ -31,9 +32,21 @@ public class Group {
 		this.data.setGroup(this);
 		this.contents = new ArrayList<Content>();
 		for(ContentDesign cd: this.getDesign().contentDesigns){
+			if (cd.existenceCond != null){
+				Evaluator evaluator = new Evaluator(this.getReport(), this.data, this.data.getRecord());
+				if (!ReportUtil.condition(evaluator.evalTry(cd.existenceCond))){
+					continue;
+				}
+			}
 			Content c = new Content(cd, this);
 			this.contents.add(c);
 			c.fill(this.data);
+		}
+		if (this.contents.size() == 0){
+			ContentDesign cd = new ContentDesign(new HashMap<Object, Object>(), this.getDesign());
+			Content c = new Content(cd, this);
+			this.contents.add(c);
+			c.fill(new ReportData(DummyDataSource.getInstance(), this));
 		}
 	}
 

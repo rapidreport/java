@@ -20,6 +20,7 @@ public class GroupDesign {
 	public List<String> keys;
 	public boolean detail;
 	public int maxCount;
+	public boolean blankData;
 	public boolean pageBreak;
 	public boolean resetPageCount;
 	public List<String> sortKeys;
@@ -67,6 +68,7 @@ public class GroupDesign {
 		this.dataSource = (String)desc.get("data_source");
 		this.detail = Cast.toBool(desc.get("detail"));
 		this.maxCount = Cast.toInt(desc.get("max_count"));
+		this.blankData = Cast.toBool(desc.get("blank_data"));
 		this.pageBreak = Cast.toBool(desc.get("page_break"));
 		this.resetPageCount = Cast.toBool(desc.get("reset_page_count"));
 		if (desc.containsKey("sort_keys")){
