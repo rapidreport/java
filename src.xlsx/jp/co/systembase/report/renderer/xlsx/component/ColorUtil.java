@@ -34,8 +34,12 @@ public class ColorUtil {
 
 	public static XSSFColor getColor(String v){
 		short t[] = getTriplet(v);
-		if (t != null){			
-			return new XSSFColor(new byte[] {(byte)t[0], (byte)t[1], (byte)t[2]});
+		if (t != null){
+			if (t[0] == 255 && t[1] == 255 && t[2] == 255){
+				return new XSSFColor(new byte[] {-2, -2, -2});
+			}else{
+				return new XSSFColor(new byte[] {(byte)t[0], (byte)t[1], (byte)t[2]});
+			}
 		}else{
 			return null;
 		}
