@@ -92,12 +92,8 @@ public class ReportPage {
 		Map<ContentInstance, Evaluator> evaluatorMap = new HashMap<ContentInstance, Evaluator>();
 		Map<ContentInstance, Boolean> elementsVisibilityMap = new HashMap<ContentInstance, Boolean>();
 		for(ContentInstance instance: scanner.contentInstances){
-			ElementDesigns elements = new ElementDesigns(instance.content.design);
-			Evaluator evaluator = new Evaluator(this, pages, instance.content, instance.contentState, scanner.dataContainer);
-			_customizeElements(elements, evaluator);
-			if (this.report.customizer != null){
-				this.report.customizer.renderContent(instance.content, evaluator, instance.region, elements);
-			}
+			Evaluator evaluator = new Evaluator(this, pages, instance, scanner);
+			ElementDesigns elements = instance.getElementDesigns(evaluator);
 			elementsMap.put(instance, elements);
 			evaluatorMap.put(instance, evaluator);
 			evaluator.evalTry("debug");
@@ -134,30 +130,6 @@ public class ReportPage {
 			}
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	private void _customizeElements(ElementDesigns elements, Evaluator evaluator){
-		for(ElementDesign e: elements){
-			if (e.base.containsKey("customize")){
-				for(Map<?, ?> d: (List<Map<?, ?>>)e.base.get("customize")){
-					ElementDesign ce = new ElementDesign(d);
-					if (!ce.isNull("property") && !ce.isNull("cond") && !ce.isNull("exp")){
-						if (Cast.toBool(evaluator.evalTry((String)ce.get("cond")))){
-							ElementDesign _e = e;
-							String[] ps = ((String)ce.get("property")).split("\\.");
-							for(int i = 0;i < ps.length - 1;i++){
-								_e = _e.child(ps[i].trim());
-							}
-							try{
-								_e.put(ps[ps.length - 1], evaluator.eval((String)ce.get("exp")));
-							}catch(Exception ex){
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 	
 	private void renderContent(
 			IRenderer renderer,
@@ -170,10 +142,8 @@ public class ReportPage {
 			if (background != Cast.toBool(design.get("background"))){
 				continue;
 			}
-			if (!design.isNull("visibility_cond")){
-				if (!ReportUtil.condition(evaluator.evalTry((String)design.get("visibility_cond")))){
-					continue;
-				}
+			if (!design.isVisible(evaluator)){
+				continue;
 			}
 			try{
 				Object data = null;

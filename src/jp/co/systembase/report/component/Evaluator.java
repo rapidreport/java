@@ -13,6 +13,7 @@ import jp.co.systembase.report.data.ReportData;
 import jp.co.systembase.report.data.ReportDataRecord;
 import jp.co.systembase.report.expression.IExpression;
 import jp.co.systembase.report.expression.Parser;
+import jp.co.systembase.report.scanner.RenderingScanner;
 
 public class Evaluator {
 
@@ -56,7 +57,15 @@ public class Evaluator {
 		this.contentContext.content = content;
 		this.contentContext.contentState = contentState;
 	}
-
+	
+	public Evaluator(
+			ReportPage page,
+			ReportPages pages,
+			ContentInstance contentInstance,
+			RenderingScanner scanner){
+		this(page, pages, contentInstance.content, contentInstance.contentState, scanner.dataContainer);
+	}
+	
 	public Evaluator(
 			ReportPage page,
 			ReportPages pages,

@@ -3,6 +3,8 @@ package jp.co.systembase.report.component;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.co.systembase.report.ReportUtil;
+
 public class ElementDesign {
 
 	public Map<?, ?> base;
@@ -70,6 +72,15 @@ public class ElementDesign {
 		return new ElementLayoutDesign(this.child("layout")).getRegion(contentRegion);
 	}
 
+	public boolean isVisible(Evaluator evaluator){
+		if (!this.isNull("visibility_cond")){
+			if (!ReportUtil.condition(evaluator.evalTry((String)this.get("visibility_cond")))){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public String toString() {
 		String ret = "";
