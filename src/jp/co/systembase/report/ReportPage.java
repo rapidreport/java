@@ -112,7 +112,6 @@ public class ReportPage {
 			if (elementsVisibilityMap.get(instance)){
 				this._renderContent(
 						renderer,
-						pages,
 						instance,
 						elementsMap.get(instance),
 						evaluatorMap.get(instance),
@@ -124,7 +123,6 @@ public class ReportPage {
 			if (elementsVisibilityMap.get(instance)){
 				this._renderContent(
 						renderer,
-						pages,
 						instance,
 						elementsMap.get(instance),
 						evaluatorMap.get(instance),
@@ -136,7 +134,6 @@ public class ReportPage {
 	
 	private void _renderContent(
 			IRenderer renderer,
-			ReportPages pages,
 			ContentInstance instance,
 			List<ElementDesign> elements,
 			Evaluator evaluator,
