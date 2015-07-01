@@ -62,7 +62,7 @@ public class ReportPage {
 			renderer.beginPage(this.report.design, pages.indexOf(this), paperRegion);
 			RenderingScanner scanner = new RenderingScanner();
 			this.report.groups.scan(scanner, this.range, paperRegion);
-			this._render_aux(renderer, pages, scanner);
+			this._render_aux(renderer, pages, scanner, false);
 			renderer.endPage(this.report.design);
 		}catch(Throwable e){
 			if (e instanceof RenderException){
@@ -80,13 +80,14 @@ public class ReportPage {
 			Region paperRegion) throws RenderException {
 		RenderingScanner scanner = new RenderingScanner();
 		this.report.groups.scan(scanner, this.range, paperRegion);
-		this._render_aux(renderer, pages, scanner);
+		this._render_aux(renderer, pages, scanner, true);
 	}
 
 	private void _render_aux(
 			IRenderer renderer,
 			ReportPages pages,
-			RenderingScanner scanner) throws RenderException {
+			RenderingScanner scanner,
+			boolean subPage) throws RenderException {
 		this.ToggleValue = false;
 		Map<ContentInstance, ElementDesigns> elementsMap = new HashMap<ContentInstance, ElementDesigns>();
 		Map<ContentInstance, Evaluator> evaluatorMap = new HashMap<ContentInstance, Evaluator>();
@@ -109,36 +110,42 @@ public class ReportPage {
 		}
 		for(ContentInstance instance: scanner.contentInstances){
 			if (elementsVisibilityMap.get(instance)){
-				this.renderContent(
+				this._renderContent(
 						renderer,
 						pages,
 						instance,
 						elementsMap.get(instance),
 						evaluatorMap.get(instance),
+						subPage,
 						true);
 			}
 		}
 		for(ContentInstance instance: scanner.contentInstances){
 			if (elementsVisibilityMap.get(instance)){
-				this.renderContent(
+				this._renderContent(
 						renderer,
 						pages,
 						instance,
 						elementsMap.get(instance),
 						evaluatorMap.get(instance),
+						subPage,
 						false);
 			}
 		}
 	}
 	
-	private void renderContent(
+	private void _renderContent(
 			IRenderer renderer,
 			ReportPages pages,
 			ContentInstance instance,
 			List<ElementDesign> elements,
 			Evaluator evaluator,
+			boolean subPage,
 			boolean background) throws RenderException {
 		for(ElementDesign design: elements){
+			if (subPage && !design.isNull("id") && design.get("id").equals("__trial__")){
+				continue;
+			}
 			if (background != Cast.toBool(design.get("background"))){
 				continue;
 			}

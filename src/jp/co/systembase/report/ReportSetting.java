@@ -65,6 +65,10 @@ import jp.co.systembase.report.operator.WSplitOperator;
 import jp.co.systembase.report.operator.WStringLenOperator;
 import jp.co.systembase.report.operator.WSubStringOperator;
 import jp.co.systembase.report.operator.YearOperator;
+import jp.co.systembase.report.search.searchobject.DefaultSearchObject;
+import jp.co.systembase.report.search.searchobject.FieldSearchObject;
+import jp.co.systembase.report.search.searchobject.ISearchObject;
+import jp.co.systembase.report.search.searchobject.TextSearchObject;
 import jp.co.systembase.report.textformatter.DefaultTextFormatter;
 import jp.co.systembase.report.textformatter.ITextFormatter;
 
@@ -74,6 +78,8 @@ public class ReportSetting  implements Cloneable{
 	public Map<String, IOperator> operatorMap = new HashMap<String, IOperator>();
 	public IElementPreprocessor defaultElementPreprocessor;
 	public Map<String, IElementPreprocessor> elementPreprocessorMap = new HashMap<String, IElementPreprocessor>();
+	public ISearchObject defaultSearchObject;
+	public Map<String, ISearchObject> searchObjectMap = new HashMap<String, ISearchObject>();
 	public ITextFormatter defaultTextFormatter;
 	public Map<String, ITextFormatter> textFormatterMap = new HashMap<String, ITextFormatter>();
 	public IReportLogger logger = null;
@@ -146,6 +152,9 @@ public class ReportSetting  implements Cloneable{
 		this.operatorMap.put("digit", new DigitOperator());
 		this.defaultElementPreprocessor = new DefaultPreprocessor();
 		this.elementPreprocessorMap.put("subpage", new SubPagePreprocessor());
+		this.defaultSearchObject = new DefaultSearchObject();
+		this.searchObjectMap.put("field", new FieldSearchObject()); 
+		this.searchObjectMap.put("text", new TextSearchObject()); 
 		this.defaultTextFormatter = new DefaultTextFormatter();
 		this.textFormatterMap.put("default", this.defaultTextFormatter);
 	}
@@ -176,6 +185,14 @@ public class ReportSetting  implements Cloneable{
 		}
 	}
 
+	public ISearchObject getSearchObject(String key){
+		if (key != null && this.searchObjectMap.containsKey(key)){
+			return this.searchObjectMap.get(key);
+		}else{
+			return this.defaultSearchObject;
+		}
+	}
+	
 	public ITextFormatter getTextFormatter(String key){
 		if (key != null && this.textFormatterMap.containsKey(key)){
 			return this.textFormatterMap.get(key);
@@ -199,6 +216,10 @@ public class ReportSetting  implements Cloneable{
 			ret.elementPreprocessorMap = new HashMap<String, IElementPreprocessor>();
 			for(String k: this.elementPreprocessorMap.keySet()){
 				ret.elementPreprocessorMap.put(k, this.elementPreprocessorMap.get(k));
+			}
+			ret.searchObjectMap = new HashMap<String, ISearchObject>();
+			for(String k: this.searchObjectMap.keySet()){
+				ret.searchObjectMap.put(k, this.searchObjectMap.get(k));
 			}
 			ret.textFormatterMap = new HashMap<String, ITextFormatter>();
 			for(String k: this.textFormatterMap.keySet()){
