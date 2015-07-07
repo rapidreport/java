@@ -16,6 +16,14 @@ public class FieldRenderer implements IElementRenderer {
 			Region region,
 			ElementDesign design,
 			Object data) throws Throwable {
+		if (!design.isNull("rect")){
+			renderer.setting.getElementRenderer("rect").render(
+			  renderer, 
+			  reportDesign, 
+			  region, 
+			  design.child("rect"), 
+			  null);
+		}
 		String text = RenderUtil.format(reportDesign, design.child("formatter"), data);
 		if (text == null){
 			return;

@@ -19,6 +19,14 @@ public class TextRenderer implements IElementRenderer {
 			Region region,
 			ElementDesign design,
 			Object data) throws Throwable {
+		if (!design.isNull("rect")){
+			renderer.setting.getElementRenderer("rect").collect(
+			  renderer, 
+			  reportDesign, 
+			  region, 
+			  design.child("rect"), 
+			  null);
+		}
 		Region _region = region.toPointScale(reportDesign);
 		if (_region.getWidth() <= 0 || _region.getHeight() <= 0){
 			return;

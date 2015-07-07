@@ -18,6 +18,14 @@ public class TextRenderer implements IElementRenderer {
 			Region region,
 			ElementDesign design,
 			Object data) throws Throwable {
+		if (!design.isNull("rect")){
+			renderer.setting.getElementRenderer("rect").render(
+			  renderer, 
+			  reportDesign, 
+			  region, 
+			  design.child("rect"), 
+			  null);
+		}
 		String text = (String)design.get("text");
 		if (data != null){
 			EmbeddedTextProcessor textProcessor = new EmbeddedTextProcessor();
