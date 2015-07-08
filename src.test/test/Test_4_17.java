@@ -13,10 +13,10 @@ import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class Test_0_1 {
+public class Test_4_17 {
 
 	public static void main(String[] args) throws Throwable {
-		String name = "test_0_1";
+		String name = "test_4_17";
 		
 		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
 		report.globalScope.put("time", new Date());
