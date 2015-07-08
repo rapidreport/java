@@ -4,8 +4,8 @@
 # /build/
 /build/*
 
-# /output/
-/output/*
+# /out/
+/out/*
 
 # /src/
 /src/work

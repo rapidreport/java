@@ -1,9 +1,7 @@
-package example;
+package test;
 
 import java.io.FileOutputStream;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.util.Date;
 
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPages;
@@ -12,14 +10,22 @@ import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
-public class Test4 {
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class Test_0_1 {
 
 	public static void main(String[] args) throws Throwable {
-		Report report = new Report(ReadUtil.readJson("report/test4.rrpt"));
+		String name = "test_0_1";
+		
+		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
+		report.globalScope.put("time", new Date());
+        report.globalScope.put("lang", "java");
 		report.fill(DummyDataSource.getInstance());
+		
 		ReportPages pages = report.getPages();
 		{
-			FileOutputStream fos = new FileOutputStream("output/test4.pdf");
+			FileOutputStream fos = new FileOutputStream("out/" + name + ".pdf");
 			try{
 				pages.render(new PdfRenderer(fos));
 			}finally{
@@ -27,11 +33,11 @@ public class Test4 {
 			}
 		}
 		{
-			FileOutputStream fos = new FileOutputStream("output/test4.xls");
+			FileOutputStream fos = new FileOutputStream("out/" + name + ".xls");
 			try{
 				HSSFWorkbook workBook = new HSSFWorkbook();
 				XlsRenderer renderer = new XlsRenderer(workBook);
-				renderer.newSheet("test4");
+				renderer.newSheet(name);
 				pages.render(renderer);
 				workBook.write(fos);
 			}finally{
@@ -39,11 +45,11 @@ public class Test4 {
 			}
 		}
 		{
-			FileOutputStream fos = new FileOutputStream("output/test4.xlsx");
+			FileOutputStream fos = new FileOutputStream("out/" + name + ".xlsx");
 			try{
 				XSSFWorkbook workBook = new XSSFWorkbook();
 				XlsxRenderer renderer = new XlsxRenderer(workBook);
-				renderer.newSheet("test4");
+				renderer.newSheet(name);
 				pages.render(renderer);
 				workBook.write(fos);
 			}finally{

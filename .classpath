@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src.pdf"/>
-	<classpathentry kind="src" path="src.example"/>
 	<classpathentry kind="src" path="src.xls"/>
 	<classpathentry kind="src" path="src.xlsx"/>
+	<classpathentry kind="src" path="src.test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/iText-2.1.7.jar" sourcepath="C:/home/lib/itext217"/>
 	<classpathentry kind="lib" path="lib/iTextAsian.jar"/>

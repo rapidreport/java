@@ -1,13 +1,7 @@
-package example;
+package test;
 
 import java.io.FileOutputStream;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
-//import com.lowagie.text.pdf.BaseFont;
-
-
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.util.Date;
 
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPages;
@@ -16,29 +10,34 @@ import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
-public class Test3 {
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class Test_0_3 {
 
 	public static void main(String[] args) throws Throwable {
-		Report report = new Report(ReadUtil.readJson("report/test3.rrpt"));
+		String name = "test_0_3";
+		
+		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
+		report.globalScope.put("time", new Date());
+        report.globalScope.put("lang", "java");
 		report.fill(DummyDataSource.getInstance());
+		
 		ReportPages pages = report.getPages();
 		{
-			FileOutputStream fos = new FileOutputStream("output/test3.pdf");
+			FileOutputStream fos = new FileOutputStream("out/" + name + ".pdf");
 			try{
-				PdfRenderer renderer = new PdfRenderer(fos);
-				//renderer.setting.gaijiFont = BaseFont.createFont("EUDC.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-				pages.render(renderer);
+				pages.render(new PdfRenderer(fos));
 			}finally{
 				fos.close();
 			}
 		}
 		{
-			FileOutputStream fos = new FileOutputStream("output/test3.xls");
+			FileOutputStream fos = new FileOutputStream("out/" + name + ".xls");
 			try{
 				HSSFWorkbook workBook = new HSSFWorkbook();
 				XlsRenderer renderer = new XlsRenderer(workBook);
-				renderer.setting.customPalette = true;
-				renderer.newSheet("test3");
+				renderer.newSheet(name);
 				pages.render(renderer);
 				workBook.write(fos);
 			}finally{
@@ -46,11 +45,11 @@ public class Test3 {
 			}
 		}
 		{
-			FileOutputStream fos = new FileOutputStream("output/test3.xlsx");
+			FileOutputStream fos = new FileOutputStream("out/" + name + ".xlsx");
 			try{
 				XSSFWorkbook workBook = new XSSFWorkbook();
 				XlsxRenderer renderer = new XlsxRenderer(workBook);
-				renderer.newSheet("test3");
+				renderer.newSheet(name);
 				pages.render(renderer);
 				workBook.write(fos);
 			}finally{
