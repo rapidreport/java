@@ -61,6 +61,7 @@ import jp.co.systembase.report.operator.SecondOperator;
 import jp.co.systembase.report.operator.StringLenOperator;
 import jp.co.systembase.report.operator.SubOperator;
 import jp.co.systembase.report.operator.SubStringOperator;
+import jp.co.systembase.report.operator.TrimOperator;
 import jp.co.systembase.report.operator.WSplitOperator;
 import jp.co.systembase.report.operator.WStringLenOperator;
 import jp.co.systembase.report.operator.WSubStringOperator;
@@ -150,6 +151,7 @@ public class ReportSetting  implements Cloneable{
 		this.operatorMap.put("wlen", new WStringLenOperator());
 		this.operatorMap.put("wsplit", new WSplitOperator());
 		this.operatorMap.put("digit", new DigitOperator());
+		this.operatorMap.put("trim", new TrimOperator());
 		this.defaultElementPreprocessor = new DefaultPreprocessor();
 		this.elementPreprocessorMap.put("subpage", new SubPagePreprocessor());
 		this.defaultSearchObject = new DefaultSearchObject();
