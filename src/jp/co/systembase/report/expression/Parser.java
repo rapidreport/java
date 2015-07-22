@@ -34,7 +34,7 @@ public class Parser {
 		if (source == null){
 			return null;
 		}
-		String _source = source.trim();
+		String _source = source.replaceAll("\r\n",  " ").trim();
 		if (_source.length() == 0){
 			return null;
 		}
