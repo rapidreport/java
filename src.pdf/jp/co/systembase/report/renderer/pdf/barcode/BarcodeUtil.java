@@ -9,7 +9,7 @@ public class BarcodeUtil {
 		tmp.beginText();
 		float fs = getFontSize(tmp, text);
 		setFont(tmp, fs);
-		tmp.setTextMatrix((tmp.getWidth() - text.length() * fs / 2) / 2,  tmp.getHeight() - (tmp.getHeight() * 0.7f + fs));
+		tmp.setTextMatrix((tmp.getWidth() - (text.length() + 2) * fs / 2) / 2,  tmp.getHeight() - (tmp.getHeight() * 0.7f + fs));
 		tmp.showText(text);
 		tmp.endText();
 	}

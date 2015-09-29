@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <project default="main">
 
-	<property name="version" value="4.18" />
+	<property name="version" value="4.18.1" />
 
 	<property name="src_report" value="src" />
 	<property name="src_pdf" value="src.pdf" />
@@ -25,7 +25,7 @@
 	<property name="poi" value="lib/poi-3.10-FINAL-20140208.jar" />
 	<property name="poi_ooxml" value="lib/poi-ooxml-3.10-FINAL-20140208.jar" />
 	<property name="poi_ooxml_schemas" value="lib/poi-ooxml-schemas-3.10-FINAL-20140208.jar" />
-	<property name="barcode" value="lib/systembase.barcode-1.2.jar" />
+	<property name="barcode" value="lib/systembase.barcode-1.3.jar" />
 	<property name="jsonic" value="lib/jsonic-1.3.0.jar" />
 
 	<target name="main" depends="compile_report, compress_report, compile_pdf, compress_pdf, compile_xls, compress_xls, compile_xlsx, compress_xlsx"/>
