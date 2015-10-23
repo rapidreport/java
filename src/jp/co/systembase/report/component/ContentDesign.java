@@ -14,6 +14,7 @@ public class ContentDesign {
 	public String caption;
 	public String id;
 	public ContentSizeDesign size;
+	public SubContentLayoutDesign layout;
 	public boolean aggregateSrc;
 	public boolean everyPage;
 	public String existenceCond;
@@ -54,6 +55,11 @@ public class ContentDesign {
 			this.size = new ContentSizeDesign((Map<?, ?>)desc.get("size"));
 		}else{
 			this.size = new ContentSizeDesign();
+		}
+		if (desc.containsKey("layout")){
+			this.layout = new SubContentLayoutDesign((Map<?, ?>)desc.get("layout"));
+		}else{
+			this.layout = new SubContentLayoutDesign();
 		}
 		this.aggregateSrc = Cast.toBool(desc.get("aggregate_src"));
 		this.everyPage = Cast.toBool(desc.get("every_page"));

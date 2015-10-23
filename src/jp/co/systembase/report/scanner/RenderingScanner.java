@@ -102,7 +102,8 @@ public class RenderingScanner extends DefaultScanner {
 				if (c.groups != null){
 					gr = new GroupRange(c.groups);
 				}
-				c.scan(this, gr, paperRegion, parentRegion, _region, contentState, evaluator);
+				c.scan(this, gr, paperRegion, parentRegion, 
+						c.design.layout.getRegion(_region), contentState, evaluator);
 			}
 		}
 	}
