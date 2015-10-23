@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jp.co.systembase.report.Report;
+
 public class ElementDesigns extends ArrayList<ElementDesign> {
 
 	private static final long serialVersionUID = -9046835607464682453L;
@@ -12,6 +14,16 @@ public class ElementDesigns extends ArrayList<ElementDesign> {
 
 	@SuppressWarnings("unchecked")
 	public ElementDesigns(ContentDesign contentDesign){
+		if (contentDesign.mergeContentId != null){
+			if (Report.sharedContents.containsKey(contentDesign.mergeContentId)){
+				ContentDesign cd = Report.sharedContents.get(contentDesign.mergeContentId);
+				if (cd.desc.containsKey("elements")){
+					for(Map<?, ?> d: (List<Map<?, ?>>)cd.desc.get("elements")){
+						this.add(new ElementDesign(d));
+					}
+				}
+			}
+		}
 		if (contentDesign.desc.containsKey("elements")){
 			for(Map<?, ?> d: (List<Map<?, ?>>)contentDesign.desc.get("elements")){
 				this.add(new ElementDesign(d));

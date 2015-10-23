@@ -167,13 +167,9 @@ public class GroupDesign {
 	public ContentDesign findContentDesign(String id){
 		if (this.contentDesigns != null){
 			for(ContentDesign cd: this.contentDesigns){
-				if (id.equals(cd.id)){
-					return cd;
-				}else if (cd.groupDesign != null){
-					ContentDesign ret = cd.groupDesign.findContentDesign(id);
-					if (ret != null){
-						return ret;
-					}
+				ContentDesign ret = cd.findContentDesign(id);					
+				if (ret != null){
+					return ret;
 				}
 			}
 		}
@@ -185,11 +181,9 @@ public class GroupDesign {
 			return this;
 		}else if (this.contentDesigns != null){
 			for(ContentDesign cd: this.contentDesigns){
-				if (cd.groupDesign != null){
-					GroupDesign ret = cd.groupDesign.findGroupDesign(id);
-					if (ret != null){
-						return ret;
-					}
+				GroupDesign ret = cd.findGroupDesign(id);
+				if (ret != null){
+					return ret;
 				}
 			}
 		}

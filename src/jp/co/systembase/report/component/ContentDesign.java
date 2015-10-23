@@ -24,6 +24,7 @@ public class ContentDesign {
 	public String elementsVisibilityCond;
 	public Map<String, String> variables;
 	public List<String> variablesKeyList;
+	public String mergeContentId;
 	public GroupDesign groupDesign;
 	public List<ContentDesign> subContentDesigns;
 
@@ -83,6 +84,7 @@ public class ContentDesign {
 			this.variables = null;
 			this.variablesKeyList = null;
 		}
+		this.mergeContentId = (String)desc.get("merge_content_id");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -124,6 +126,35 @@ public class ContentDesign {
 
 	public ReportDesign getReportDesign(){
 		return this.parentGroupDesign.reportDesign;
+	}
+	
+	public ContentDesign findContentDesign(String id){
+		if (id.equals(this.id)){
+			return this;
+		}else if (this.groupDesign != null){
+			ContentDesign ret = this.groupDesign.findContentDesign(id);
+			if (ret != null){
+				return ret;
+			}else if (this.subContentDesigns != null){
+				for(ContentDesign cd: this.subContentDesigns){
+					ret = cd.findContentDesign(id);
+					if (ret != null){
+						return ret;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public GroupDesign findGroupDesign(String id){
+		if (this.groupDesign != null){
+			GroupDesign ret = this.groupDesign.findGroupDesign(id);
+			if (ret != null){
+				return ret;
+			}
+		}
+		return null;
 	}
 
 }

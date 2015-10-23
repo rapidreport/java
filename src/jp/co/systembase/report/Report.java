@@ -3,6 +3,7 @@ package jp.co.systembase.report;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.co.systembase.report.component.ContentDesign;
 import jp.co.systembase.report.component.ContentHistory;
 import jp.co.systembase.report.component.CustomField;
 import jp.co.systembase.report.component.DataCache;
@@ -71,6 +72,8 @@ public class Report {
 		public static boolean _4_6_PdfFontBold = false;
 	}
 
+	public static Map<String, ContentDesign> sharedContents = new HashMap<String, ContentDesign>();
+	
 	public ReportDesign design;
 	public IReportCustomizer customizer;
 	public ReportData data = null;
@@ -202,6 +205,11 @@ public class Report {
 		}
 		ReportPages pages = this._subPageMap.get(key);
 		pages.get(index).renderSubPage(renderer, pages, region);
+	}
+	
+	public static void addSharedContent(String id, ReportDesign reportDesign){
+		ContentDesign cd = reportDesign.findContentDesign(id);
+		sharedContents.put(id, cd);
 	}
 
 }
