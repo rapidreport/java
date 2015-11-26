@@ -59,6 +59,8 @@ public class FieldStyle {
 		if (this.textDesign.xlsFormat != null){
 			short dataFormat = renderer.workbook.createDataFormat().getFormat(this.textDesign.xlsFormat);
 			cellStyle.setDataFormat(dataFormat);
+		}else{
+			cellStyle.setDataFormat((short)0x31);
 		}
 	}
 
