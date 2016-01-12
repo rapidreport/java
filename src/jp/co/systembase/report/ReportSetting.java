@@ -9,6 +9,7 @@ import jp.co.systembase.report.elementpreprocessor.SubPagePreprocessor;
 import jp.co.systembase.report.method.AverageAtMethod;
 import jp.co.systembase.report.method.AverageMethod;
 import jp.co.systembase.report.method.AveragePageMethod;
+import jp.co.systembase.report.method.CurrentTimeMethod;
 import jp.co.systembase.report.method.DummyMethod;
 import jp.co.systembase.report.method.FieldMethod;
 import jp.co.systembase.report.method.FieldSumAtMethod;
@@ -104,6 +105,7 @@ public class ReportSetting  implements Cloneable{
 		this.methodMap.put("prev", new PreviousMethod());
 		this.methodMap.put("next", new NextMethod());
 		this.methodMap.put("var", new VariableMethod());
+		this.methodMap.put("current_time", new CurrentTimeMethod());
 		this.methodMap.put("debug", new DummyMethod());
 		this.operatorMap.put("+", new AddOperator());
 		this.operatorMap.put("-", new SubOperator());

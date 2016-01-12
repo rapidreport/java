@@ -1,5 +1,6 @@
 package jp.co.systembase.report;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,6 +84,7 @@ public class Report {
 	public DataCache dataCache = new DataCache();
 	public boolean filled = false;
 	public CustomField.Stack customFieldStack = new CustomField.Stack();
+	public Date currentTime = new Date();
 
 	public Map<GroupDesign, WrapperDataSource> wrapperDataSourceMap =
 		new HashMap<GroupDesign, WrapperDataSource>();

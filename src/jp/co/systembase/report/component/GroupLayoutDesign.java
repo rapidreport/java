@@ -85,10 +85,6 @@ public class GroupLayoutDesign {
 					_i -= Math.max(1, l.count);
 					if (_i < 0){
 						Region ret = new Region();
-						ret.bottom = lastRegion.bottom;
-						ret.right = lastRegion.right;
-						ret.maxBottom = lastRegion.maxBottom;
-						ret.maxRight = lastRegion.maxRight;
 						switch(this.direction){
 						case VERTICAL:
 							ret.top = lastRegion.bottom;
@@ -99,6 +95,10 @@ public class GroupLayoutDesign {
 							ret.left = lastRegion.right;
 							break;
 						}
+						ret.bottom = lastRegion.bottom;
+						ret.right = lastRegion.right;
+						ret.maxBottom = lastRegion.maxBottom;
+						ret.maxRight = lastRegion.maxRight;
 						return ret;
 					}
 				}
