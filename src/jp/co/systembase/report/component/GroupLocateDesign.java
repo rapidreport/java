@@ -8,10 +8,12 @@ public class GroupLocateDesign {
 
 	public float x;
 	public float y;
+	public int count;
 
 	public GroupLocateDesign(Map<?, ?> desc){
 		this.x = Cast.toFloat(desc.get("x"));
 		this.y = Cast.toFloat(desc.get("y"));
+		this.count = Cast.toInt(desc.get("count"));
 	}
 
 	public Region getRegion(Region parentRegion){

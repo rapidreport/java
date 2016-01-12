@@ -58,7 +58,11 @@ public class GroupLayoutDesign {
 
 	public int getCount(){
 		if (this.IsLocateEnabled()){
-			return this.locates.size();
+			int ret = 0;
+			for(GroupLocateDesign l: this.locates){
+				ret += Math.max(1, l.count);
+			}
+			return ret;
 		}else{
 			return this.maxCount;
 		}
@@ -73,27 +77,51 @@ public class GroupLayoutDesign {
 			Region lastRegion,
 			int i){
 		if (this.IsLocateEnabled()){
-			return this.locates.get(i).getRegion(parentRegion);
-		}else{
-			Region ret = new Region();
-			ret.top = parentRegion.top + this.y;
-			ret.left = parentRegion.left + this.x;
-			ret.bottom = parentRegion.bottom;
-			ret.right = parentRegion.right;
-			ret.maxBottom = parentRegion.maxBottom;
-			ret.maxRight = parentRegion.maxRight;
-			if (lastRegion != null){
-				switch(this.direction){
-				case VERTICAL:
-					ret.top = lastRegion.bottom;
-					break;
-				case HORIZONTAL:
-					ret.left = lastRegion.right;
-					break;
+			int _i = i;
+			for(GroupLocateDesign l: this.locates){
+				if (_i == 0 || lastRegion == null){
+					return l.getRegion(parentRegion);
+				}else{
+					_i -= Math.max(1, l.count);
+					if (_i < 0){
+						Region ret = new Region();
+						ret.bottom = lastRegion.bottom;
+						ret.right = lastRegion.right;
+						ret.maxBottom = lastRegion.maxBottom;
+						ret.maxRight = lastRegion.maxRight;
+						switch(this.direction){
+						case VERTICAL:
+							ret.top = lastRegion.bottom;
+							ret.left = lastRegion.left;
+							break;
+						case HORIZONTAL:
+							ret.top = lastRegion.top;
+							ret.left = lastRegion.right;
+							break;
+						}
+						return ret;
+					}
 				}
 			}
-			return ret;
 		}
+		Region ret = new Region();
+		ret.top = parentRegion.top + this.y;
+		ret.left = parentRegion.left + this.x;
+		ret.bottom = parentRegion.bottom;
+		ret.right = parentRegion.right;
+		ret.maxBottom = parentRegion.maxBottom;
+		ret.maxRight = parentRegion.maxRight;
+		if (lastRegion != null){
+			switch(this.direction){
+			case VERTICAL:
+				ret.top = lastRegion.bottom;
+				break;
+			case HORIZONTAL:
+				ret.left = lastRegion.right;
+				break;
+			}
+		}
+		return ret;
 	}
 
 	public Region getGroupInitialRegion(Region parentRegion){
