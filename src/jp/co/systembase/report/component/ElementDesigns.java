@@ -19,6 +19,9 @@ public class ElementDesigns extends ArrayList<ElementDesign> {
 				ContentDesign cd = Report.sharedContents.get(contentDesign.mergeContentId);
 				if (cd.desc.containsKey("elements")){
 					for(Map<?, ?> d: (List<Map<?, ?>>)cd.desc.get("elements")){
+						if (d.containsKey("id") && "__trial__".equals(d.get("id"))){
+							continue;
+						}
 						this.add(new ElementDesign(d));
 					}
 				}
