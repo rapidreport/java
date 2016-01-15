@@ -1,9 +1,11 @@
 package test;
 
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 
 import jp.co.systembase.core.DataTable;
 import jp.co.systembase.report.Report;
+import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.data.ReportDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
@@ -13,20 +15,26 @@ import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class Test_4_21_LocateCount {
-
+public class Test_4_21_MergeContentLogo {
 
 	public static void main(String[] args) throws Throwable {
-		String name = "test_4_21_locate_count";
+		String name = "test_4_21_merge_content_logo";
+		
+		ReportDesign sharedReport = new ReportDesign(ReadUtil.readJson("rrpt/test_4_21_shared_logo.rrpt"));
+		Report.addSharedContent("company_info", sharedReport);
 		
 		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
+		report.globalScope.put("company_name", "株式会社ラピッドレポート");
+		report.globalScope.put("tel", "0000-11-2222");
 		report.fill(new ReportDataSource(getDataTable()));
 		
 		ReportPages pages = report.getPages();
 		{
 			FileOutputStream fos = new FileOutputStream("out/" + name + ".pdf");
 			try{
-				pages.render(new PdfRenderer(fos));
+				PdfRenderer renderer = new PdfRenderer(fos);
+				renderer.setting.replaceBackslashToYen = true;
+				pages.render(renderer);
 			}finally{
 				fos.close();
 			}
@@ -59,16 +67,22 @@ public class Test_4_21_LocateCount {
 	
 	private static DataTable getDataTable() throws Exception {
 		DataTable ret = new DataTable();
-		ret.setFieldNames("no");
-		ret.addRecord().puts("010");
-		ret.addRecord().puts("020");
-		ret.addRecord().puts("030");
-		ret.addRecord().puts("040");
-		ret.addRecord().puts("050");
-		ret.addRecord().puts("060");
-		ret.addRecord().puts("070");
-		ret.addRecord().puts("080");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		ret.setFieldNames("mitsumoriNo", "mitsumoriDate", "tanto",
+				"tokuisaki1", "tokuisaki2",
+				"hinmei", "irisu", "hakosu", "tani", "tanka");
+		ret.addRecord().puts(101, sdf.parse("2013/03/01"),
+				"営業一部 佐藤太郎", "株式会社 岩手商事", "北上支社",
+				"ノートパソコン", 1, 10, "台", 70000);
+		ret.addRecord().puts(101, sdf.parse("2013/03/01"),
+				"営業一部 佐藤太郎", "株式会社 岩手商事", "北上支社",
+				"モニター", 1, 10, "台", 20000);
+		ret.addRecord().puts(101, sdf.parse("2013/03/01"),
+				"営業一部 佐藤太郎", "株式会社 岩手商事", "北上支社",
+				"プリンタ", 1, 2, "台", 25000);
+		ret.addRecord().puts(101, sdf.parse("2013/03/01"),
+				"営業一部 佐藤太郎", "株式会社 岩手商事", "北上支社",
+				"トナーカートリッジ", 2, 2, "本", 5000);
 		return ret;
 	}
-
 }
