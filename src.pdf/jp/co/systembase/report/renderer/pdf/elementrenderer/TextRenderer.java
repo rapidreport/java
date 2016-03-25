@@ -7,8 +7,8 @@ import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.expression.EmbeddedTextProcessor;
-import jp.co.systembase.report.renderer.pdf.PdfRenderUtil;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
+import jp.co.systembase.report.renderer.pdf.PdfText;
 
 public class TextRenderer implements IElementRenderer {
 
@@ -38,10 +38,11 @@ public class TextRenderer implements IElementRenderer {
 			text = text.replaceAll("\\\\", "\u00a5");
 		}
 		Region _region = region.toPointScale(reportDesign);
-		PdfRenderUtil.drawText(
+		PdfText pdfText = new PdfText(
 				renderer,
 				_region,
 				new TextDesign(reportDesign, design),
 				text);
+		pdfText.draw();
 	}
 }

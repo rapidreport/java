@@ -5,8 +5,8 @@ import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.renderer.RenderUtil;
-import jp.co.systembase.report.renderer.pdf.PdfRenderUtil;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
+import jp.co.systembase.report.renderer.pdf.PdfText;
 
 public class FieldRenderer implements IElementRenderer {
 
@@ -32,10 +32,11 @@ public class FieldRenderer implements IElementRenderer {
 			text = text.replaceAll("\\\\", "\u00a5");
 		}
 		Region _region = region.toPointScale(reportDesign);
-		PdfRenderUtil.drawText(
+		PdfText pdfText = new PdfText(
 				renderer,
 				_region,
 				new TextDesign(reportDesign, design),
 				text);
+		pdfText.draw();
 	}
 }

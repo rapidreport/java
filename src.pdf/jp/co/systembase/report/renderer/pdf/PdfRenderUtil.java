@@ -23,6 +23,7 @@ public class PdfRenderUtil {
 	private static final String VERTICAL_ROTATE_CHARS = "～…‥｜ーｰ(){}[]<>（）｛｝「」＜＞";
 	private static final String VERTICAL_SHIFT_CHARS = "。、";
 	
+	@Deprecated
 	public static void drawText(
 			PdfRenderer renderer,
 			Region region,
