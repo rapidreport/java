@@ -21,6 +21,7 @@ public class PdfText {
 	public String text;
 	public PdfContentByte contentByte;
 	public BaseFont font;
+	public List<Float> textMatrix = null;
 	
 	protected static final float TOLERANCE = 0.1f;
 	protected static final float OFFSET_Y = -0.5f;
@@ -49,21 +50,7 @@ public class PdfText {
 		}
 		contentByte.saveState();
 		try{
-			if (textDesign.color != null){
-				short[] c = RenderUtil.getColorRGB(textDesign.color);
-				if (c != null){
-					contentByte.setRGBColorFill(c[0], c[1], c[2]);
-					contentByte.setRGBColorStroke(c[0], c[1], c[2]);
-				}
-			}
-			if (textDesign.font.bold){
-				contentByte.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE);
-				if (!Report.Compatibility._4_6_PdfFontBold){
-					contentByte.setLineWidth(textDesign.font.size * 0.01f);
-                }
-			}else{
-				contentByte.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
-			}
+			_draw_preprocess();
 			if (textDesign.distribute){
 				if (textDesign.vertical){
 					_draw_distributeVertical();
@@ -96,6 +83,24 @@ public class PdfText {
 		}
 	}
 
+	protected void _draw_preprocess(){
+		if (textDesign.color != null){
+			short[] c = RenderUtil.getColorRGB(textDesign.color);
+			if (c != null){
+				contentByte.setRGBColorFill(c[0], c[1], c[2]);
+				contentByte.setRGBColorStroke(c[0], c[1], c[2]);
+			}
+		}
+		if (textDesign.font.bold){
+			contentByte.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE);
+			if (!Report.Compatibility._4_6_PdfFontBold){
+				contentByte.setLineWidth(textDesign.font.size * 0.01f);
+            }
+		}else{
+			contentByte.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
+		}		
+	}
+	
 	protected void _draw_distribute(){
 		float fontSize = textDesign.font.size;
 		List<String> texts = _splitByCr(region, textDesign, text, false);
@@ -356,10 +361,15 @@ public class PdfText {
 		PdfRenderer.Trans trans = renderer.trans;
 		float _x = region.left + x;
 		float _y = (region.top + y + fontSize) - (fontSize / 13.4f);
-		if (textDesign.font.italic){
-			contentByte.setTextMatrix(1f, 0f, 0.3f, 1f, trans.x(_x), trans.y(_y));
+		if (textMatrix != null){
+			contentByte.setTextMatrix(textMatrix.get(0), textMatrix.get(1), textMatrix.get(2), textMatrix.get(3), 
+					trans.x(_x), trans.y(_y));
 		}else{
-			contentByte.setTextMatrix(trans.x(_x), trans.y(_y));
+			if (textDesign.font.italic){
+				contentByte.setTextMatrix(1f, 0f, 0.3f, 1f, trans.x(_x), trans.y(_y));
+			}else{
+				contentByte.setTextMatrix(trans.x(_x), trans.y(_y));
+			}
 		}
 	}
 	
