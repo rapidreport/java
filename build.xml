@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <project default="main">
 
-	<property name="version" value="4.22" />
+	<property name="version" value="4.23" />
 
 	<property name="src_report" value="src" />
 	<property name="src_pdf" value="src.pdf" />
@@ -77,7 +77,7 @@
 			<fileset dir="${src_xls}"/>
 		</copy>
 	</target>
-	
+
 	<target name="compile_xlsx" depends="compile_report, compress_report">
 		<mkdir dir="${class_xlsx}" />
 		<javac srcdir="${src_xlsx}"
@@ -93,7 +93,7 @@
 			<fileset dir="${src_xlsx}"/>
 		</copy>
 	</target>
-	
+
 	<target name="compress_report">
 		<jar jarfile="${target_report}" basedir="${class_report}"/>
 	</target>
@@ -114,6 +114,7 @@
 		<delete dir="${class_report}" />
 		<delete dir="${class_pdf}" />
 		<delete dir="${class_xls}" />
+		<delete dir="${class_xlsx}" />
 		<delete file="${target_report}" />
 		<delete file="${target_pdf}" />
 		<delete file="${target_xls}" />
