@@ -77,17 +77,19 @@ public class CircleRenderer implements IElementRenderer {
 					cb.setRGBColorFill(c[0], c[1], c[2]);
 				}
 			}
-			cb.ellipse(
+			if (stroke || fill){
+				cb.ellipse(
 					renderer.trans.x(_region.left),
 					renderer.trans.y(_region.bottom),
 					renderer.trans.x(_region.right),
 					renderer.trans.y(_region.top));
-			if (stroke && fill){
-				cb.fillStroke();
-			}else if (stroke){
-				cb.stroke();
-			}else if (fill){
-				cb.fill();
+				if (stroke && fill){
+					cb.fillStroke();
+				}else if (stroke){
+					cb.stroke();
+				}else if (fill){
+					cb.fill();
+				}
 			}
 		}finally{
 			cb.restoreState();

@@ -46,21 +46,26 @@ public class RectRenderer implements IElementRenderer {
 		}
 		if (t && b && l && r){
 			cb.saveState();
-			boolean stroke = this.setupStroke(cb, design, reportDesign);
-			boolean fill = this.setupFill(cb, design);
-			if (rd == 0){
-				cb.rectangle(x1, y1, x2 - x1, y2 - y1);
-			}else{
-				cb.roundRectangle(x1, y1, x2 - x1, y2 - y1, rd);
+			try{
+				boolean stroke = this.setupStroke(cb, design, reportDesign);
+				boolean fill = this.setupFill(cb, design);
+				if (stroke || fill){
+					if (rd == 0){
+						cb.rectangle(x1, y1, x2 - x1, y2 - y1);
+					}else{
+						cb.roundRectangle(x1, y1, x2 - x1, y2 - y1, rd);
+					}
+					if (stroke && fill){
+						cb.fillStroke();
+					}else if (stroke){
+						cb.stroke();
+					}else if (fill){
+						cb.fill();
+					}
+				}
+			}finally{
+				cb.restoreState();	
 			}
-			if (stroke && fill){
-				cb.fillStroke();
-			}else if (stroke){
-				cb.stroke();
-			}else if (fill){
-				cb.fill();
-			}
-			cb.restoreState();
 		}else{
 			float _rd = rd * 0.4477f;
 			cb.saveState();
