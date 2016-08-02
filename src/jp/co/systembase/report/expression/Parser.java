@@ -21,7 +21,7 @@ public class Parser {
 	private static final Pattern PATTERN_NUMBER = Pattern.compile("-?[0-9.]+");
 	private static final Pattern PATTERN_DATE = Pattern.compile("^#([0-9]{4})([0-9]{2})([0-9]{2})$");
 	private static final Pattern PATTERN_DATETIME = Pattern.compile("^#([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$");
-	private static final Pattern PATTERN_METHOD = Pattern.compile("^([^.#@]*)?(\\.([^.#@]*))?(@([^.#@]*))?(#([^.#@]*))?$");
+	private static final Pattern PATTERN_METHOD = Pattern.compile("^([^.#@]*)?(\\.((\'.*\')|([^.#@]*)))?(@([^.#@]*))?(#([^.#@]*))?$");
 
 	private int index;
 	private ReportSetting setting;
@@ -49,8 +49,6 @@ public class Parser {
 	private IExpression _parse_aux(String source) throws EvalException{
 		if (source.charAt(this.index) == '('){
 			return this._parse_operator(source);
-		}else if (source.charAt(this.index) == '\''){
-			return this._parse_text(source);
 		}else{
 			String token = this.nextToken(source);
 			if (token.equals(LITERAL_NULL)){
@@ -59,6 +57,8 @@ public class Parser {
 				return new ImmediateExpression(true);
 			}else if (token.equals(LITERAL_FALSE)){
 				return new ImmediateExpression(false);
+			}else if (token.startsWith("\'")){
+				return new ImmediateExpression(evalString(token));
 			}
 			{
 				Matcher m = PATTERN_NUMBER.matcher(token);
@@ -108,18 +108,31 @@ public class Parser {
 				if (m.matches()){
 					String methodKey = m.group(1);
 					IMethod method = null;
-					String param = m.group(3);
-					String scope = m.group(5);
-					String unit = m.group(7);
+					String param = null;
+					String param1 = m.group(4);
+					String param2 = m.group(5);
+					String scope = m.group(7);
+					String unit = m.group(9);
 					if (methodKey != null && methodKey.length() == 0){
 						methodKey = null;
+					}
+					if (param1 != null && param1.length() != 0){
+						param1 = param1.toString().trim();
+					}
+					if (param2 != null && param2.length() != 0){
+						param2 = param2.toString().trim();
+					}
+					if (param1 != null && param1.isEmpty() == false){
+						param = evalString(param1);
+					}else if(param2 != null && param2.isEmpty() == false){
+						param = param2;
+					}
+					if (param != null && param.length() == 0){
+						param = null;
 					}
 					method = this.setting.getMethod(methodKey);
 					if (method == null){
 						throw new EvalException("メソッド '" + methodKey + "' は見つかりません : " + source);
-					}
-					if (param != null && param.length() == 0){
-						param = null;
 					}
 					return new MethodExpression(method, param, scope, unit);
 				}
@@ -134,9 +147,6 @@ public class Parser {
 		String operatorKey = nextToken(source);
 		if (operatorKey.length() == 0){
 			throw new EvalException("オペレータがありません : " + source);
-		}
-		if (operatorKey.startsWith("(")){
-			throw new EvalException("'(' は予期せぬ文字です : " + source);
 		}
 		IOperator operator = this.setting.getOperator(operatorKey);
 		if (operator == null){
@@ -156,24 +166,76 @@ public class Parser {
 		}
 	}
 
-	private IExpression _parse_text(String source) throws EvalException{
-		this.index += 1;
+	private void skipSpace(String source){
+		while(this.index < source.length() && source.charAt(this.index) == ' '){
+			this.index += 1;
+		}
+	}
+
+	private String nextToken(String source){
 		int i = this.index;
+		boolean escaped = false;
+		boolean quoted = false;
+		while(i < source.length()){
+			char c = source.charAt(i);
+			if (escaped == false && quoted == false){
+				if (c == ' ' || c == ')'){
+					break;
+				}
+			}
+			if (escaped == false){
+				if (c == '\\'){
+					escaped = true;
+				}else{
+					if (quoted == false){
+						if (c == '\''){
+							quoted = true;
+						}
+					}else{
+						if (c == '\''){
+							quoted = false;
+						}
+					}
+				}
+			}else{
+				escaped = false;
+			}
+			i += 1;
+		}
+		String ret = "";
+		if (i > this.index){
+			ret = source.substring(this.index, i);
+			this.index = i;
+		}
+		return ret;
+	}
+
+	private String evalString(String token) throws EvalException{
+		int i = 1;
+		int j = 1;
 		StringBuilder sb = new StringBuilder();
 		boolean escaped = false;
+
 		while(true){
-			if (i >= source.length()){
-				throw new EvalException("文字列が閉じられていません : " + source);
+			if (j >= token.length()){
+				throw new EvalException("文字列が閉じられていません : " + token);
 			}
-			char c = source.charAt(i);
-			if (c == '\'' && !escaped){
-				if (i > this.index){
-					sb.append(source.substring(this.index, i));
-					this.index = i;
+			char c = token.charAt(j);
+			if (escaped == false){
+				if (c == '\''){
+					if (j > i){
+						sb.append(token.substring(i, j));
+						i = j;
+					}
+					break;
+				}else if(c == '\\'){
+					if (j > i){
+						sb.append(token.substring(i, j));
+						i = j;
+					}
+					escaped = true;
 				}
-				break;
-			}
-			if (escaped){
+			}else{
 				switch(c){
 				case '\'':
 					sb.append('\'');
@@ -185,41 +247,16 @@ public class Parser {
 					sb.append('\n');
 					break;
 				default:
-					throw new EvalException("不正なエスケープ文字です: \\" + c + " (有効なもの \\' \\\\ \\n) : " + source);
+					throw new EvalException("不正なエスケープ文字です: \\" + c + " (有効なもの \\' \\\\ \\n) : " + token);
 				}
 				escaped = false;
-				this.index = i + 1;
-			}else if (c == '\\'){
-				if (i > this.index){
-					sb.append(source.substring(this.index, i));
-					this.index = i;
-				}
-				escaped = true;
+				i = j + 1;
 			}
-			i += 1;
+			j += 1;
 		}
-		this.index += 1;
-		return new ImmediateExpression(sb.toString());
+		if (i + 1 < token.length()){
+			throw new EvalException("'" + token.subSequence(i + 1, 1) + "'は予期せぬ文字です : " + token);
+		}
+		return sb.toString();
 	}
-
-	private void skipSpace(String source){
-		while(this.index < source.length() && source.charAt(this.index) == ' '){
-			this.index += 1;
-		}
-	}
-
-	private String nextToken(String source){
-		int i = this.index;
-		while(i < source.length() &&
-				source.charAt(i) != ' ' && source.charAt(i) != ')'){
-			i += 1;
-		}
-		String ret = "";
-		if (i > this.index){
-			ret = source.substring(this.index, i);
-			this.index = i;
-		}
-		return ret;
-	}
-
 }
