@@ -26,13 +26,13 @@ public class SubPageDataSource implements IReportDataSource {
 		this.subPageKeys = Arrays.asList(subPageKeys);
 		for(int i = 0;i < pages.size();i++){
 			ReportPage page = pages.get(i);
-			Group g = null;
 			if(pageGroupId != null){
-				g = page.findStartedGroup(pageGroupId);
+				Group g = page.findStartedGroup(pageGroupId);
+				if (g != null){
+					this.addBreak(g.data.getRecord());
+				}
 			}
-			if (g != null){
-				this.addBreak(g.data.getRecord());
-			}else{
+			if (this.currentRecord == null){
 				this.addBreak(page.report.data.getRecord());
 			}
 			this.addSubPage(i);
