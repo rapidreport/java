@@ -1,0 +1,11 @@
+﻿同梱されている zxing.core-3.2.1.jar は、
+
+Zxing 3.2.1 
+https://github.com/zxing/zxing/releases/tag/zxing-3.2.1
+
+のcoreライブラリに、株式会社システムベース(http://www.systembase.co.jp/)が、
+Java6でのコンパイルを可能とするための変更を加えたものです。
+
+ソースコードは以下のURLから入手できます。
+
+http://rapidreport.systembase.co.jp/release/zxing.core-3.2.1-java6-src.zip
