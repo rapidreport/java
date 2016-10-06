@@ -164,7 +164,6 @@ public class GroupDesign {
 						logger.evaluateError("[Breaking group]",
 								new EvalException("グループのブレーク処理中にエラーが発生しました。キー：" + key, ex));
 					}
-					return false;
 				}
 			}
 		}

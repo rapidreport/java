@@ -40,8 +40,8 @@ public class Test_4_26_FieldExistCheck {
 	private static DataTable getDataTable() throws Exception {
 		DataTable ret = new DataTable();
 		ret.setFieldNames("field1");
-		ret.addRecord().puts("正常に文字列が出力");
-		ret.addRecord().puts("正常に文字列が出力");
+		ret.addRecord().puts("正常に文字列が出力 頁1");
+		ret.addRecord().puts("正常に文字列が出力 頁2");
 		return ret;
 	}
 
