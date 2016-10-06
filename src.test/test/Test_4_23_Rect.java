@@ -7,10 +7,10 @@ import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.data.DummyDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
-public class Test_4_20_code128 {
+public class Test_4_23_Rect {
 
 	public static void main(String[] args) throws Throwable {
-		String name = "test_4_20_code128";
+		String name = "test_4_23_rect";
 		
 		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
         report.fill(DummyDataSource.getInstance());
@@ -25,7 +25,6 @@ public class Test_4_20_code128 {
 				fos.close();
 			}
 		}
-		
 	}
-	
+
 }

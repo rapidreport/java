@@ -15,10 +15,10 @@ import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
-public class Test_4_18_trim {
+public class Test_4_18_Mexp {
 
 		public static void main(String[] args) throws Throwable {
-			String name = "test_4_18_trim";
+			String name = "test_4_18_mexp";
 			
 			Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
 			report.fill(new ReportDataSource(getDataTable()));
@@ -60,8 +60,10 @@ public class Test_4_18_trim {
 
 		private static DataTable getDataTable() throws Exception {
 			DataTable ret = new DataTable();
-			ret.setFieldNames("A", "B", "C");
-			ret.addRecord().puts("  a a  ", "b  ", "  c");
+			ret.setFieldNames("op", "v1", "v2");
+			ret.addRecord().puts("add", 20, 15);
+			ret.addRecord().puts("sub", 20, 15);
+			ret.addRecord().puts("mul", 20, 15);
 			return ret;
 		}
 }

@@ -14,7 +14,7 @@ import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
-public class Test_4_24_subpage {
+public class Test_4_24_Subpage {
 
 	public static void main(String[] args) throws Throwable {
 		String name = "test_4_24_subpage";
