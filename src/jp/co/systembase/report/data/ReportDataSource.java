@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import jp.co.systembase.core.DataTable;
+import jp.co.systembase.report.Report;
+import jp.co.systembase.report.component.UnknownFieldException;
 
 public class ReportDataSource implements IReportDataSource {
 
@@ -29,7 +31,13 @@ public class ReportDataSource implements IReportDataSource {
 	public Object get(int i, String key) {
 		Object r = this.data.get(i);
 		if (r instanceof Map){
-			return ((Map<?, ?>)r).get(key);
+			Map<?, ?> m = (Map<?, ?>)r;
+			if (!Report.Compatibility._4_25_UnknownFieldNull){
+				if (!m.containsKey(key)){
+					throw new UnknownFieldException("Unknown field: " + key);
+				}
+			}
+			return m.get(key);
 		}else{
 			Class<?> c = r.getClass();
 			this.createCache(c);
@@ -54,7 +62,11 @@ public class ReportDataSource implements IReportDataSource {
 					}
 				}
 			}
-			return null;
+			if (Report.Compatibility._4_25_UnknownFieldNull){
+				return null;
+			}else{
+				throw new UnknownFieldException("Unknown field: " + key);
+			}
 		}
 	}
 

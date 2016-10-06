@@ -71,6 +71,7 @@ public class Report {
 
 	public static class Compatibility{
 		public static boolean _4_6_PdfFontBold = false;
+		public static boolean _4_25_UnknownFieldNull = false;
 	}
 
 	public static Map<String, ContentDesign> sharedContents = new HashMap<String, ContentDesign>();

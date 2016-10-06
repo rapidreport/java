@@ -13,7 +13,7 @@ import jp.co.systembase.report.component.EvalException;
 import jp.co.systembase.report.data.ReportDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
-public class Test_4_26_field_exist_check {
+public class Test_4_26_FieldExistCheck {
 
 	public static void main(String[] args) throws Throwable {
 		String name = "test_4_26_field_exist_check";
@@ -41,13 +41,17 @@ public class Test_4_26_field_exist_check {
 		DataTable ret = new DataTable();
 		ret.setFieldNames("field1");
 		ret.addRecord().puts("正常に文字列が出力");
+		ret.addRecord().puts("正常に文字列が出力");
 		return ret;
 	}
 
 	public static class Logger implements IReportLogger {
 		@Override
 		public void evaluateError(String exp, EvalException ex) {
-			System.out.println("式：" + exp + ":" + ex.getClass().toString() + ":" + ex.getMessage());
+			System.out.println(ex.getMessage());
+			if(ex.getCause() != null){
+				System.out.println(" " + ex.getCause().getClass().toString() + ":" + ex.getCause().getMessage());
+			}
 		}
 		@Override
 		public void elementRenderingError(ContentDesign contentDesign,
