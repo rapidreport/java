@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.systembase.core.DataTable;
 import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPages;
@@ -12,6 +11,7 @@ import jp.co.systembase.report.ReportSetting;
 import jp.co.systembase.report.component.ContentDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.EvalException;
+import jp.co.systembase.report.component.UnknownFieldException;
 import jp.co.systembase.report.data.ReportDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
@@ -75,6 +75,10 @@ public class Test_4_26_FieldExistCheck_Beans {
 		@Override
 		public void elementRenderingError(ContentDesign contentDesign,
 				ElementDesign elementDesign, Throwable ex) {
+		}
+		@Override
+		public void unknownFieldError(UnknownFieldException ex) {
+			System.out.println(ex.getMessage());
 		}
 	}
 

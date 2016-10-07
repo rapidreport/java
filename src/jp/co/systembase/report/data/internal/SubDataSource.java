@@ -1,5 +1,6 @@
 package jp.co.systembase.report.data.internal;
 
+import jp.co.systembase.report.component.UnknownFieldException;
 import jp.co.systembase.report.data.IReportDataSource;
 
 public class SubDataSource implements IReportDataSource{
@@ -17,7 +18,7 @@ public class SubDataSource implements IReportDataSource{
 		this.endIndex = endIndex;
 	}
 
-	public Object get(int i, String key) {
+	public Object get(int i, String key) throws UnknownFieldException {
 		if (this.beginIndex < 0 || i < 0 || i >= this.size()){
 			throw new ArrayIndexOutOfBoundsException();
 		}

@@ -28,13 +28,13 @@ public class ReportDataSource implements IReportDataSource {
 		this.data = data;
 	}
 
-	public Object get(int i, String key) {
+	public Object get(int i, String key) throws UnknownFieldException {
 		Object r = this.data.get(i);
 		if (r instanceof Map){
 			Map<?, ?> m = (Map<?, ?>)r;
 			if (!Report.Compatibility._4_25_UnknownFieldNull){
 				if (!m.containsKey(key)){
-					throw new UnknownFieldException("不明な列: " + key);
+					throw new UnknownFieldException(this, i, key);
 				}
 			}
 			return m.get(key);
@@ -65,7 +65,7 @@ public class ReportDataSource implements IReportDataSource {
 			if (Report.Compatibility._4_25_UnknownFieldNull){
 				return null;
 			}else{
-				throw new UnknownFieldException("不明な列: " + key);
+				throw new UnknownFieldException(this, i, key);
 			}
 		}
 	}

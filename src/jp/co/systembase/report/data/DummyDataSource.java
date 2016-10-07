@@ -1,5 +1,7 @@
 package jp.co.systembase.report.data;
 
+import jp.co.systembase.report.component.UnknownFieldException;
+
 public class DummyDataSource implements IReportDataSource, INoCache {
 
 	private static DummyDataSource instance = new DummyDataSource();
@@ -10,7 +12,7 @@ public class DummyDataSource implements IReportDataSource, INoCache {
 
 	private DummyDataSource(){}
 
-	public Object get(int i, String key) {
+	public Object get(int i, String key) throws UnknownFieldException {
 		return null;
 	}
 

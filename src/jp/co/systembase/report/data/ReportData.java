@@ -16,6 +16,7 @@ import jp.co.systembase.report.component.EvalException;
 import jp.co.systembase.report.component.Group;
 import jp.co.systembase.report.component.GroupDesign;
 import jp.co.systembase.report.component.IndexRange;
+import jp.co.systembase.report.component.UnknownFieldException;
 import jp.co.systembase.report.data.internal.WrapperDataSource;
 
 public class ReportData implements IReportDataSource {
@@ -38,33 +39,33 @@ public class ReportData implements IReportDataSource {
 
 	public ReportData(IReportDataSource dataSource, Group group){
 		this.initialize(
-				dataSource, 
-				0, 
-				dataSource.size(), 
-				group.getReport(), 
-				group, 
+				dataSource,
+				0,
+				dataSource.size(),
+				group.getReport(),
+				group,
 				group.getReport().dataCache,
 				group.getReport().design.setting.logger);
 	}
 
 	public ReportData(IReportDataSource dataSource, Report report, Group group){
 		this.initialize(
-				dataSource, 
-				0, 
-				dataSource.size(), 
-				report, 
-				group, 
+				dataSource,
+				0,
+				dataSource.size(),
+				report,
+				group,
 				report.dataCache,
 				report.design.setting.logger);
 	}
 
 	public ReportData(IReportDataSource dataSource, int beginIndex, int endIndex, Report report, Group group){
 		this.initialize(
-				dataSource, 
-				beginIndex, 
-				endIndex, 
-				report, 
-				group, 
+				dataSource,
+				beginIndex,
+				endIndex,
+				report,
+				group,
 				report.dataCache,
 				report.design.setting.logger);
 	}
@@ -210,6 +211,11 @@ public class ReportData implements IReportDataSource {
 		}catch(EvalException ex){
 			if (this.logger != null){
 				this.logger.evaluateError(key, ex);
+			}
+			return null;
+		}catch(UnknownFieldException ex){
+			if (this.logger != null){
+				this.logger.unknownFieldError(ex);
 			}
 			return null;
 		}
@@ -397,7 +403,7 @@ public class ReportData implements IReportDataSource {
 						BigDecimal _summary = new BigDecimal(0);
 						int _count = 0;
 						for(int j = offf;j <= offt;j++){
-							Object o;
+							Object o = null;
 							int _i = (i << 8) | j;
 							if (customField != null){
 								o = customField.get(_i);
@@ -420,7 +426,7 @@ public class ReportData implements IReportDataSource {
 						}
 					}
 				}
-				return new _SummaryResult(summary, count);				
+				return new _SummaryResult(summary, count);
 			}finally{
 				if (this.report != null && customField != null){
 					this.report.customFieldStack.pop();
@@ -429,6 +435,11 @@ public class ReportData implements IReportDataSource {
 		}catch(EvalException ex){
 			if (this.logger != null){
 				this.logger.evaluateError(key, ex);
+			}
+			return new _SummaryResult(BigDecimal.ZERO, 0);
+		}catch(UnknownFieldException ex){
+			if (this.logger != null){
+				this.logger.unknownFieldError(ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}
@@ -467,6 +478,11 @@ public class ReportData implements IReportDataSource {
 		}catch(EvalException ex){
 			if (this.logger != null){
 				this.logger.evaluateError(key, ex);
+			}
+			return new _SummaryResult(BigDecimal.ZERO, 0);
+		}catch(UnknownFieldException ex){
+			if (this.logger != null){
+				this.logger.unknownFieldError(ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}

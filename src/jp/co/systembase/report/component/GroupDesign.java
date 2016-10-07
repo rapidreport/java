@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import jp.co.systembase.core.Cast;
-import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.data.ReportData;
@@ -154,16 +153,8 @@ public class GroupDesign {
 			return true;
 		}else if (this.keys != null){
 			for (String key : this.keys){
-				try{
-					if (!ReportUtil.eq(data.get(i, key), data.get(j, key))){
-						return true;
-					}
-				}catch(UnknownFieldException ex) {
-					IReportLogger logger = data.report.design.setting.logger;
-					if (logger != null){
-						logger.evaluateError("[Breaking group]",
-								new EvalException("グループのブレーク処理中にエラーが発生しました。キー：" + key, ex));
-					}
+				if (!ReportUtil.eq(data.get(i, key), data.get(j, key))){
+					return true;
 				}
 			}
 		}

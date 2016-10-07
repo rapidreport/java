@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.GroupDesign;
 import jp.co.systembase.report.component.Groups;
+import jp.co.systembase.report.component.UnknownFieldException;
 import jp.co.systembase.report.data.internal.SubDataSource;
 
 public class GroupDataProvider implements IGroupDataProvider {
@@ -64,7 +66,8 @@ public class GroupDataProvider implements IGroupDataProvider {
 						this.groupDataCache.put(
 								groupId,
 								splitData(keyNames,
-									this.groupDataMap.getDataSource(groupId)));
+									this.groupDataMap.getDataSource(groupId),
+									data.report.design.setting.logger));
 					}
 					List<?> keys = getKeys(keyNames, data);
 					if (this.groupDataCache.get(groupId).containsKey(keys)){
@@ -118,22 +121,31 @@ public class GroupDataProvider implements IGroupDataProvider {
 	private static List<?> getKeys(
 			List<String> keyNames,
 			IReportDataSource dataSource,
-			int index){
+			int index,
+			IReportLogger logger){
 		List<Object> ret = new ArrayList<Object>();
 		for(String k: keyNames){
-			ret.add(ReportUtil.eqRegularize(dataSource.get(index, k)));
+			try{
+				ret.add(ReportUtil.eqRegularize(dataSource.get(index, k)));
+			}catch(UnknownFieldException ex){
+				if (logger != null){
+					logger.unknownFieldError(ex);
+				}
+				ret.add(null);
+			}
 		}
 		return ret;
 	}
 
 	private static Map<List<?>, IReportDataSource> splitData(
 			List<String> keyNames,
-			IReportDataSource dataSource){
+			IReportDataSource dataSource,
+			IReportLogger logger){
 		Map<List<?>, IReportDataSource> ret = new HashMap<List<?>, IReportDataSource>();
 		List<?> keys = null;
 		int beginIndex = 0;
 		for(int i = 0;i < dataSource.size();i++){
-			List<?> _keys = getKeys(keyNames, dataSource, i);
+			List<?> _keys = getKeys(keyNames, dataSource, i, logger);
 			if (!_keys.equals(keys)){
 				if (keys != null){
 					ret.put(keys, new SubDataSource(dataSource, beginIndex, i));
