@@ -10,7 +10,6 @@ import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.GroupDesign;
 import jp.co.systembase.report.component.Groups;
-import jp.co.systembase.report.component.UnknownFieldException;
 import jp.co.systembase.report.data.internal.SubDataSource;
 
 public class GroupDataProvider implements IGroupDataProvider {

@@ -11,7 +11,6 @@ import java.util.Map;
 
 import jp.co.systembase.core.DataTable;
 import jp.co.systembase.report.Report;
-import jp.co.systembase.report.component.UnknownFieldException;
 
 public class ReportDataSource implements IReportDataSource {
 

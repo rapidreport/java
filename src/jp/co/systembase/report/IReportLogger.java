@@ -3,7 +3,7 @@ package jp.co.systembase.report;
 import jp.co.systembase.report.component.ContentDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.EvalException;
-import jp.co.systembase.report.component.UnknownFieldException;
+import jp.co.systembase.report.data.UnknownFieldException;
 
 public interface IReportLogger {
 	void evaluateError(String exp, EvalException ex);

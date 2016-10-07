@@ -1,6 +1,5 @@
 package jp.co.systembase.report.data;
 
-import jp.co.systembase.report.component.UnknownFieldException;
 
 public class BlankDataSource implements IReportDataSource, INoCache {
 

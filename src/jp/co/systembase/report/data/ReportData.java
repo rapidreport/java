@@ -16,7 +16,6 @@ import jp.co.systembase.report.component.EvalException;
 import jp.co.systembase.report.component.Group;
 import jp.co.systembase.report.component.GroupDesign;
 import jp.co.systembase.report.component.IndexRange;
-import jp.co.systembase.report.component.UnknownFieldException;
 import jp.co.systembase.report.data.internal.WrapperDataSource;
 
 public class ReportData implements IReportDataSource {

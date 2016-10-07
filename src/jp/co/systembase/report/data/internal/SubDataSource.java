@@ -1,7 +1,7 @@
 package jp.co.systembase.report.data.internal;
 
-import jp.co.systembase.report.component.UnknownFieldException;
 import jp.co.systembase.report.data.IReportDataSource;
+import jp.co.systembase.report.data.UnknownFieldException;
 
 public class SubDataSource implements IReportDataSource{
 
