@@ -34,7 +34,7 @@ public class ReportDataSource implements IReportDataSource {
 			Map<?, ?> m = (Map<?, ?>)r;
 			if (!Report.Compatibility._4_25_UnknownFieldNull){
 				if (!m.containsKey(key)){
-					throw new UnknownFieldException("Unknown field: " + key);
+					throw new UnknownFieldException("不明な列: " + key);
 				}
 			}
 			return m.get(key);
@@ -65,7 +65,7 @@ public class ReportDataSource implements IReportDataSource {
 			if (Report.Compatibility._4_25_UnknownFieldNull){
 				return null;
 			}else{
-				throw new UnknownFieldException("Unknown field: " + key);
+				throw new UnknownFieldException("不明な列: " + key);
 			}
 		}
 	}
