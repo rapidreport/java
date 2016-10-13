@@ -15,7 +15,7 @@ import jp.co.systembase.report.data.ReportDataSource;
 import jp.co.systembase.report.data.UnknownFieldException;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
-public class Test_4_26_FieldExistCheck_Beans {
+public class Test_4_26_UnknownField_Beans {
 
 	public static void main(String[] args) throws Throwable {
 		String name = "test_4_26_field_exist_check";

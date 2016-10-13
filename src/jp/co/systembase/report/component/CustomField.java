@@ -60,28 +60,24 @@ public class CustomField {
 	}
 
 	public Object get(int i){
-		try{
-			if (!(this.data.dataSource instanceof INoCache)){
-				Map<Integer, Object> cache =
+		if (!(this.data.dataSource instanceof INoCache)){
+			Map<Integer, Object> cache =
 					this.report.dataCache.customField(this.data, key);
-				if (cache.containsKey(i)){
-					return cache.get(i);
-				}else{
-					Object ret = this.eval(i);
-					cache.put(i, ret);
-					return ret;
-				}
+			if (cache.containsKey(i)){
+				return cache.get(i);
 			}else{
-				return this.eval(i);
+				Object ret = this.evalTry(i);
+				cache.put(i, ret);
+				return ret;
 			}
-		}catch(EvalException ex){
-			return null;
+		}else{
+			return this.evalTry(i);
 		}
 	}
 
-	private Object eval(int i) throws EvalException{
+	private Object evalTry(int i){
 		ReportDataRecord r = new ReportDataRecord(this.data, i);
-		return (new Evaluator(this.report, this.data, r)).eval(this.exp);
+		return (new Evaluator(this.report, this.data, r)).evalTry(this.exp);
 	}
 
 

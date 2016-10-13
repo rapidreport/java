@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPage;
 import jp.co.systembase.report.ReportPages;
+import jp.co.systembase.report.ReportSetting;
 import jp.co.systembase.report.data.IReportDataSource;
 import jp.co.systembase.report.data.ReportData;
 import jp.co.systembase.report.data.ReportDataRecord;
@@ -148,16 +148,16 @@ public class Evaluator {
 			IReportDataSource dataSource = scopeData.getWrapperDataSource(unitGroupDesign);
 			IndexRange indexRange = scopeData.getDataIndexRange(unitGroupDesign);
 			DataCache dataCache = this.basicContext.report.dataCache;
-			IReportLogger logger = this.basicContext.report.design.setting.logger;
+			ReportSetting setting = this.basicContext.report.design.setting;
 			if (indexRange != null){
 				return new ReportData(
 						dataSource,
 						indexRange.beginIndex,
 						indexRange.endIndex,
 						dataCache,
-						logger);
+						setting);
 			}else{
-				return new ReportData(dataSource, dataCache, logger);
+				return new ReportData(dataSource, dataCache, setting);
 			}
 		}
 	}

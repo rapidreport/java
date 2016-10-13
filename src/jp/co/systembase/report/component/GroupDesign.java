@@ -7,8 +7,8 @@ import java.util.Map;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
-import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.data.ReportData;
+import jp.co.systembase.report.data.UnknownFieldException;
 
 public class GroupDesign {
 
@@ -113,28 +113,61 @@ public class GroupDesign {
 	}
 
 	public List<ReportData> dataSplit(ReportData data){
-		List<ReportData> ret = new ArrayList<ReportData>();
 		if (this.unbreakable()){
-			if (data.size() > 0){
-				ret.add(new ReportData(data));
-			}
+			return _getWholeData(data);
 		}else{
-			int i = 0;
-			while(i < data.size()){
-				int j = i + 1;
-				while (j < data.size()){
-					if (this.isBreak(data, i, j)){
-						break;
+			try{
+				List<ReportData> ret = new ArrayList<ReportData>();
+				int i = 0;
+				while(i < data.size()){
+					int j = i + 1;
+					while (j < data.size()){
+						if (this.detail){
+							break;
+						}else if (this.keys != null){
+							if (data.isBreak(i, j, this.keys)){
+								break;
+							}
+						}
+						if (this.maxCount > 0 && j - i >= this.maxCount){
+							break;
+						}
+						j++;
 					}
-					j++;
+					ret.add(ReportData.getPartialData(data, i, j));
+					i = j;
 				}
-				ret.add(ReportData.getPartialData(data, i, j));
-				i = j;
+				return ret;
+			}catch(EvalException ex){
+				if (this.reportDesign.setting.logger != null){
+					String m = "(ブレーク処理:";
+					for(int i = 0;i < this.keys.size();i++){
+						if (i > 0){
+							m += ",";
+						}
+						m += this.keys.get(i);
+					}
+					m += ")";
+					this.reportDesign.setting.logger.evaluateError(m, ex);
+				}
+				return _getWholeData(data);
+			}catch(UnknownFieldException ex){
+				if (this.reportDesign.setting.logger != null){
+					this.reportDesign.setting.logger.unknownFieldError(ex);
+				}
+				return _getWholeData(data);
 			}
+		}
+	}
+
+	private List<ReportData> _getWholeData(ReportData data){
+		List<ReportData> ret = new ArrayList<ReportData>();
+		if (data.size() > 0){
+			ret.add(new ReportData(data));
 		}
 		return ret;
 	}
-
+	
 	private boolean unbreakable(){
 		if (this.detail){
 			return false;
@@ -146,22 +179,6 @@ public class GroupDesign {
 			return false;
 		}
 		return true;
-	}
-
-	private boolean isBreak(ReportData data, int i, int j){
-		if (this.detail){
-			return true;
-		}else if (this.keys != null){
-			for (String key : this.keys){
-				if (!ReportUtil.eq(data.get(i, key), data.get(j, key))){
-					return true;
-				}
-			}
-		}
-		if (this.maxCount > 0 && j - i >= this.maxCount){
-			return true;
-		}
-		return false;
 	}
 
 	public ContentDesign findContentDesign(String id){

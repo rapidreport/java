@@ -14,10 +14,10 @@ import jp.co.systembase.report.data.ReportDataSource;
 import jp.co.systembase.report.data.UnknownFieldException;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 
-public class Test_4_26_FieldExistCheck {
+public class Test_4_26_UnknownField {
 
 	public static void main(String[] args) throws Throwable {
-		String name = "test_4_26_field_exist_check";
+		String name = "test_4_26_unknownfield";
 
 		ReportSetting setting = new ReportSetting();
 		Logger logger = new Logger();
@@ -41,8 +41,8 @@ public class Test_4_26_FieldExistCheck {
 	private static DataTable getDataTable() throws Exception {
 		DataTable ret = new DataTable();
 		ret.setFieldNames("field1");
-		ret.addRecord().puts("正常に文字列が出力 頁1");
-		ret.addRecord().puts("正常に文字列が出力 頁2");
+		ret.addRecord().puts("ページ１");
+		ret.addRecord().puts("ページ２");
 		return ret;
 	}
 
