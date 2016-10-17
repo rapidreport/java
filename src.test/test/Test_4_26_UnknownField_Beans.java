@@ -18,7 +18,7 @@ import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 public class Test_4_26_UnknownField_Beans {
 
 	public static void main(String[] args) throws Throwable {
-		String name = "test_4_26_field_exist_check";
+		String name = "test_4_26_unknownfield";
 
 		ReportSetting setting = new ReportSetting();
 		Logger logger = new Logger();
@@ -43,12 +43,12 @@ public class Test_4_26_UnknownField_Beans {
 		List<Record> ret = new ArrayList<Record>();
 		{
 			Record r = new Record();
-			r.setField1("正常に文字列が出力 頁1");
+			r.setField1("ページ1");
 			ret.add(r);
 		}
 		{
 			Record r = new Record();
-			r.setField1("正常に文字列が出力 頁2");
+			r.setField1("ページ2");
 			ret.add(r);
 		}
 		return ret;
