@@ -31,7 +31,7 @@ public class ReportDataSource implements IReportDataSource {
 		Object r = this.data.get(i);
 		if (r instanceof Map){
 			Map<?, ?> m = (Map<?, ?>)r;
-			if (!Report.Compatibility._4_25_UnknownFieldNull){
+			if (!Report.Compatibility._4_25_UnknownFieldNeverThrow){
 				if (!m.containsKey(key)){
 					throw new UnknownFieldException(this, i, key);
 				}
@@ -61,7 +61,7 @@ public class ReportDataSource implements IReportDataSource {
 					}
 				}
 			}
-			if (Report.Compatibility._4_25_UnknownFieldNull){
+			if (Report.Compatibility._4_25_UnknownFieldNeverThrow){
 				return null;
 			}else{
 				throw new UnknownFieldException(this, i, key);
