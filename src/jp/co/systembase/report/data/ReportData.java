@@ -3,14 +3,12 @@ package jp.co.systembase.report.data;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import jp.co.systembase.core.Cast;
+import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
-import jp.co.systembase.report.ReportSetting;
-import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.ContentDesign;
 import jp.co.systembase.report.component.CustomField;
 import jp.co.systembase.report.component.DataCache;
@@ -28,14 +26,14 @@ public class ReportData implements IReportDataSource {
 	public int beginIndex;
 	public int endIndex;
 	public DataCache dataCache;
-	public ReportSetting setting;
+	public IReportLogger logger;
 
-	public ReportData(IReportDataSource dataSource, DataCache dataCache, ReportSetting setting){
-		this.initialize(dataSource, 0, dataSource.size(), null, null, dataCache, setting);
+	public ReportData(IReportDataSource dataSource, DataCache dataCache, IReportLogger logger){
+		this.initialize(dataSource, 0, dataSource.size(), null, null, dataCache, logger);
 	}
 
-    public ReportData(IReportDataSource dataSource, int beginIndex, int endIndex, DataCache dataCache, ReportSetting setting){
-    	this.initialize(dataSource, beginIndex, endIndex, null, null, dataCache, setting);
+    public ReportData(IReportDataSource dataSource, int beginIndex, int endIndex, DataCache dataCache, IReportLogger logger){
+    	this.initialize(dataSource, beginIndex, endIndex, null, null, dataCache, logger);
     }
 
 	public ReportData(IReportDataSource dataSource, Group group){
@@ -46,7 +44,7 @@ public class ReportData implements IReportDataSource {
 				group.getReport(),
 				group,
 				group.getReport().dataCache,
-				group.getReport().design.setting);
+				group.getReport().design.setting.logger);
 	}
 
 	public ReportData(IReportDataSource dataSource, Report report, Group group){
@@ -57,7 +55,7 @@ public class ReportData implements IReportDataSource {
 				report,
 				group,
 				report.dataCache,
-				report.design.setting);
+				report.design.setting.logger);
 	}
 
 	public ReportData(IReportDataSource dataSource, int beginIndex, int endIndex, Report report, Group group){
@@ -68,7 +66,7 @@ public class ReportData implements IReportDataSource {
 				report,
 				group,
 				report.dataCache,
-				report.design.setting);
+				report.design.setting.logger);
 	}
 
 	public ReportData(ReportData data){
@@ -79,7 +77,7 @@ public class ReportData implements IReportDataSource {
 				data.report,
 				data.group,
 				data.dataCache,
-				data.setting);
+				data.logger);
 	}
 
 	public ReportData(ReportData data, int fromIndex, int toIndex){
@@ -90,7 +88,7 @@ public class ReportData implements IReportDataSource {
 				data.report,
 				data.group,
 				data.dataCache,
-				data.setting);
+				data.logger);
 	}
 
 	public static ReportData getPartialData(ReportData data, int beginIndex, int endIndex){
@@ -118,12 +116,12 @@ public class ReportData implements IReportDataSource {
 			Report report,
 			Group group,
 			DataCache dataCache,
-			ReportSetting setting){
+			IReportLogger logger){
 		this.dataSource = dataSource;
 		this.report = report;
 		this.group = group;
 		this.dataCache = dataCache;
-		this.setting = setting;
+		this.logger = logger;
 		if (beginIndex >= 0 && beginIndex < endIndex){
 			this.beginIndex = beginIndex;
 			this.endIndex = endIndex;
@@ -193,41 +191,33 @@ public class ReportData implements IReportDataSource {
 		if (this.beginIndex < 0 || i < 0 || i >= this.size()){
 			throw new ArrayIndexOutOfBoundsException();
 		}
+		CustomField customField = this.findCustomField(key);
 		try{
-			return _get(i, key);
+			if (customField != null){
+				if (this.report != null){
+					this.report.customFieldStack.push(customField);
+				}
+				try{
+					return customField.get(customField.data.TransIndex(this, i));
+				}finally{
+					if (this.report != null){
+						this.report.customFieldStack.pop();
+					}
+				}
+			}else{
+				return this.dataSource.get(i + this.beginIndex, key);
+			}
 		}catch(EvalException ex){
-			if (this.setting.logger != null){
-				this.setting.logger.evaluateError(key, ex);
+			if (this.logger != null){
+				this.logger.evaluateError(key, ex);
 			}
 			return null;
 		}catch(UnknownFieldException ex){
-			if (this.setting.logger != null){
-				this.setting.logger.unknownFieldError(ex);
+			if (this.logger != null){
+				this.logger.unknownFieldError(ex);
 			}
 			return null;
 		}
-	}
-
-	private Object _get(int i, String key) throws EvalException, UnknownFieldException{
-		CustomField customField = this.findCustomField(key);
-		if (customField != null){
-			try{
-				return customField.get(customField.data.transIndex(this, i));
-			}finally{
-				this.releaseCustomField(customField);
-			}
-		}else{
-			return this.dataSource.get(i + this.beginIndex, key);
-		}
-	}
-
-	public boolean isBreak(int i, int j, List<String> keys) throws EvalException, UnknownFieldException{
-		for (String key : keys){
-			if (!ReportUtil.eq(this._get(i, key), this._get(j, key))){
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public int size(){
@@ -238,52 +228,39 @@ public class ReportData implements IReportDataSource {
 		}
 	}
 
-	private CustomField findCustomField(String key) throws EvalException{
-		CustomField ret = null;
-		{
-			Group g = this.group;
-			while(g != null && this.hasSameSource(g.data)){
-				GroupDesign gd = g.getDesign();
-				if (gd.customFields != null && gd.customFields.containsKey(key)){
-					ret = new CustomField(
-							key,
-							gd.customFields.get(key),
-							this.report,
-							g.data);
-					break;
-				}
-				if (g.parentGroups.parentContent != null){
-					g = g.parentGroups.parentContent.parentGroup;
-				}else if (g.parentGroups.dataSourceGroup != null){
-					g = g.parentGroups.dataSourceGroup;
-				}else{
-					g = null;
-				}
+	private CustomField findCustomField(String key){
+		Group g = this.group;
+		while(g != null && this.hasSameSource(g.data)){
+			GroupDesign gd = g.getDesign();
+			if (gd.customFields != null && gd.customFields.containsKey(key)){
+				return new CustomField(
+						key,
+						gd.customFields.get(key),
+						this.report,
+						g.data);
+			}
+			if (g.parentGroups.parentContent != null){
+				g = g.parentGroups.parentContent.parentGroup;
+			}else if (g.parentGroups.dataSourceGroup != null){
+				g = g.parentGroups.dataSourceGroup;
+			}else{
+				g = null;
 			}
 		}
 		if (this.report != null && this.hasSameSource(this.report.data)){
 			ReportDesign rd = this.report.design;
 			if (rd.customFields != null && rd.customFields.containsKey(key)){
-				ret = new CustomField(
+				return new CustomField(
 						key,
 						rd.customFields.get(key),
 						this.report,
 						this.report.data);
 			}
 		}
-		if (this.report != null && ret != null){
-			this.report.customFieldStack.push(ret);
-		}
-		return ret;
+		return null;
 	}
 
-	private void releaseCustomField(CustomField customField){
-		if (this.report != null && customField != null){
-			this.report.customFieldStack.pop();
-		}
-	}
-
-	public int transIndex(ReportData data, int i){
+	public int TransIndex(ReportData data, int i){
 		return i + (data.beginIndex - this.beginIndex);
 	}
 
@@ -392,15 +369,18 @@ public class ReportData implements IReportDataSource {
 		Map<Integer, Integer> countCache;
 		int _beginIndex;
 		int _endIndex;
+		CustomField customField = this.findCustomField(key);
 		try{
-			CustomField customField = this.findCustomField(key);
+			if (this.report != null && customField != null){
+				this.report.customFieldStack.push(customField);
+			}
 			{
 				DataCache dc = this.dataCache;
 				if (customField != null){
 					summaryCache = dc.customFieldSummary(customField.data, key);
 					countCache = dc.customFieldCount(customField.data, key);
-					_beginIndex = customField.data.transIndex(this, 0);
-					_endIndex = customField.data.transIndex(this, this.size());
+					_beginIndex = customField.data.TransIndex(this, 0);
+					_endIndex = customField.data.TransIndex(this, this.size());
 				}else{
 					summaryCache = dc.summary(this.dataSource, key);
 					countCache = dc.count(this.dataSource, key);
@@ -447,16 +427,18 @@ public class ReportData implements IReportDataSource {
 				}
 				return new _SummaryResult(summary, count);
 			}finally{
-				this.releaseCustomField(customField);
+				if (this.report != null && customField != null){
+					this.report.customFieldStack.pop();
+				}
 			}
 		}catch(EvalException ex){
-			if (this.setting.logger != null){
-				this.setting.logger.evaluateError(key, ex);
+			if (this.logger != null){
+				this.logger.evaluateError(key, ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}catch(UnknownFieldException ex){
-			if (this.setting.logger != null){
-				this.setting.logger.unknownFieldError(ex);
+			if (this.logger != null){
+				this.logger.unknownFieldError(ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}
@@ -465,13 +447,16 @@ public class ReportData implements IReportDataSource {
 	private _SummaryResult getSummary_noCache(String key){
 		BigDecimal summary = new BigDecimal(0);
 		int count = 0;
+		CustomField customField = this.findCustomField(key);
 		try{
-			CustomField customField = this.findCustomField(key);
+			if (this.report != null && customField != null){
+				this.report.customFieldStack.push(customField);
+			}
 			try{
 				for(int i = 0;i < this.size();i++){
 					Object o;
 					if (customField != null){
-						o = customField.get(customField.data.transIndex(this, i));
+						o = customField.get(customField.data.TransIndex(this, i));
 					}else{
 						o = this.dataSource.get(i + this.beginIndex, key);
 					}
@@ -485,16 +470,18 @@ public class ReportData implements IReportDataSource {
 				}
 				return new _SummaryResult(summary, count);
 			}finally{
-				this.releaseCustomField(customField);
+				if (this.report != null && customField != null){
+					this.report.customFieldStack.pop();
+				}
 			}
 		}catch(EvalException ex){
-			if (this.setting.logger != null){
-				this.setting.logger.evaluateError(key, ex);
+			if (this.logger != null){
+				this.logger.evaluateError(key, ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}catch(UnknownFieldException ex){
-			if (this.setting.logger != null){
-				this.setting.logger.unknownFieldError(ex);
+			if (this.logger != null){
+				this.logger.unknownFieldError(ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}
