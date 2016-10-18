@@ -25,15 +25,14 @@ public class ReportData implements IReportDataSource {
 	public Group group = null;
 	public int beginIndex;
 	public int endIndex;
-	public DataCache dataCache;
-	public IReportLogger logger;
+	public Report.Context context;
 
-	public ReportData(IReportDataSource dataSource, DataCache dataCache, IReportLogger logger){
-		this.initialize(dataSource, 0, dataSource.size(), null, null, dataCache, logger);
+	public ReportData(IReportDataSource dataSource, Report.Context context){
+		this.initialize(dataSource, 0, dataSource.size(), null, null, context);
 	}
 
-    public ReportData(IReportDataSource dataSource, int beginIndex, int endIndex, DataCache dataCache, IReportLogger logger){
-    	this.initialize(dataSource, beginIndex, endIndex, null, null, dataCache, logger);
+    public ReportData(IReportDataSource dataSource, int beginIndex, int endIndex, Report.Context context){
+    	this.initialize(dataSource, beginIndex, endIndex, null, null, context);
     }
 
 	public ReportData(IReportDataSource dataSource, Group group){
@@ -43,8 +42,7 @@ public class ReportData implements IReportDataSource {
 				dataSource.size(),
 				group.getReport(),
 				group,
-				group.getReport().dataCache,
-				group.getReport().design.setting.logger);
+				group.getReport().context);
 	}
 
 	public ReportData(IReportDataSource dataSource, Report report, Group group){
@@ -54,8 +52,7 @@ public class ReportData implements IReportDataSource {
 				dataSource.size(),
 				report,
 				group,
-				report.dataCache,
-				report.design.setting.logger);
+				report.context);
 	}
 
 	public ReportData(IReportDataSource dataSource, int beginIndex, int endIndex, Report report, Group group){
@@ -65,8 +62,7 @@ public class ReportData implements IReportDataSource {
 				endIndex,
 				report,
 				group,
-				report.dataCache,
-				report.design.setting.logger);
+				report.context);
 	}
 
 	public ReportData(ReportData data){
@@ -76,8 +72,7 @@ public class ReportData implements IReportDataSource {
 				data.endIndex,
 				data.report,
 				data.group,
-				data.dataCache,
-				data.logger);
+				data.context);
 	}
 
 	public ReportData(ReportData data, int fromIndex, int toIndex){
@@ -87,8 +82,7 @@ public class ReportData implements IReportDataSource {
 				toIndex,
 				data.report,
 				data.group,
-				data.dataCache,
-				data.logger);
+				data.context);
 	}
 
 	public static ReportData getPartialData(ReportData data, int beginIndex, int endIndex){
@@ -115,13 +109,11 @@ public class ReportData implements IReportDataSource {
 			int endIndex,
 			Report report,
 			Group group,
-			DataCache dataCache,
-			IReportLogger logger){
+			Report.Context context){
 		this.dataSource = dataSource;
 		this.report = report;
 		this.group = group;
-		this.dataCache = dataCache;
-		this.logger = logger;
+		this.context = context;
 		if (beginIndex >= 0 && beginIndex < endIndex){
 			this.beginIndex = beginIndex;
 			this.endIndex = endIndex;
@@ -134,10 +126,10 @@ public class ReportData implements IReportDataSource {
 	public void setGroup(Group group){
 		this.group = group;
 		GroupDesign groupDesign = group.getDesign();
-		if (!this.report.wrapperDataSourceMap.containsKey(groupDesign)){
-			this.report.wrapperDataSourceMap.put(groupDesign, new WrapperDataSource());
+		if (!this.context.wrapperDataSourceMap.containsKey(groupDesign)){
+			this.context.wrapperDataSourceMap.put(groupDesign, new WrapperDataSource());
 		}
-		WrapperDataSource wrapperDataSource = this.report.wrapperDataSourceMap.get(groupDesign);
+		WrapperDataSource wrapperDataSource = this.context.wrapperDataSourceMap.get(groupDesign);
 		int index = wrapperDataSource.dataList.size();
 		this.group.traversalIndex = index;
 		{
@@ -194,27 +186,25 @@ public class ReportData implements IReportDataSource {
 		CustomField customField = this.findCustomField(key);
 		try{
 			if (customField != null){
-				if (this.report != null){
-					this.report.customFieldStack.push(customField);
-				}
+				this.context.customFieldStack.push(customField);
 				try{
 					return customField.get(customField.data.TransIndex(this, i));
 				}finally{
-					if (this.report != null){
-						this.report.customFieldStack.pop();
-					}
+					this.context.customFieldStack.pop();
 				}
 			}else{
 				return this.dataSource.get(i + this.beginIndex, key);
 			}
 		}catch(EvalException ex){
-			if (this.logger != null){
-				this.logger.evaluateError(key, ex);
+			IReportLogger logger = this.context.getLogger();
+			if (logger != null){
+				logger.evaluateError(key, ex);
 			}
 			return null;
 		}catch(UnknownFieldException ex){
-			if (this.logger != null){
-				this.logger.unknownFieldError(ex);
+			IReportLogger logger = this.context.getLogger();
+			if (logger != null){
+				logger.unknownFieldError(ex);
 			}
 			return null;
 		}
@@ -371,11 +361,11 @@ public class ReportData implements IReportDataSource {
 		int _endIndex;
 		CustomField customField = this.findCustomField(key);
 		try{
-			if (this.report != null && customField != null){
-				this.report.customFieldStack.push(customField);
+			if (customField != null){
+				this.context.customFieldStack.push(customField);
 			}
 			{
-				DataCache dc = this.dataCache;
+				DataCache dc = this.context.dataCache;
 				if (customField != null){
 					summaryCache = dc.customFieldSummary(customField.data, key);
 					countCache = dc.customFieldCount(customField.data, key);
@@ -427,18 +417,20 @@ public class ReportData implements IReportDataSource {
 				}
 				return new _SummaryResult(summary, count);
 			}finally{
-				if (this.report != null && customField != null){
-					this.report.customFieldStack.pop();
+				if (customField != null){
+					this.context.customFieldStack.pop();
 				}
 			}
 		}catch(EvalException ex){
-			if (this.logger != null){
-				this.logger.evaluateError(key, ex);
+			IReportLogger logger = this.context.getLogger();
+			if (logger != null){
+				logger.evaluateError(key, ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}catch(UnknownFieldException ex){
-			if (this.logger != null){
-				this.logger.unknownFieldError(ex);
+			IReportLogger logger = this.context.getLogger();
+			if (logger != null){
+				logger.unknownFieldError(ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}
@@ -449,8 +441,8 @@ public class ReportData implements IReportDataSource {
 		int count = 0;
 		CustomField customField = this.findCustomField(key);
 		try{
-			if (this.report != null && customField != null){
-				this.report.customFieldStack.push(customField);
+			if (customField != null){
+				this.context.customFieldStack.push(customField);
 			}
 			try{
 				for(int i = 0;i < this.size();i++){
@@ -470,18 +462,20 @@ public class ReportData implements IReportDataSource {
 				}
 				return new _SummaryResult(summary, count);
 			}finally{
-				if (this.report != null && customField != null){
-					this.report.customFieldStack.pop();
+				if (customField != null){
+					this.context.customFieldStack.pop();
 				}
 			}
 		}catch(EvalException ex){
-			if (this.logger != null){
-				this.logger.evaluateError(key, ex);
+			IReportLogger logger = this.context.getLogger();
+			if (logger != null){
+				logger.evaluateError(key, ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}catch(UnknownFieldException ex){
-			if (this.logger != null){
-				this.logger.unknownFieldError(ex);
+			IReportLogger logger = this.context.getLogger();
+			if (logger != null){
+				logger.unknownFieldError(ex);
 			}
 			return new _SummaryResult(BigDecimal.ZERO, 0);
 		}
@@ -596,7 +590,7 @@ public class ReportData implements IReportDataSource {
 	}
 
 	public WrapperDataSource getWrapperDataSource(GroupDesign groupDesign){
-		return this.report.wrapperDataSourceMap.get(groupDesign);
+		return this.context.wrapperDataSourceMap.get(groupDesign);
 	}
 
 }

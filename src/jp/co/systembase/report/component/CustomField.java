@@ -63,7 +63,7 @@ public class CustomField {
 		try{
 			if (!(this.data.dataSource instanceof INoCache)){
 				Map<Integer, Object> cache =
-					this.report.dataCache.customField(this.data, key);
+					this.report.context.dataCache.customField(this.data, key);
 				if (cache.containsKey(i)){
 					return cache.get(i);
 				}else{

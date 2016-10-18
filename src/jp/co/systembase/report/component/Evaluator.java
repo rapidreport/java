@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPage;
 import jp.co.systembase.report.ReportPages;
@@ -110,11 +109,11 @@ public class Evaluator {
 			if (_exp.length() == 0){
 				return null;
 			}
-			if (!this.basicContext.data.dataCache.expression.containsKey(_exp)){
+			if (!this.basicContext.data.context.dataCache.expression.containsKey(_exp)){
 				Parser parser = new Parser(this.basicContext.report.design.setting);
-				this.basicContext.data.dataCache.expression.put(_exp, parser.parse(_exp));
+				this.basicContext.data.context.dataCache.expression.put(_exp, parser.parse(_exp));
 			}
-			return this.eval(this.basicContext.data.dataCache.expression.get(_exp));
+			return this.eval(this.basicContext.data.context.dataCache.expression.get(_exp));
 		}catch(Throwable ex){
 			EvalException _ex;
 			if (ex instanceof EvalException){
@@ -147,17 +146,15 @@ public class Evaluator {
 			}
 			IReportDataSource dataSource = scopeData.getWrapperDataSource(unitGroupDesign);
 			IndexRange indexRange = scopeData.getDataIndexRange(unitGroupDesign);
-			DataCache dataCache = this.basicContext.report.dataCache;
-			IReportLogger logger = this.basicContext.report.design.setting.logger;
+			Report.Context context = this.basicContext.report.context;
 			if (indexRange != null){
 				return new ReportData(
 						dataSource,
 						indexRange.beginIndex,
 						indexRange.endIndex,
-						dataCache,
-						logger);
+						context);
 			}else{
-				return new ReportData(dataSource, dataCache, logger);
+				return new ReportData(dataSource, context);
 			}
 		}
 	}

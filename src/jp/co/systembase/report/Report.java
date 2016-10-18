@@ -73,6 +73,20 @@ public class Report {
 		public static boolean _4_6_PdfFontBold = false;
 	}
 
+	public static class Context{
+		private Report report;
+		public Context(Report report){
+			this.report = report;
+		}
+		public DataCache dataCache = new DataCache();
+		public CustomField.Stack customFieldStack = new CustomField.Stack();
+		public Map<GroupDesign, WrapperDataSource> wrapperDataSourceMap =
+			new HashMap<GroupDesign, WrapperDataSource>();
+		public IReportLogger getLogger(){
+			return this.report.design.setting.logger;
+		}
+	}
+	
 	public static Map<String, ContentDesign> sharedContents = new HashMap<String, ContentDesign>();
 	
 	public ReportDesign design;
@@ -80,14 +94,10 @@ public class Report {
 	public ReportData data = null;
 	public IGroupDataProvider groupDataProvider = null;
 	public Groups groups = null;
-	public Map<String, Object> globalScope = new HashMap<String, Object>();
-	public DataCache dataCache = new DataCache();
+	public Map<String, Object> globalScope = new HashMap<String, Object>();	
 	public boolean filled = false;
-	public CustomField.Stack customFieldStack = new CustomField.Stack();
 	public Date currentTime = new Date();
-
-	public Map<GroupDesign, WrapperDataSource> wrapperDataSourceMap =
-		new HashMap<GroupDesign, WrapperDataSource>();
+	public Context context = new Context(this);
 
 	private Map<String, ReportPages> _subPageMap = new HashMap<String, ReportPages>();
 
