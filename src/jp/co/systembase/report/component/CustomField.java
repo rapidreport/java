@@ -2,6 +2,7 @@ package jp.co.systembase.report.component;
 
 import java.util.Map;
 
+import jp.co.systembase.report.IReportLogger;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.data.INoCache;
 import jp.co.systembase.report.data.ReportData;
@@ -61,6 +62,7 @@ public class CustomField {
 
 	public Object get(int i){
 		try{
+			this.report.customFieldStack.push(this);
 			if (!(this.data.dataSource instanceof INoCache)){
 				Map<Integer, Object> cache =
 					this.report.context.dataCache.customField(this.data, key);
@@ -75,7 +77,13 @@ public class CustomField {
 				return this.eval(i);
 			}
 		}catch(EvalException ex){
+			IReportLogger logger = this.report.design.setting.logger;
+			if (logger != null){
+				logger.evaluateError("カスタム列：" + key, ex);
+			}
 			return null;
+		}finally{
+			this.report.customFieldStack.pop();
 		}
 	}
 

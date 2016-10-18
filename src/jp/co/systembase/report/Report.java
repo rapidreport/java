@@ -79,7 +79,6 @@ public class Report {
 			this.report = report;
 		}
 		public DataCache dataCache = new DataCache();
-		public CustomField.Stack customFieldStack = new CustomField.Stack();
 		public Map<GroupDesign, WrapperDataSource> wrapperDataSourceMap =
 			new HashMap<GroupDesign, WrapperDataSource>();
 		public IReportLogger getLogger(){
@@ -98,6 +97,7 @@ public class Report {
 	public boolean filled = false;
 	public Date currentTime = new Date();
 	public Context context = new Context(this);
+	public CustomField.Stack customFieldStack = new CustomField.Stack();
 
 	private Map<String, ReportPages> _subPageMap = new HashMap<String, ReportPages>();
 
