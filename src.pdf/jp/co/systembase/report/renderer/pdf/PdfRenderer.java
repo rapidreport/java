@@ -18,6 +18,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.RectangleReadOnly;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfWriter;
 
@@ -88,6 +89,9 @@ public class PdfRenderer implements IRenderer {
 	}
 
 	public void endPage(ReportDesign reportDesign) throws Throwable {
+		PdfContentByte cb = this.writer.getDirectContent();
+		cb.beginText();
+		cb.endText();
 	}
 
 	public void renderElement(
