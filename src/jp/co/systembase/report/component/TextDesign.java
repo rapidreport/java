@@ -1,7 +1,5 @@
 package jp.co.systembase.report.component;
 
-import java.util.Map;
-
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.Report.EHAlign;
@@ -9,33 +7,7 @@ import jp.co.systembase.report.Report.EVAlign;
 
 public class TextDesign {
 
-	public static class FontSetting{
-
-		public String name = "gothic";
-		public float size = 10f;
-		public boolean bold = false;
-		public boolean italic = false;
-		public boolean underline = false;
-
-		public FontSetting(Map<?, ?> desc){
-			this(new ElementDesign(desc));
-		}
-
-		public FontSetting(ElementDesign desc){
-			if (!desc.isNull("name")){
-				this.name = (String)desc.get("name");
-			}
-			if (!desc.isNull("size")){
-				this.size = Cast.toFloat(desc.get("size"));
-			}
-			this.bold = Cast.toBool(desc.get("bold"));
-			this.italic = Cast.toBool(desc.get("italic"));
-			this.underline = Cast.toBool(desc.get("underline"));
-		}
-
-	}
-
-	public FontSetting font;
+	public FontDesign font;
 	public EHAlign halign = EHAlign.LEFT;
 	public EVAlign valign = EVAlign.TOP;
 	public String color = null;
@@ -50,9 +22,9 @@ public class TextDesign {
 			ReportDesign reportDesign,
 			ElementDesign desc){
 		if (desc.isNull("font")){
-			this.font = reportDesign.defaultFont;
+			this.font = reportDesign.defaultFontDesign;
 		}else{
-			this.font = new FontSetting(desc.child("font"));
+			this.font = new FontDesign(desc.child("font"));
 		}
 		if (!desc.isNull("halign")){
 			String ha = (String)desc.get("halign");

@@ -7,9 +7,9 @@ import java.util.Map;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.component.ContentDesign;
+import jp.co.systembase.report.component.FontDesign;
 import jp.co.systembase.report.component.GroupDesign;
 import jp.co.systembase.report.component.PaperDesign;
-import jp.co.systembase.report.component.TextDesign;
 
 public class ReportDesign {
 
@@ -19,7 +19,7 @@ public class ReportDesign {
 	public String caption;
 	public String id;
 	public PaperDesign paperDesign;
-	public TextDesign.FontSetting defaultFont;
+	public FontDesign defaultFontDesign;
 	public float defaultLineWidth;
 	public int pageCapacity;
 	public boolean resetPageCount;
@@ -51,7 +51,7 @@ public class ReportDesign {
 		}else{
 			this.paperDesign = new PaperDesign();
 		}
-		this.defaultFont = new TextDesign.FontSetting((Map<?, ?>)desc.get("font"));
+		this.defaultFontDesign = new FontDesign((Map<?, ?>)desc.get("font"));
 		if (desc.containsKey("line_width")){
 			this.defaultLineWidth = Cast.toFloat(desc.get("line_width"));
 		}else{
