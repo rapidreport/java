@@ -5,7 +5,6 @@ import java.util.List;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
-import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.expression.EmbeddedTextProcessor;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.pdf.PdfText;
@@ -37,12 +36,8 @@ public class TextRenderer implements IElementRenderer {
 		if (renderer.setting.replaceBackslashToYen){
 			text = text.replaceAll("\\\\", "\u00a5");
 		}
-		Region _region = region.toPointScale(reportDesign);
-		PdfText pdfText = new PdfText(
-				renderer,
-				_region,
-				new TextDesign(reportDesign, design),
-				text);
+		PdfText pdfText = new PdfText();
+		pdfText.Initialize(renderer, reportDesign, region, design, text);
 		pdfText.draw();
 	}
 }

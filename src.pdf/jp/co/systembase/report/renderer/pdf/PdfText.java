@@ -9,6 +9,8 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 
 import jp.co.systembase.report.Report;
+import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.renderer.RenderUtil;
@@ -31,19 +33,20 @@ public class PdfText {
 	protected static final String VERTICAL_ROTATE_CHARS = "～…‥｜ーｰ(){}[]<>（）｛｝「」＜＞";
 	protected static final String VERTICAL_SHIFT_CHARS = "。、";
 	
-	public PdfText(
+	public void Initialize(
 			PdfRenderer renderer,
+			ReportDesign reportDesign,
 			Region region,
-			TextDesign textDesign,
-			String text) {
+			ElementDesign design,
+			String text){
 		this.renderer = renderer;
-		this.region = region;
-		this.textDesign = textDesign;
+		this.region = region.toPointScale(reportDesign);
+		this.textDesign = new TextDesign(reportDesign, design);
 		this.text = text;
 		this.contentByte = this.renderer.writer.getDirectContent();
 		this.font = this.renderer.setting.getFont(textDesign.font.name);
 	}
-
+	
 	public void draw(){
 		if (_isEmpty()){
 			return;
