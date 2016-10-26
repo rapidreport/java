@@ -31,7 +31,7 @@ public class XlsRendererSetting {
 	public short vResolution;
 	public short hResolution;
 	public float colWidthCoefficient;
-	public float rowHeightCefficient;
+	public float rowHeightCoefficient;
 
 	public XlsRendererSetting(){
 		this.dummyElementRenderer = new DummyRenderer();
@@ -53,7 +53,7 @@ public class XlsRendererSetting {
 		this.vResolution = 600;
 		this.hResolution = 600;
 		this.colWidthCoefficient = 1.0f;
-		this.rowHeightCefficient = 1.0f;
+		this.rowHeightCoefficient = 1.0f;
 	}
 
 	public IElementRenderer getElementRenderer(String key){

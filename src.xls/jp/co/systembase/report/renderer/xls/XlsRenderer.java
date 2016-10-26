@@ -115,7 +115,7 @@ public class XlsRenderer implements IRenderer {
 			for(Page page: this.pages){
 				page.topRow = topRow;
 				List<Float> rows = RowColUtil.createRows(reportDesign, page);
-				List<Short> rowHeights = RowColUtil.createRowHeights(rows, 1.36f * this.setting.rowHeightCefficient);
+				List<Short> rowHeights = RowColUtil.createRowHeights(rows, 1.36f * this.setting.rowHeightCoefficient);
 				for(int i = 0;i < rowHeights.size();i++){
 					this.sheet.createRow(topRow + i).setHeight(rowHeights.get(i));
 				}
