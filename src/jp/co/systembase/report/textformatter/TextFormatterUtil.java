@@ -57,40 +57,108 @@ public class TextFormatterUtil {
 			return formatDate(date, "yyyy/MM/dd");
 		}
 
-		String ret = format;
-		{
-			Calendar cal = new GregorianCalendar();
-			cal.setTime(date);
-			ret = ret.replaceAll("yyyy", Integer.toString(cal.get(Calendar.YEAR)));
-			ret = ret.replaceAll("yy", Integer.toString(cal.get(Calendar.YEAR)).substring(2));
-			ret = ret.replaceAll("MM", padZero(Integer.toString(cal.get(Calendar.MONTH) + 1)));
-			ret = ret.replaceAll("M", Integer.toString(cal.get(Calendar.MONTH) + 1));
-			ret = ret.replaceAll("ddd", getDayOfWeek(cal.get(Calendar.DAY_OF_WEEK)));
-			ret = ret.replaceAll("dddd", getDayOfWeekL(cal.get(Calendar.DAY_OF_WEEK)));
-			ret = ret.replaceAll("AAA", getDayOfWeekJ(cal.get(Calendar.DAY_OF_WEEK)));
-			ret = ret.replaceAll("dd", padZero(Integer.toString(cal.get(Calendar.DATE))));
-			ret = ret.replaceAll("d", Integer.toString(cal.get(Calendar.DATE)));
-			ret = ret.replaceAll("hh", padZero(Integer.toString(cal.get(Calendar.HOUR_OF_DAY))));
-			ret = ret.replaceAll("h", Integer.toString(cal.get(Calendar.HOUR_OF_DAY)));
-			ret = ret.replaceAll("mm", padZero(Integer.toString(cal.get(Calendar.MINUTE))));
-			ret = ret.replaceAll("m", Integer.toString(cal.get(Calendar.MINUTE)));
-			ret = ret.replaceAll("ss", padZero(Integer.toString(cal.get(Calendar.SECOND))));
-			ret = ret.replaceAll("s", Integer.toString(cal.get(Calendar.SECOND)));
+		String ret = "";
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		
+		int i = 0;
+		int j = 0;
+		Calendar jcal = null;
+		DateFormat jdf = null; 
+		if (format.indexOf("gg") != -1 ||
+			format.indexOf("n") != -1 ||
+			format.indexOf("N") != -1){
+			Locale jlocale = new Locale("ja", "JP", "JP");
+			jcal = Calendar.getInstance(jlocale);
+			jdf = new SimpleDateFormat("GGGG", jlocale);
+			jcal.setTime(date);
 		}
-		if (ret.indexOf("gg") != -1 ||
-				ret.indexOf("n") != -1 ||
-				ret.indexOf("N") != -1){
-			Locale locale = new Locale("ja", "JP", "JP");
-			Calendar cal = Calendar.getInstance(locale);
-			DateFormat df = new SimpleDateFormat("GGGG", locale);
-			cal.setTime(date);
-
-			int year = cal.get(Calendar.YEAR);
-			ret = ret.replaceAll("nn", padZero(Integer.toString(year)));
-			ret = ret.replaceAll("n", Integer.toString(year));
-			ret = ret.replaceAll("NN", year == 1 ? "元" : padZero(Integer.toString(year)));
-			ret = ret.replaceAll("N",  year == 1 ? "元" : Integer.toString(year));
-			ret = ret.replaceAll("gg", df.format(cal.getTime()));
+		while(j < format.length()){
+			String t = format.substring(j);
+			String p = null;
+			int w = 0;
+			if (t.startsWith("yyyy")){
+				p = Integer.toString(cal.get(Calendar.YEAR));
+				w = 4;
+			}else if (t.startsWith("yy")){
+				p = Integer.toString(cal.get(Calendar.YEAR)).substring(2);
+				w = 2;
+			}else if (t.startsWith("MMMM")){
+				p = getMonthEnL(cal.get(Calendar.MONTH) + 1);
+				w = 4;
+			}else if (t.startsWith("MMM")){
+				p = getMonthEn(cal.get(Calendar.MONTH) + 1);
+				w = 2;
+			}else if (t.startsWith("MM")){
+				p = padZero(Integer.toString(cal.get(Calendar.MONTH) + 1));
+				w = 2;
+			}else if (t.startsWith("M")){
+				p = Integer.toString(cal.get(Calendar.MONTH) + 1);
+				w = 1;
+			}else if (t.startsWith("dddd")){
+				p = getDayOfWeekL(cal.get(Calendar.DAY_OF_WEEK));
+				w = 4;
+			}else if (t.startsWith("ddd")){
+				p = getDayOfWeek(cal.get(Calendar.DAY_OF_WEEK));
+				w = 3;
+			}else if (t.startsWith("AAA")){
+				p = getDayOfWeekJ(cal.get(Calendar.DAY_OF_WEEK));
+				w = 3;
+			}else if (t.startsWith("dd")){
+				p = padZero(Integer.toString(cal.get(Calendar.DATE)));
+				w = 2;
+			}else if (t.startsWith("d")){
+				p = Integer.toString(cal.get(Calendar.DATE));
+				w = 1;
+			}else if (t.startsWith("hh")){
+				p = padZero(Integer.toString(cal.get(Calendar.HOUR_OF_DAY)));
+				w = 2;
+			}else if (t.startsWith("h")){
+				p = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
+				w = 1;
+			}else if (t.startsWith("mm")){
+				p = padZero(Integer.toString(cal.get(Calendar.MINUTE)));
+				w = 2;
+			}else if (t.startsWith("m")){
+				p = Integer.toString(cal.get(Calendar.MINUTE));
+				w = 1;
+			}else if (t.startsWith("ss")){
+				p = padZero(Integer.toString(cal.get(Calendar.SECOND)));
+				w = 2;
+			}else if (t.startsWith("s")){
+				p = Integer.toString(cal.get(Calendar.SECOND));
+				w = 1;
+			}else if (t.startsWith("nn")){
+				p = padZero(Integer.toString(jcal.get(Calendar.YEAR)));
+				w = 2;
+			}else if (t.startsWith("n")){
+				p = Integer.toString(jcal.get(Calendar.YEAR));
+				w = 1;
+			}else if (t.startsWith("NN")){
+				int year = jcal.get(Calendar.YEAR);
+				p = year == 1 ? "元" : padZero(Integer.toString(year));
+				w = 2;
+			}else if (t.startsWith("N")){
+				int year = jcal.get(Calendar.YEAR);
+				p = year == 1 ? "元" : Integer.toString(year);
+				w = 1;
+			}else if (t.startsWith("gg")){
+				p = jdf.format(jcal.getTime());
+				w = 2;
+			}
+			if (p != null){
+				if (i < j){
+					ret += format.substring(i, j);
+				}
+				ret += p;
+				j += w;
+				i = j;
+			}else{
+				j++;
+			}
+		}
+		if (i < format.length()){
+			ret += format.substring(i);
 		}
 		return ret;
 	}
@@ -151,6 +219,66 @@ public class TextFormatterUtil {
 			return "金";
 		case Calendar.SATURDAY:
 			return "土";
+		}
+		return null;
+	}
+	
+	private static String getMonthEn(int m){
+		switch(m){
+		case 1:
+			return "Jan";
+		case 2:
+			return "Feb";
+		case 3:
+			return "Mar";
+		case 4:
+			return "Apr";
+		case 5:
+			return "May";
+		case 6:
+			return "Jun";
+		case 7:
+			return "Jul";
+		case 8:
+			return "Aug";
+		case 9:
+			return "Sep";
+		case 10:
+			return "Oct";
+		case 11:
+			return "Nov";
+		case 12:
+			return "Dec";
+		}
+		return null;
+	}
+
+	private static String getMonthEnL(int m){
+		switch(m){
+		case 1:
+			return "January";
+		case 2:
+			return "February";
+		case 3:
+			return "March";
+		case 4:
+			return "April";
+		case 5:
+			return "May";
+		case 6:
+			return "June";
+		case 7:
+			return "July";
+		case 8:
+			return "August";
+		case 9:
+			return "September";
+		case 10:
+			return "October";
+		case 11:
+			return "November";
+		case 12:
+			return "December";
 		}
 		return null;
 	}
