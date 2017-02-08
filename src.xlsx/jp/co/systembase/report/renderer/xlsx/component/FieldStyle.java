@@ -3,6 +3,8 @@ package jp.co.systembase.report.renderer.xlsx.component;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.renderer.xlsx.XlsxRenderer;
 
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
 public class FieldStyle {
@@ -18,32 +20,32 @@ public class FieldStyle {
 	public void fill(XSSFCellStyle cellStyle, XlsxRenderer renderer){
 		cellStyle.setFont(renderer.fontPool.get(this.fontStyle));
 		if (!this.textDesign.vertical && this.textDesign.distribute){
-			cellStyle.setAlignment((short)7);
+			cellStyle.setAlignment(HorizontalAlignment.DISTRIBUTED);
 		}else{
 			switch(this.textDesign.halign){
 			case LEFT:
-				cellStyle.setAlignment(XSSFCellStyle.ALIGN_LEFT);
+				cellStyle.setAlignment(HorizontalAlignment.LEFT);
 				break;
 			case CENTER:
-				cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+				cellStyle.setAlignment(HorizontalAlignment.CENTER);
 				break;
 			case RIGHT:
-				cellStyle.setAlignment(XSSFCellStyle.ALIGN_RIGHT);
+				cellStyle.setAlignment(HorizontalAlignment.RIGHT);
 				break;
 			}
 		}
 		if (this.textDesign.vertical && this.textDesign.distribute){
-			cellStyle.setVerticalAlignment((short)4);
+			cellStyle.setVerticalAlignment(VerticalAlignment.DISTRIBUTED);
 		}else{
 			switch(this.textDesign.valign){
 			case TOP:
-				cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_TOP);
+				cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
 				break;
 			case CENTER:
-				cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);
+				cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 				break;
 			case BOTTOM:
-				cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_BOTTOM);
+				cellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
 				break;
 			}
 		}

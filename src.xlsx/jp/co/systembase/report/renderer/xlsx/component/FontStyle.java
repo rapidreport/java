@@ -21,7 +21,7 @@ public class FontStyle {
 		font.setFontName(renderer.setting.getFont(this.design.font.name));
 		font.setFontHeightInPoints((short)Math.max(this.design.font.size, FONT_SIZE_MIN));
 		if (this.design.font.bold){
-			font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+			font.setBold(true);
 		}
 		if (this.design.font.italic){
 			font.setItalic(true);
