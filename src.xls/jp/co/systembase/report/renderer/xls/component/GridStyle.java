@@ -3,6 +3,7 @@ package jp.co.systembase.report.renderer.xls.component;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 
 
 public class GridStyle {
@@ -58,36 +59,36 @@ public class GridStyle {
 		if (this.fillColor != null){
 			short i = renderer.colorPool.getIndex(this.fillColor);
 			if (i >= 0){
-				cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+				cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				cellStyle.setFillForegroundColor(i);
 			}
 		}
 	}
 
-	private static short toHSSFBorderStyle(BorderStyle.ELineStyle ls){
+	private static org.apache.poi.ss.usermodel.BorderStyle toHSSFBorderStyle(BorderStyle.ELineStyle ls){
 		switch(ls){
 		case THIN:
-			return HSSFCellStyle.BORDER_THIN;
+			return org.apache.poi.ss.usermodel.BorderStyle.THIN;
 		case THICK:
-			return HSSFCellStyle.BORDER_THICK;
+			return org.apache.poi.ss.usermodel.BorderStyle.THICK;
 		case MEDIUM:
-			return HSSFCellStyle.BORDER_MEDIUM;
+			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM;
 		case DOT:
-			return HSSFCellStyle.BORDER_DOTTED;
+			return org.apache.poi.ss.usermodel.BorderStyle.DOTTED;
 		case DASH:
-			return HSSFCellStyle.BORDER_DASHED;
+			return org.apache.poi.ss.usermodel.BorderStyle.DASHED;
 		case DASHDOT:
-			return HSSFCellStyle.BORDER_DASH_DOT;
+			return org.apache.poi.ss.usermodel.BorderStyle.DASH_DOT;
 		case DOUBLE:
-			return HSSFCellStyle.BORDER_DOUBLE;
+			return org.apache.poi.ss.usermodel.BorderStyle.DOUBLE;
 		case MEDIUM_DOT:
-			return HSSFCellStyle.BORDER_MEDIUM_DASHED;
+			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM_DASHED;
 		case MEDIUM_DASH:
-			return HSSFCellStyle.BORDER_MEDIUM_DASHED;
+			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM_DASHED;
 		case MEDIUM_DASHDOT:
-			return HSSFCellStyle.BORDER_DASH_DOT;
+			return org.apache.poi.ss.usermodel.BorderStyle.DASH_DOT;
 		}
-		return HSSFCellStyle.BORDER_NONE;
+		return org.apache.poi.ss.usermodel.BorderStyle.NONE;
 	}
 
 	@Override
