@@ -23,6 +23,7 @@ public class PdfRendererSetting {
 	public BaseFont gaijiFont = null;
 	public Map<String, IElementRenderer> elementRendererMap = new HashMap<String, IElementRenderer>();
 	public Map<String, BaseFont> fontMap = new HashMap<String, BaseFont>();
+	public Map<String, BaseFont> gaijiFontMap = new HashMap<String, BaseFont>();
 	public boolean replaceBackslashToYen;
 	public float shrinkFontSizeMin;
 	public float underlineWidthCoefficient = 1.0f;
@@ -69,7 +70,15 @@ public class PdfRendererSetting {
 			return this.defaultFont;
 		}
 	}
-
+	
+	public BaseFont getGaijiFont(String key){
+		if (key != null && this.gaijiFontMap.containsKey(key)){
+			return this.gaijiFontMap.get(key);
+		}else{
+			return null;
+		}
+	}
+	
 	@Override
 	public PdfRendererSetting clone() {
 		try{
