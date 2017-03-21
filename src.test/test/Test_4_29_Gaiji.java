@@ -22,7 +22,7 @@ public class Test_4_29_Gaiji {
 			FileOutputStream fos = new FileOutputStream("out/" + name + ".pdf");
 			try{
 				PdfRenderer renderer = new PdfRenderer(fos);
-				//renderer.setting.gaijiFont = BaseFont.createFont("rrpt/font/eudc.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+				renderer.setting.gaijiFont = BaseFont.createFont("rrpt/font/eudc.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 				renderer.setting.gaijiFontMap.put("gothic", BaseFont.createFont("rrpt/font/msgothic.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED));
 				pages.render(renderer);
 			}finally{
