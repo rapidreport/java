@@ -146,14 +146,14 @@ public class GroupDataProvider implements IGroupDataProvider {
 		for(int i = 0;i < dataSource.size();i++){
 			List<?> _keys = getKeys(keyNames, dataSource, i, logger);
 			if (!_keys.equals(keys)){
-				if (keys != null){
+				if (keys != null && !ret.containsKey(keys)){
 					ret.put(keys, new SubDataSource(dataSource, beginIndex, i));
 				}
 				keys = _keys;
 				beginIndex = i;
 			}
 		}
-		if (keys != null && beginIndex < dataSource.size()){
+		if (keys != null && !ret.containsKey(keys) && beginIndex < dataSource.size()){
 			ret.put(keys, new SubDataSource(dataSource, beginIndex, dataSource.size()));
 		}
 		return ret;
