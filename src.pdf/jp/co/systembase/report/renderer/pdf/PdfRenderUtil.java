@@ -22,7 +22,7 @@ public class PdfRenderUtil {
 
 	private static final String VERTICAL_ROTATE_CHARS = "～…‥｜ーｰ(){}[]<>（）｛｝「」＜＞";
 	private static final String VERTICAL_SHIFT_CHARS = "。、";
-	
+
 	@Deprecated
 	public static void drawText(
 			PdfRenderer renderer,
@@ -92,7 +92,7 @@ public class PdfRenderUtil {
 			PdfRendererSetting setting,
 			PdfRenderer.Trans trans,
 			TextDesign textDesign,
-			BaseFont font,			
+			BaseFont font,
 			String text){
 		float fontSize = textDesign.font.size;
 		List<String> texts = splitByCr(region, textDesign, text, false);
@@ -592,11 +592,11 @@ public class PdfRenderUtil {
 			return fontSize;
 		}
 		int _i = 0;
-		while(setting.shrinkFontSizeMin + _i * 0.5 < fontSize){
+		while(setting.shrinkFontSizeMin + _i * setting.shrinkFontSizeStep < fontSize){
 			_i += 1;
 		}
 		for(int i = _i - 1;i >= 1;i--){
-		  float s = setting.shrinkFontSizeMin + i * 0.5f;
+		  float s = setting.shrinkFontSizeMin + i * setting.shrinkFontSizeStep;
 		  if (getTextWidth(setting, textDesign, font, s, t) <= rw){
 			  return s;
 		  }
@@ -788,14 +788,14 @@ public class PdfRenderUtil {
 			gaiji = true;
 		}
 		if (VERTICAL_ROTATE_CHARS.indexOf(c) >= 0){
-			setRotateTextMatrix(cb, region, trans, textDesign, 
-					fontSize, x - fontSize / 3, 
+			setRotateTextMatrix(cb, region, trans, textDesign,
+					fontSize, x - fontSize / 3,
 					y - getTextWidth(setting, textDesign, font, fontSize, c));
 		}else if (VERTICAL_SHIFT_CHARS.indexOf(c) >= 0){
 			setTextMatrix(cb, region, trans, textDesign, fontSize, x, y - fontSize / 2);
 		}else{
-			setTextMatrix(cb, region, trans, textDesign, 
-					fontSize, x - getTextWidth(setting, textDesign, font, fontSize, c) / 2, 
+			setTextMatrix(cb, region, trans, textDesign,
+					fontSize, x - getTextWidth(setting, textDesign, font, fontSize, c) / 2,
 					y);
 		}
 		cb.showText(c);

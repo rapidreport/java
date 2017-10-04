@@ -25,7 +25,7 @@ public class PdfText {
 	public BaseFont font;
 	public BaseFont gaijiFont;
 	public List<Float> textMatrix = null;
-	
+
 	protected static final float TOLERANCE = 0.1f;
 	protected static final float OFFSET_Y = -0.5f;
 	protected static final float MARGIN_X = 2.0f;
@@ -33,7 +33,7 @@ public class PdfText {
 
 	protected static final String VERTICAL_ROTATE_CHARS = "～…‥｜ーｰ(){}[]<>（）｛｝「」＜＞";
 	protected static final String VERTICAL_SHIFT_CHARS = "。、";
-	
+
 	public void Initialize(
 			PdfRenderer renderer,
 			ReportDesign reportDesign,
@@ -48,7 +48,7 @@ public class PdfText {
 		this.font = this.renderer.setting.getFont(textDesign.font.name);
 		this.gaijiFont = this.renderer.setting.getGaijiFont(textDesign.font.name);
 	}
-	
+
 	public void draw(){
 		if (_isEmpty()){
 			return;
@@ -103,9 +103,9 @@ public class PdfText {
             }
 		}else{
 			contentByte.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
-		}		
+		}
 	}
-	
+
 	protected void _draw_distribute(){
 		float fontSize = textDesign.font.size;
 		List<String> texts = _splitTextVertical(false);
@@ -238,8 +238,8 @@ public class PdfText {
 	protected void _draw(){
 		List<String> texts = _splitText(false);
 		_draw_aux(textDesign.font.size, texts);
-	}	
-	
+	}
+
     protected void _draw_aux(
 			float fontSize,
 			List<String> texts){
@@ -367,7 +367,7 @@ public class PdfText {
 		float _x = region.left + x;
 		float _y = (region.top + y + fontSize) - (fontSize / 13.4f);
 		if (textMatrix != null){
-			contentByte.setTextMatrix(textMatrix.get(0), textMatrix.get(1), textMatrix.get(2), textMatrix.get(3), 
+			contentByte.setTextMatrix(textMatrix.get(0), textMatrix.get(1), textMatrix.get(2), textMatrix.get(3),
 					trans.x(_x), trans.y(_y));
 		}else{
 			if (textDesign.font.italic){
@@ -377,7 +377,7 @@ public class PdfText {
 			}
 		}
 	}
-	
+
 	protected void _setRotateTextMatrix(
 			float fontSize,
 			float x,
@@ -391,7 +391,7 @@ public class PdfText {
 			contentByte.setTextMatrix(0, -1, 1, 0, trans.x(_x), trans.y(_y));
 		}
 	}
-	
+
 	protected void _drawText(
 			float fontSize,
 			String text,
@@ -400,7 +400,7 @@ public class PdfText {
 		List<String> _texts = null;
 		if (renderer.setting.gaijiFont != null || gaijiFont != null){
 			_texts = _detectGaiji(text);
-		}		
+		}
 		if (_texts == null){
 			_setTextMatrix(fontSize, x, y);
 			contentByte.showText(text);
@@ -447,14 +447,14 @@ public class PdfText {
 		}
 		if (VERTICAL_ROTATE_CHARS.indexOf(c) >= 0){
 			_setRotateTextMatrix(
-					fontSize, x - fontSize / 3, 
+					fontSize, x - fontSize / 3,
 					y - _getTextWidth(fontSize, c));
 		}else if (VERTICAL_SHIFT_CHARS.indexOf(c) >= 0){
 			_setTextMatrix(fontSize, x, y - fontSize / 2);
 		}else{
-			_setTextMatrix( 
-			  fontSize, x - _getTextWidth(fontSize, c) / 2, y); 
-					
+			_setTextMatrix(
+			  fontSize, x - _getTextWidth(fontSize, c) / 2, y);
+
 		}
 		contentByte.showText(c);
 		if (gaiji){
@@ -496,7 +496,7 @@ public class PdfText {
 		contentByte.lineTo(trans.x(_x), trans.y(_y + h));
 		contentByte.stroke();
 	}
-	
+
 	protected boolean _isEmpty(){
 		if (text == null || text.length() == 0){
 			return true;
@@ -539,11 +539,11 @@ public class PdfText {
 			return textDesign.font.size;
 		}
 		int _i = 0;
-		while(renderer.setting.shrinkFontSizeMin + _i * 0.5 < textDesign.font.size){
+		while(renderer.setting.shrinkFontSizeMin + _i * renderer.setting.shrinkFontSizeStep < textDesign.font.size){
 			_i += 1;
 		}
 		for(int i = _i - 1;i >= 1;i--){
-		  float s = renderer.setting.shrinkFontSizeMin + i * 0.5f;
+		  float s = renderer.setting.shrinkFontSizeMin + i * renderer.setting.shrinkFontSizeStep;
 		  if (_getTextWidth(s, t) <= rw){
 			  return s;
 		  }
@@ -606,7 +606,7 @@ public class PdfText {
 		List<String> _texts = null;
 		if (renderer.setting.gaijiFont != null || gaijiFont != null){
 			_texts = _detectGaiji(text);
-		}		
+		}
 		float ret = 0;
 		if (_texts == null){
 			ret = font.getWidthPoint(text, fontSize);
@@ -660,7 +660,7 @@ public class PdfText {
 	protected static boolean _isGaiji(char c){
 		return c >= '\ue000' && c <= '\uf8ff';
 	}
-	
+
 	protected static class _FixDec{
 
 		public PdfText pdfText;
