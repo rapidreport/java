@@ -81,8 +81,8 @@ public class GroupRange {
 		if (this.last != null){
 			ContentHistory ch = this.last;
 			while(ch != null){
-				if (ch.contentLast && ch.content.design.unbreakable){
-					return true;
+				if (ch.contentLast){
+					return ch.content.design.unbreakable;
 				}
 				ch = ch.child;
 			}
