@@ -71,6 +71,7 @@ public class Report {
 
 	public static class Compatibility{
 		public static boolean _4_6_PdfFontBold = false;
+		public static boolean _4_31_Unbreakable = false;
 	}
 
 	public static class Context{

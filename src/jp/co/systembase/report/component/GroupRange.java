@@ -1,5 +1,7 @@
 package jp.co.systembase.report.component;
 
+import jp.co.systembase.report.Report;
+
 public class GroupRange {
 
 	public Groups groups = null;
@@ -81,9 +83,15 @@ public class GroupRange {
 		if (this.last != null){
 			ContentHistory ch = this.last;
 			while(ch != null){
-				if (ch.contentLast){
-					return ch.content.design.unbreakable;
-				}
+				if (Report.Compatibility._4_31_Unbreakable){
+					if (ch.contentLast && ch.content.design.unbreakable){
+						return true;
+					}
+				}else{
+					if (ch.contentLast){
+						return ch.content.design.unbreakable;
+					}
+				}				
 				ch = ch.child;
 			}
 		}
