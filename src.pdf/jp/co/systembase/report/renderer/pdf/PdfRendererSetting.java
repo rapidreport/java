@@ -26,9 +26,10 @@ public class PdfRendererSetting {
 	public Map<String, BaseFont> gaijiFontMap = new HashMap<String, BaseFont>();
 	public boolean replaceBackslashToYen;
 	public float shrinkFontSizeMin;
+	public float shrinkFontSizeStep;
 	public float underlineWidthCoefficient = 1.0f;
 	public static boolean skipInitialFontCreate = false;
-	
+
 	public PdfRendererSetting(){
 		this.dummyElementRenderer = new DummyRenderer();
 		this.elementRendererMap.put("rect", new RectRenderer());
@@ -53,6 +54,7 @@ public class PdfRendererSetting {
 		}
 		this.replaceBackslashToYen = false;
 		this.shrinkFontSizeMin = 4.0f;
+		this.shrinkFontSizeStep = 0.5f;
 	}
 
 	public IElementRenderer getElementRenderer(String key){
@@ -70,7 +72,7 @@ public class PdfRendererSetting {
 			return this.defaultFont;
 		}
 	}
-	
+
 	public BaseFont getGaijiFont(String key){
 		if (key != null && this.gaijiFontMap.containsKey(key)){
 			return this.gaijiFontMap.get(key);
@@ -78,7 +80,7 @@ public class PdfRendererSetting {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public PdfRendererSetting clone() {
 		try{
