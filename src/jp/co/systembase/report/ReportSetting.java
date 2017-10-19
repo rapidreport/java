@@ -31,6 +31,7 @@ import jp.co.systembase.report.operator.AbsOperator;
 import jp.co.systembase.report.operator.AddOperator;
 import jp.co.systembase.report.operator.AndOperator;
 import jp.co.systembase.report.operator.CatOperator;
+import jp.co.systembase.report.operator.DateAddOperator;
 import jp.co.systembase.report.operator.DayOperator;
 import jp.co.systembase.report.operator.DigitOperator;
 import jp.co.systembase.report.operator.DivOperator;
@@ -147,6 +148,7 @@ public class ReportSetting  implements Cloneable{
 		this.operatorMap.put("hour", new HourOperator());
 		this.operatorMap.put("minute", new MinuteOperator());
 		this.operatorMap.put("second", new SecondOperator());
+		this.operatorMap.put("dateadd", new DateAddOperator());
 		this.operatorMap.put("sub", new SubStringOperator());
 		this.operatorMap.put("wsub", new WSubStringOperator());
 		this.operatorMap.put("len", new StringLenOperator());
