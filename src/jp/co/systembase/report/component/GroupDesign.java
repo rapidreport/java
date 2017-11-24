@@ -23,6 +23,7 @@ public class GroupDesign {
 	public boolean blankData;
 	public boolean pageBreak;
 	public boolean resetPageCount;
+	public GroupSplitStringDesign splitString;
 	public List<String> sortKeys;
 	public GroupLayoutDesign layout;
 	public Map<String, String> customFields;
@@ -78,6 +79,16 @@ public class GroupDesign {
 			}
 		}else{
 			this.sortKeys = null;
+		}
+		if (desc.containsKey("split_string")){
+			Map<?, ?> d = (Map<?, ?>)desc.get("split_string");
+			if (d.containsKey("key")){
+				this.splitString = new GroupSplitStringDesign(d);
+			}else{
+				this.splitString = null;
+			}
+		}else{
+			this.splitString = null;
 		}
 		if (desc.containsKey("layout")){
 			this.layout = new GroupLayoutDesign((Map<?, ?>)desc.get("layout"));

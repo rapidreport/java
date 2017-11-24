@@ -53,8 +53,14 @@ public class Groups {
 					_data.group);
 			this.dataOverridden = true;
 		}
+		List<ReportData> dataList;
+		if (this.design.splitString != null){
+			dataList = this.design.splitString.split(_data);
+		}else{
+			dataList = this.design.dataSplit(_data);
+		}
 		int index = 0;
-		for(ReportData d: this.design.dataSplit(_data)){
+		for(ReportData d: dataList){
 			Group g = new Group(this, index);
 			this.groups.add(g);
 			g.fill(d);
