@@ -38,7 +38,7 @@ public class GroupSplitStringDesign {
 					new SplitStringDataSource(data, this.key, null), data.report, data.group));
 		}else{
 			for(String _t: t.split("\n")){
-				t = t.replace("\r", "");
+				_t = _t.replace("\r", "");
 				if (this.width == 0){
 					ret.add(new ReportData(
 							new SplitStringDataSource(data, this.key, _t), data.report, data.group));
@@ -47,11 +47,11 @@ public class GroupSplitStringDesign {
 					int e = 0;
 					do{
 						b = e;
-						e = ReportUtil.getWIndex(t, b, this.width);
+						e = ReportUtil.getWIndex(_t, b, this.width);
 						ret.add(new ReportData(
-								new SplitStringDataSource(data, this.key, ReportUtil.subString(t, b, e - b)), 
+								new SplitStringDataSource(data, this.key, ReportUtil.subString(_t, b, e - b)), 
 								data.report, data.group));
-					}while(e < t.length());	
+					}while(e < _t.length());	
 				}
 			}
 		}
