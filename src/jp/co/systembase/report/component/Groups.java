@@ -89,20 +89,23 @@ public class Groups {
 		int lastIndex;
 		int lastIndex2;
 		Region lastRegion = null;
+		int filledCount = groupRange.getGroupCount();
 		if (layoutCount == 0 && this.design.layout.blank){
 			layoutCount = this.getInitialGroupCount(parentRegion);
 		}
 		if (layoutCount > 0){
+			lastIndex = Math.min(groupRange.getGroupCount(), layoutCount);
 			if (this.design.layout.blank){
 				lastIndex2 = layoutCount;
-				lastIndex = Math.min(lastIndex2, groupRange.getGroupCount());
 			}else{
-				lastIndex = Math.min(groupRange.getGroupCount(), layoutCount);
 				lastIndex2 = lastIndex;
 			}
 		}else{
 			lastIndex = groupRange.getGroupCount();
 			lastIndex2 = lastIndex;
+		}
+		if (parentState != null && parentState.groupState.blank) {
+			filledCount = 0;
 		}
 		while(true){
 			if (i == lastIndex2){
@@ -110,7 +113,7 @@ public class Groups {
 			}
 			Group g;
 			ContentRange contentRange;
-			if (i < groupRange.getGroupCount()){
+			if (i < filledCount){
 				g = groupRange.getGroup(i);
 				contentRange = groupRange.getSubRange(g);
 			}else{
@@ -126,8 +129,8 @@ public class Groups {
 			groupState.groupLast = groupState.last && groupRange.containsLast();
 			groupState.groupLast2 = groupState.last2 && groupRange.containsLast();
 			groupState.groupIndex = g.index;
-			groupState.blank = (i >= groupRange.getGroupCount());
-			groupState.blankFirst = (i == groupRange.getGroupCount());
+			groupState.blank = (i >= filledCount);
+			groupState.blankFirst = (i == filledCount);
 			groupState.blankLast = groupState.blank && groupState.last2;
 
 			Region groupRegion = this.design.layout.getGroupRegion(parentRegion, lastRegion, i);

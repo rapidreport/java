@@ -72,6 +72,7 @@ public class Report {
 	public static class Compatibility{
 		public static boolean _4_6_PdfFontBold = false;
 		public static boolean _4_31_Unbreakable = false;
+		public static boolean _4_32_BlankSubGroup = false;
 	}
 
 	public static class Context{
@@ -86,15 +87,15 @@ public class Report {
 			return this.report.design.setting.logger;
 		}
 	}
-	
+
 	public static Map<String, ContentDesign> sharedContents = new HashMap<String, ContentDesign>();
-	
+
 	public ReportDesign design;
 	public IReportCustomizer customizer;
 	public ReportData data = null;
 	public IGroupDataProvider groupDataProvider = null;
 	public Groups groups = null;
-	public Map<String, Object> globalScope = new HashMap<String, Object>();	
+	public Map<String, Object> globalScope = new HashMap<String, Object>();
 	public boolean filled = false;
 	public Date currentTime = new Date();
 	public Context context = new Context(this);
@@ -219,7 +220,7 @@ public class Report {
 		ReportPages pages = this._subPageMap.get(key);
 		pages.get(index).renderSubPage(renderer, pages, region);
 	}
-	
+
 	public static void addSharedContent(String id, ReportDesign reportDesign){
 		ContentDesign cd = reportDesign.findContentDesign(id);
 		sharedContents.put(id, cd);

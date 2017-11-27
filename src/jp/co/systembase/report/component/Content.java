@@ -64,7 +64,8 @@ public class Content {
 			_region = this.getReport().customizer.contentRegion(
 					this, evaluator, _region);
 		}
-		if (_region != null && !contentState.groupState.blank){
+		if (_region != null &&
+				!(Report.Compatibility._4_32_BlankSubGroup && contentState.groupState.blank)){
 			if (this.groups != null && groupRange != null){
 				_region = this.groups.scan(
 						_scanner, groupRange, paperRegion, _region, contentState);
