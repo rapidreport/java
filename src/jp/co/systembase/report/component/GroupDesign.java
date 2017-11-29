@@ -33,15 +33,6 @@ public class GroupDesign {
 	public ReportDesign reportDesign;
 	public ContentDesign parentContentDesign;
 
-	public GroupDesign(){
-		this(null);
-	}
-
-	public GroupDesign(List<String> keys){
-		this.detail = false;
-		this.keys = keys;
-	}
-
 	public GroupDesign(
 			Map<?, ?> desc,
 			ReportDesign reportDesign,
