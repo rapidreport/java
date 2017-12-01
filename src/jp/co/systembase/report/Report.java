@@ -69,6 +69,15 @@ public class Report {
 		NO_SPLIT
 	}
 
+	public enum ECrosstabPartType{
+		NONE,
+		ROOT,
+		CAPTION,
+		VDETAIL,
+		HDETAIL,
+		SUMMARY
+	}
+
 	public static class Compatibility{
 		public static boolean _4_6_PdfFontBold = false;
 		public static boolean _4_31_Unbreakable = false;
@@ -101,6 +110,7 @@ public class Report {
 	public Context context = new Context(this);
 	public CustomField.Stack customFieldStack = new CustomField.Stack();
 
+	private Map<String, IReportDataSource> _crosstabCaptionDataSourceMap = new HashMap<String, IReportDataSource>();
 	private Map<String, ReportPages> _subPageMap = new HashMap<String, ReportPages>();
 
 	public Report(Map<?, ?> desc){
@@ -213,12 +223,24 @@ public class Report {
 		this._subPageMap.put(key, pages);
 	}
 
+	public ReportPages getSubPages(String key){
+		return this._subPageMap.get(key);
+	}
+
 	public void renderSubPage(IRenderer renderer, Region region, String key, int index) throws Throwable{
 		if (!this._subPageMap.containsKey(key)){
 			return;
 		}
 		ReportPages pages = this._subPageMap.get(key);
 		pages.get(index).renderSubPage(renderer, pages, region);
+	}
+
+	public void addCrosstabCaptionDataSource(String groupId, IReportDataSource dataSource){
+		this._crosstabCaptionDataSourceMap.put(groupId, dataSource);
+	}
+
+	public IReportDataSource getCrosstabCaptionDataSource(String groupId){
+		return this._crosstabCaptionDataSourceMap.get(groupId);
 	}
 
 	public static void addSharedContent(String id, ReportDesign reportDesign){

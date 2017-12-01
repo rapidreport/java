@@ -22,9 +22,18 @@ public class Group {
 	public Map<GroupDesign, IndexRange> dataIndexRangeMap =
 		new HashMap<GroupDesign, IndexRange>();
 
-	public Group(Groups parentGroups, int index){
+	public Crosstab.State crosstabState = null;
+
+	public Group(Groups parentGroups, int index, Crosstab.State crosstabState){
 		this.parentGroups = parentGroups;
 		this.index = index;
+		if (crosstabState != null){
+			this.crosstabState = crosstabState;
+		}else{
+			if (this.parentGroups.parentContent != null){
+				this.crosstabState = this.parentGroups.parentContent.parentGroup.crosstabState;
+			}
+		}
 	}
 
 	public void fill(ReportData data){

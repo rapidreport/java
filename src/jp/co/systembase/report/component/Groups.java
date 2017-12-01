@@ -38,20 +38,18 @@ public class Groups {
 			_data = new ReportData(BlankDataSource.getInstance(),
 					_data.report, _data.group);
 		}
-		if (this.report.groupDataProvider != null){
-			IReportDataSource dataSource =
-				this.report.groupDataProvider.getGroupDataSource(this, data);
+		{
+			IReportDataSource dataSource = _data;
+			if (this.report.groupDataProvider != null){
+				dataSource = this.report.groupDataProvider.getGroupDataSource(this, data);
+			}
+			if (this.design.sortKeys != null){
+				dataSource = new SortedDataSource(_data, this.design.sortKeys, _data.context.getLogger());
+			}
 			if (dataSource != _data){
 				_data = new ReportData(dataSource, data.report, data.group);
 				this.dataOverridden = true;
 			}
-		}
-		if (this.design.sortKeys != null){
-			_data = new ReportData(
-					new SortedDataSource(_data, this.design.sortKeys),
-					_data.report,
-					_data.group);
-			this.dataOverridden = true;
 		}
 		List<ReportData> dataList;
 		if (this.design.splitString != null){
@@ -59,13 +57,21 @@ public class Groups {
 		}else{
 			dataList = this.design.dataSplit(_data);
 		}
-		int index = 0;
-		for(ReportData d: dataList){
-			Group g = new Group(this, index);
-			this.groups.add(g);
-			g.fill(d);
-			index++;
+		if (!Crosstab.fill(this, _data)){
+			for(ReportData d: dataList){
+				this.addGroup(d);
+			}
 		}
+	}
+
+	public void addGroup(ReportData data){
+		this.addGroup(data, null);
+	}
+	
+	public void addGroup(ReportData data, Crosstab.State crosstabState){
+		Group g = new Group(this, this.groups.size(), crosstabState);
+		this.groups.add(g);
+		g.fill(data);
 	}
 
 	public Region scan(
@@ -193,7 +199,7 @@ public class Groups {
 	}
 
 	private Group createBlankGroup(){
-		Group ret = new Group(this, -1);
+		Group ret = new Group(this, -1, null);
 		Group g = null;
 		if (this.parentContent != null){
 			g = this.parentContent.parentGroup;

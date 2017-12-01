@@ -28,7 +28,7 @@ public class Test_4_33_SplitString {
 		}
 	}
 
-    public static DataTable getDataTable() throws Throwable {
+    private static DataTable getDataTable() throws Throwable {
 		DataTable ret = new DataTable();
 		ret.setFieldNames("text");
 

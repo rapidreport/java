@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import jp.co.systembase.core.Cast;
+import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.ReportUtil;
+import jp.co.systembase.report.Report.ECrosstabPartType;
 import jp.co.systembase.report.data.ReportData;
 
 public class GroupDesign {
@@ -26,6 +28,7 @@ public class GroupDesign {
 	public GroupSplitStringDesign splitString;
 	public List<String> sortKeys;
 	public GroupLayoutDesign layout;
+	public Report.ECrosstabPartType crosstabPartType;
 	public Map<String, String> customFields;
 	public List<String> customFieldsKeyList;
 	public List<ContentDesign> contentDesigns;
@@ -85,6 +88,24 @@ public class GroupDesign {
 			this.layout = new GroupLayoutDesign((Map<?, ?>)desc.get("layout"));
 		}else{
 			this.layout = new GroupLayoutDesign();
+		}
+		if (desc.containsKey("crosstab")){
+			String t = (String)desc.get("crosstab");
+			if (t.equals("root")){
+				this.crosstabPartType = ECrosstabPartType.ROOT;
+			}else if (t.equals("caption")){
+				this.crosstabPartType = ECrosstabPartType.CAPTION;
+			}else if (t.equals("vdetail")){
+				this.crosstabPartType = ECrosstabPartType.VDETAIL;
+			}else if (t.equals("hdetail")){
+				this.crosstabPartType = ECrosstabPartType.HDETAIL;
+			}else if (t.equals("summary")){
+				this.crosstabPartType = ECrosstabPartType.SUMMARY;
+			}else{
+				this.crosstabPartType = ECrosstabPartType.NONE;
+			}
+		}else{
+			this.crosstabPartType = ECrosstabPartType.NONE;
 		}
 		if (desc.containsKey("custom_fields")){
 			this.customFields = new HashMap<String, String>();
