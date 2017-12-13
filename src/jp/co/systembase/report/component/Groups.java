@@ -96,22 +96,29 @@ public class Groups {
 		int lastIndex2;
 		Region lastRegion = null;
 		int filledCount = groupRange.getGroupCount();
-		if (layoutCount == 0 && this.design.layout.blank){
-			layoutCount = this.getInitialGroupCount(parentRegion);
+		if (parentState != null && parentState.groupState.blank) {
+			filledCount = 0;
+		}
+		if (this.design.layout.blank && layoutCount == 0){
+			int gc = this.getDefaultGroupCount(parentRegion);
+			if (Report.Compatibility._4_33_BlankFill){
+				layoutCount = gc;
+			}else{
+				if (filledCount < gc){
+					layoutCount = gc;
+				}
+			}
 		}
 		if (layoutCount > 0){
-			lastIndex = Math.min(groupRange.getGroupCount(), layoutCount);
+			lastIndex = Math.min(filledCount, layoutCount);
 			if (this.design.layout.blank){
 				lastIndex2 = layoutCount;
 			}else{
 				lastIndex2 = lastIndex;
 			}
 		}else{
-			lastIndex = groupRange.getGroupCount();
+			lastIndex = filledCount;
 			lastIndex2 = lastIndex;
-		}
-		if (parentState != null && parentState.groupState.blank) {
-			filledCount = 0;
 		}
 		while(true){
 			if (i == lastIndex2){
@@ -166,7 +173,7 @@ public class Groups {
 		return ret;
 	}
 
-	private int getInitialGroupCount(Region parentRegion){
+	private int getDefaultGroupCount(Region parentRegion){
 		int ret = 0;
 		float u = 0;
 		if (this.design.contentDesigns.size() == 1){
@@ -178,13 +185,24 @@ public class Groups {
 		if (u > 0){
 			float t = 0;
 			float _t = 0;
-			switch (this.design.layout.direction){
-			case VERTICAL:
-				t = parentRegion.getMaxHeight();
-				break;
-			case HORIZONTAL:
-				t = parentRegion.getMaxWidth();
-				break;
+			if (Report.Compatibility._4_33_BlankFill){
+				switch (this.design.layout.direction){
+				case VERTICAL:
+					t = parentRegion.getMaxHeight();
+					break;
+				case HORIZONTAL:
+					t = parentRegion.getMaxWidth();
+					break;
+				}
+			}else{
+				switch (this.design.layout.direction){
+				case VERTICAL:
+					t = parentRegion.getHeight();
+					break;
+				case HORIZONTAL:
+					t = parentRegion.getWidth();
+					break;
+				}
 			}
 			while(true){
 				_t += u;

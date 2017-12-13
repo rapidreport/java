@@ -82,6 +82,8 @@ public class Report {
 		public static boolean _4_6_PdfFontBold = false;
 		public static boolean _4_31_Unbreakable = false;
 		public static boolean _4_32_BlankSubGroup = false;
+		public static boolean _4_33_EveryPageGroup = false;
+		public static boolean _4_33_BlankFill = false;
 	}
 
 	public static class Context{

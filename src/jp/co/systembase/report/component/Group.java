@@ -126,7 +126,15 @@ public class Group {
 				if (contentState.intrinsic){
 					groupRange = contentRange.getSubRange(content);
 				}else if (content.groups != null){
-					groupRange = new GroupRange(content.groups);
+					if (Report.Compatibility._4_33_EveryPageGroup){
+						groupRange = new GroupRange(content.groups);
+					}else{
+						if (content.design.everyPageGroup){
+							groupRange = new GroupRange(content.groups);
+						}else{
+							groupRange = new GroupRange(content.groups, null, null);
+						}
+					}
 				}else{
 					groupRange = null;
 				}
