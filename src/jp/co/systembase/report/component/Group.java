@@ -126,14 +126,10 @@ public class Group {
 				if (contentState.intrinsic){
 					groupRange = contentRange.getSubRange(content);
 				}else if (content.groups != null){
-					if (Report.Compatibility._4_33_EveryPageGroup){
-						groupRange = new GroupRange(content.groups);
+					if (content.design.everyPageBlankGroup){
+						groupRange = new GroupRange(content.groups, null, null);
 					}else{
-						if (content.design.everyPageGroup){
-							groupRange = new GroupRange(content.groups);
-						}else{
-							groupRange = new GroupRange(content.groups, null, null);
-						}
+						groupRange = new GroupRange(content.groups);
 					}
 				}else{
 					groupRange = null;
@@ -141,7 +137,8 @@ public class Group {
 				Region contentRegion = this.getDesign().layout.getContentRegion(
 						content.design.size,
 						contentsRegion,
-						lastRegion);
+						lastRegion,
+						evaluator);
 				lastRegion = content.scan(
 						_scanner,
 						groupRange,

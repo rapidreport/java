@@ -32,7 +32,7 @@ public class GroupSplitStringDesign {
 
 	public List<ReportData> split(ReportData data){
 		List<ReportData> ret = new ArrayList<ReportData>();
-		String t = (String)(new Evaluator(data.report, data, data.getRecord())).evalTry(this.exp);
+		String t = (String)(new Evaluator(data)).evalTry(this.exp);
 		if (t == null){
 			ret.add(new ReportData(
 					new SplitStringDataSource(data, this.key, null), data.report, data.group));

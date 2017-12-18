@@ -18,6 +18,7 @@ public class GroupLayoutDesign {
 	public float x = 0;
 	public float y = 0;
 	public int maxCount;
+	public String maxCountExp;
 	public boolean blank;
 	public boolean clipOverflow;
 	public List<GroupLocateDesign> locates;
@@ -44,6 +45,7 @@ public class GroupLayoutDesign {
 		this.x = Cast.toFloat(desc.get("x"));
 		this.y = Cast.toFloat(desc.get("y"));
 		this.maxCount = Cast.toInt(desc.get("max_count"));
+		this.maxCountExp = (String)desc.get("max_count_exp");
 		this.blank = Cast.toBool(desc.get("blank"));
 		this.clipOverflow = Cast.toBool(desc.get("clip_overflow"));
 		if (desc.containsKey("locates")){
@@ -56,16 +58,17 @@ public class GroupLayoutDesign {
 		}
 	}
 
-	public int getCount(){
+	public int getCount(Evaluator evaluator){
 		if (this.IsLocateEnabled()){
 			int ret = 0;
 			for(GroupLocateDesign l: this.locates){
 				ret += Math.max(1, l.count);
 			}
 			return ret;
-		}else{
-			return this.maxCount;
+		}else if (this.maxCountExp != null){
+			return Cast.toInt(evaluator.evalTry(this.maxCountExp));
 		}
+		return this.maxCount;
 	}
 
 	public boolean IsLocateEnabled(){
@@ -156,8 +159,21 @@ public class GroupLayoutDesign {
 	public Region getContentRegion(
 			ContentSizeDesign sizeDesign,
 			Region contentsRegion,
-			Region lastRegion){
+			Region lastRegion,
+			Evaluator evaluator){
 		Region ret = new Region();
+		float init = sizeDesign.initial;
+		float max = sizeDesign.max;
+		boolean specInit = sizeDesign.specInitial;
+		boolean specMax = sizeDesign.specMax;
+		if (sizeDesign.initialExp != null){
+			init = Cast.toFloat(evaluator.evalTry(sizeDesign.initialExp));
+			specInit = true;
+		}
+		if (sizeDesign.maxExp != null){
+			max = Cast.toFloat(evaluator.evalTry(sizeDesign.maxExp));
+			specMax = true;
+		}
 		switch(this.direction){
 		case VERTICAL:
 			if (lastRegion == null){
@@ -167,11 +183,11 @@ public class GroupLayoutDesign {
 				ret.top = lastRegion.bottom;
 				ret.left = lastRegion.left;
 			}
-			if (sizeDesign.specInitial){
+			if (specInit){
 				if (!sizeDesign.revInitial){
-					ret.bottom = ret.top + sizeDesign.initial;
+					ret.bottom = ret.top + init;
 				}else{
-					ret.bottom = contentsRegion.maxBottom - sizeDesign.initial;
+					ret.bottom = contentsRegion.maxBottom - init;
 				}
 			}else{
 				ret.bottom = ret.top;
@@ -179,11 +195,11 @@ public class GroupLayoutDesign {
 			ret.right = contentsRegion.right;
 			if (sizeDesign.notExtendable){
 				ret.maxBottom = ret.bottom;
-			}else if (sizeDesign.specMax){
+			}else if (specMax){
 				if (!sizeDesign.revMax){
-					ret.maxBottom = ret.top + sizeDesign.max;
+					ret.maxBottom = ret.top + max;
 				}else{
-					ret.maxBottom = contentsRegion.maxBottom - sizeDesign.max;
+					ret.maxBottom = contentsRegion.maxBottom - max;
 				}
 			}else{
 				ret.maxBottom = contentsRegion.maxBottom;
@@ -202,11 +218,11 @@ public class GroupLayoutDesign {
 				ret.left = lastRegion.right;
 			}
 			ret.bottom = contentsRegion.bottom;
-			if (sizeDesign.specInitial){
+			if (specInit){
 				if (!sizeDesign.revInitial){
-					ret.right = ret.left + sizeDesign.initial;
+					ret.right = ret.left + init;
 				}else{
-					ret.right = contentsRegion.maxRight - sizeDesign.initial;
+					ret.right = contentsRegion.maxRight - init;
 				}
 			}else{
 				ret.right = ret.left;
@@ -214,11 +230,11 @@ public class GroupLayoutDesign {
 			ret.maxBottom = ret.bottom;
 			if (sizeDesign.notExtendable){
 				ret.maxRight = ret.right;
-			}else if (sizeDesign.specMax){
+			}else if (specMax){
 				if (!sizeDesign.revMax){
-					ret.maxRight = ret.left + sizeDesign.initial;
+					ret.maxRight = ret.left + max;
 				}else{
-					ret.maxRight = contentsRegion.maxRight - sizeDesign.initial;
+					ret.maxRight = contentsRegion.maxRight - max;
 				}
 			}else{
 				ret.maxRight = contentsRegion.maxRight;

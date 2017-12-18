@@ -204,9 +204,19 @@ public class GroupDesign {
 			return this;
 		}else if (this.contentDesigns != null){
 			for(ContentDesign cd: this.contentDesigns){
-				GroupDesign ret = cd.findGroupDesign(id);
-				if (ret != null){
-					return ret;
+				{
+					GroupDesign ret = cd.findGroupDesign(id);
+					if (ret != null){
+						return ret;
+					}
+				}
+				if (cd.subContentDesigns != null){
+					for(ContentDesign _cd: cd.subContentDesigns){
+						GroupDesign ret = _cd.findGroupDesign(id);
+						if (ret != null){
+							return ret;
+						}
+					}
 				}
 			}
 		}

@@ -40,6 +40,10 @@ public class Evaluator {
 
 	public Evaluator(){}
 
+	public Evaluator(ReportData data){
+		this(data.report, data, data.getRecord());
+	}
+	
 	public Evaluator(Report report, ReportData data, ReportDataRecord dataRecord){
 		this.basicContext = new BasicContext();
 		this.basicContext.report = report;

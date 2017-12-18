@@ -78,7 +78,7 @@ public class Groups {
 			IScanner scanner,
 			GroupRange groupRange,
 			Region paperRegion){
-		return this.scan(scanner, groupRange, paperRegion, paperRegion, null);
+		return this.scan(scanner, groupRange, paperRegion, paperRegion, null, new Evaluator(this.report.data));
 	}
 
 	public Region scan(
@@ -86,12 +86,13 @@ public class Groups {
 			GroupRange groupRange,
 			Region paperRegion,
 			Region parentRegion,
-			ContentState parentState) {
+			ContentState parentState,
+			Evaluator evaluator) {
 		IScanner _scanner = scanner.beforeGroups(this, groupRange, parentRegion);
 		Region region = parentRegion;
 		int i = 0;
 		boolean isFirst = true;
-		int layoutCount = this.design.layout.getCount();
+		int layoutCount = this.design.layout.getCount(evaluator);
 		int lastIndex;
 		int lastIndex2;
 		Region lastRegion = null;
@@ -100,14 +101,7 @@ public class Groups {
 			filledCount = 0;
 		}
 		if (this.design.layout.blank && layoutCount == 0){
-			int gc = this.getDefaultGroupCount(parentRegion);
-			if (Report.Compatibility._4_33_BlankFill){
-				layoutCount = gc;
-			}else{
-				if (filledCount < gc){
-					layoutCount = gc;
-				}
-			}
+			layoutCount = this.getDefaultGroupCount(parentRegion);
 		}
 		if (layoutCount > 0){
 			lastIndex = Math.min(filledCount, layoutCount);
@@ -185,24 +179,13 @@ public class Groups {
 		if (u > 0){
 			float t = 0;
 			float _t = 0;
-			if (Report.Compatibility._4_33_BlankFill){
-				switch (this.design.layout.direction){
-				case VERTICAL:
-					t = parentRegion.getMaxHeight();
-					break;
-				case HORIZONTAL:
-					t = parentRegion.getMaxWidth();
-					break;
-				}
-			}else{
-				switch (this.design.layout.direction){
-				case VERTICAL:
-					t = parentRegion.getHeight();
-					break;
-				case HORIZONTAL:
-					t = parentRegion.getWidth();
-					break;
-				}
+			switch (this.design.layout.direction){
+			case VERTICAL:
+				t = parentRegion.getMaxHeight();
+				break;
+			case HORIZONTAL:
+				t = parentRegion.getMaxWidth();
+				break;
 			}
 			while(true){
 				_t += u;

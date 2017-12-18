@@ -9,6 +9,8 @@ public class ContentSizeDesign {
 
 	public float initial;
 	public float max;
+	public String initialExp;
+	public String maxExp;
 	public boolean specInitial;
 	public boolean specMax;
 	public boolean revInitial;
@@ -34,6 +36,8 @@ public class ContentSizeDesign {
 			this.max = 0f;
 			this.specMax = false;
 		}
+		this.initialExp = (String)desc.get("initial_exp");
+		this.maxExp = (String)desc.get("max_exp");
 		this.revInitial = Cast.toBool(desc.get("rev_initial"));
 		this.revMax = Cast.toBool(desc.get("rev_max"));
 		this.notExtendable = Cast.toBool(desc.get("not_extendable"));

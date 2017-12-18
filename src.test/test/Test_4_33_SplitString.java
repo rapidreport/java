@@ -14,7 +14,7 @@ public class Test_4_33_SplitString {
 		String name = "test_4_33_split_string";
 
 		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
-        report.fill(new ReportDataSource(Test_4_33_SplitString.getDataTable()));
+        report.fill(new ReportDataSource(getDataTable()));
 
 		ReportPages pages = report.getPages();
 		{

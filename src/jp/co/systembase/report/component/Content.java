@@ -68,7 +68,7 @@ public class Content {
 				!(Report.Compatibility._4_32_BlankSubGroup && contentState.groupState.blank)){
 			if (this.groups != null && groupRange != null){
 				_region = this.groups.scan(
-						_scanner, groupRange, paperRegion, _region, contentState);
+						_scanner, groupRange, paperRegion, _region, contentState, evaluator);
 			}
 		}
 		scanner.afterContent(
