@@ -97,22 +97,25 @@ public class Groups {
 		int lastIndex2;
 		Region lastRegion = null;
 		int filledCount = groupRange.getGroupCount();
-		if (parentState != null && parentState.groupState.blank) {
-			filledCount = 0;
-		}
 		if (this.design.layout.blank && layoutCount == 0){
 			layoutCount = this.getDefaultGroupCount(parentRegion);
 		}
-		if (layoutCount > 0){
-			lastIndex = Math.min(filledCount, layoutCount);
-			if (this.design.layout.blank){
-				lastIndex2 = layoutCount;
+		if (parentState != null && parentState.groupState.blank) {
+			if (layoutCount > 0){
+				lastIndex = 0;
+				lastIndex2 = this.design.layout.blank ? layoutCount : 1;
 			}else{
-				lastIndex2 = lastIndex;
+				lastIndex = 0;
+				lastIndex2 = 1;
 			}
 		}else{
-			lastIndex = filledCount;
-			lastIndex2 = lastIndex;
+			if (layoutCount > 0){
+				lastIndex = Math.min(filledCount, layoutCount);
+				lastIndex2 = this.design.layout.blank ? layoutCount : lastIndex;
+			}else{
+				lastIndex = filledCount;
+				lastIndex2 = lastIndex;
+			}
 		}
 		while(true){
 			if (i == lastIndex2){
@@ -120,7 +123,7 @@ public class Groups {
 			}
 			Group g;
 			ContentRange contentRange;
-			if (i < filledCount){
+			if (i < lastIndex){
 				g = groupRange.getGroup(i);
 				contentRange = groupRange.getSubRange(g);
 			}else{
@@ -136,10 +139,9 @@ public class Groups {
 			groupState.groupLast = groupState.last && groupRange.containsLast();
 			groupState.groupLast2 = groupState.last2 && groupRange.containsLast();
 			groupState.groupIndex = g.index;
-			groupState.blank = (i >= filledCount);
-			groupState.blankFirst = (i == filledCount);
+			groupState.blank = (i >= lastIndex);
+			groupState.blankFirst = (i == lastIndex);
 			groupState.blankLast = groupState.blank && groupState.last2;
-
 			Region groupRegion = this.design.layout.getGroupRegion(parentRegion, lastRegion, i);
 			lastRegion = g.scan(
 					_scanner,
@@ -151,7 +153,7 @@ public class Groups {
 			isFirst = false;
 			i++;
 		}
-		boolean broken = (layoutCount > 0 && layoutCount < groupRange.getGroupCount());
+		boolean broken = (layoutCount > 0 && layoutCount < filledCount);
 		scanner.afterGroups(this, groupRange, parentRegion, region, broken, _scanner);
 		return region;
 	}
