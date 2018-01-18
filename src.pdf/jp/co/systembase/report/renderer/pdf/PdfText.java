@@ -10,6 +10,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
@@ -555,8 +556,7 @@ public class PdfText {
 		float fontSize = textDesign.font.size;
 		float cw = region.getWidth() - MARGIN_X * 2;
 		List<String> ret = new ArrayList<String>();
-		for(String t: text.split("\n")){
-			t = t.replace("\r", "");
+		for(String t: ReportUtil.splitLines(text)){
 			if (wrap && _getTextWidth(fontSize, t) > cw + TOLERANCE){
 				String _t  = t;
 				while(_t.length() > 0){
@@ -581,8 +581,7 @@ public class PdfText {
 		float ch = region.getHeight();
 		int yc = (int)((ch + TOLERANCE) / fontSize);
 		List<String> ret = new ArrayList<String>();
-		for(String t: text.split("\n")){
-			t = t.replace("\r", "");
+		for(String t: ReportUtil.splitLines(text)){
 			if (wrap){
 				while(true){
 					if (t.length() > yc){

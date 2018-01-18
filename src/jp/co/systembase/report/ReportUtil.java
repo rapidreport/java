@@ -2,6 +2,7 @@ package jp.co.systembase.report;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Iterator;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.Report.EScaleUnit;
@@ -218,6 +219,33 @@ public class ReportUtil {
 			}
 		}
 		return 0;
+	}
+	
+	public static Iterable<String> splitLines(String str){
+		return new _Lines(str);
+	}
+	
+	private static class _Lines implements Iterable<String>, Iterator<String>{
+		private String _lines[];
+		private int _i;
+		public _Lines(String str){
+			this._lines = str.split("\n");
+			this._i = 0;
+		}
+		@Override
+		public Iterator<String> iterator() {
+			return this;
+		}
+		@Override
+		public boolean hasNext() {
+			return this._i < this._lines.length;
+		}
+		@Override
+		public String next() {
+			return this._lines[this._i++].replace("\r", "");
+		}
+		@Override
+		public void remove() {}
 	}
 
 	public static String objectToString(Object o){

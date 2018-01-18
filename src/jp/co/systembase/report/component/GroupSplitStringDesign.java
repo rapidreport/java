@@ -37,8 +37,7 @@ public class GroupSplitStringDesign {
 			ret.add(new ReportData(
 					new SplitStringDataSource(data, this.key, null), data.report, data.group));
 		}else{
-			for(String _t: t.split("\n")){
-				_t = _t.replace("\r", "");
+			for(String _t: ReportUtil.splitLines(t)){
 				if (this.width == 0){
 					ret.add(new ReportData(
 							new SplitStringDataSource(data, this.key, _t), data.report, data.group));

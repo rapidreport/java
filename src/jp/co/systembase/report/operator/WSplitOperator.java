@@ -20,8 +20,7 @@ public class WSplitOperator implements IOperator {
 		int w = Cast.toInt(evaluator.eval(params.get(1)));
 		int i = Cast.toInt(evaluator.eval(params.get(2)));
 		int j = 0;
-		for(String t: str.split("\n")){
-			t = t.replace("\r", "");
+		for(String t: ReportUtil.splitLines(str)){
 			int b = 0;
 			int e = 0;
 			do{
