@@ -10,10 +10,11 @@ import com.lowagie.text.pdf.PdfContentByte;
 
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
-import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
+import jp.co.systembase.report.component.textsplitter.TextSplitter;
+import jp.co.systembase.report.component.textsplitter.TextSplitterByLen;
 import jp.co.systembase.report.renderer.RenderUtil;
 
 public class PdfText {
@@ -32,8 +33,9 @@ public class PdfText {
 	protected static final float MARGIN_X = 2.0f;
 	protected static final float MARGIN_BOTTOM = 2.0f;
 
-	protected static final String VERTICAL_ROTATE_CHARS = "～…‥｜ーｰ(){}[]<>（）｛｝「」＜＞";
-	protected static final String VERTICAL_SHIFT_CHARS = "。、";
+	protected static final String VERTICAL_ROTATE_CHARS = "…‥｜ーｰ(){}[]<>（）｛｝「」＜＞←→↓⇒⇔↑＝≒";
+	protected static final String VERTICAL_ROTATE2_CHARS = "～";
+	protected static final String VERTICAL_SHIFT_CHARS = "。、，";
 
 	public void Initialize(
 			PdfRenderer renderer,
@@ -109,7 +111,7 @@ public class PdfText {
 
 	protected void _draw_distribute(){
 		float fontSize = textDesign.font.size;
-		List<String> texts = _splitTextVertical(false);
+		List<String> texts = (new TextSplitter()).getLines(this.text);
 		float y = 0;
 		switch(textDesign.valign){
 		case TOP:
@@ -146,7 +148,7 @@ public class PdfText {
 
 	protected void _draw_distributeVertical(){
 		float fontSize = textDesign.font.size;
-		List<String> texts = _splitTextVertical(false);
+		List<String> texts = (new TextSplitter()).getLines(this.text);
 		float x = 0;
 		switch(textDesign.halign){
 		case LEFT:
@@ -183,13 +185,12 @@ public class PdfText {
 	}
 
 	protected void _draw_vertical(){
-		List<String> texts = _splitTextVertical(false);
-		_draw_vertical_aux(textDesign.font.size, texts);
+		_draw_vertical_aux(textDesign.font.size, (new TextSplitter()).getLines(this.text));
 	}
 
 	protected void _draw_verticalShrink(){
 		float fontSize = textDesign.font.size;
-		List<String> texts = _splitTextVertical(false);
+		List<String> texts = (new TextSplitter()).getLines(this.text);
 		{
 			int m = 0;
 			for(String t: texts){
@@ -206,8 +207,8 @@ public class PdfText {
 	}
 
 	protected void _draw_verticalWrap(){
-		List<String> texts = _splitTextVertical(true);
-		_draw_vertical_aux(textDesign.font.size, texts);
+		int l = (int)((this.region.getHeight() + TOLERANCE) / this.textDesign.font.size);
+		_draw_vertical_aux(textDesign.font.size, (new TextSplitterByLen(l)).getLines(this.text));
 	}
 
 	protected void _draw_fixdec(){
@@ -226,18 +227,17 @@ public class PdfText {
 	}
 
 	protected void _draw_shrink(){
-		List<String> texts = _splitText(false);
+		List<String> texts = (new TextSplitter()).getLines(this.text);
 		float fontSize = _getFitFontSize(texts);
 		_draw_aux(fontSize, texts);
 	}
 
 	protected void _draw_wrap(){
-		List<String> texts = _splitText(true);
-		_draw_aux(textDesign.font.size, texts);
+		_draw_aux(textDesign.font.size, (new _TextSplitterByPdfWidth(this)).getLines(this.text));
 	}
 
 	protected void _draw(){
-		List<String> texts = _splitText(false);
+		List<String> texts = (new TextSplitter()).getLines(this.text);
 		_draw_aux(textDesign.font.size, texts);
 	}
 
@@ -372,7 +372,11 @@ public class PdfText {
 					trans.x(_x), trans.y(_y));
 		}else{
 			if (textDesign.font.italic){
-				contentByte.setTextMatrix(1f, 0f, 0.3f, 1f, trans.x(_x), trans.y(_y));
+				if (textDesign.vertical){
+					contentByte.setTextMatrix(1f, -0.3f, 0f, 1f, trans.x(_x), trans.y(_y));
+				}else{
+					contentByte.setTextMatrix(1f, 0f, 0.3f, 1f, trans.x(_x), trans.y(_y));
+				}
 			}else{
 				contentByte.setTextMatrix(trans.x(_x), trans.y(_y));
 			}
@@ -385,11 +389,29 @@ public class PdfText {
 			float y){
 		PdfRenderer.Trans trans = renderer.trans;
 		float _x = region.left + x;
-		float _y = (region.top + y + fontSize) - (fontSize / 13.4f);
+		float _y = region.top + y + fontSize;
 		if (textDesign.font.italic){
-			contentByte.setTextMatrix(-0.3f, -1, 1, 0, trans.x(_x), trans.y(_y));
+			_x -= fontSize / 13.4;
+			_y += fontSize / 4;
+			contentByte.setTextMatrix(0f, -1f, 1f, -0.3f, trans.x(_x), trans.y(_y));
 		}else{
-			contentByte.setTextMatrix(0, -1, 1, 0, trans.x(_x), trans.y(_y));
+			contentByte.setTextMatrix(0f, -1f, 1f, 0f, trans.x(_x), trans.y(_y));
+		}
+	}
+
+	protected void _setRotate2TextMatrix(
+			float fontSize,
+			float x,
+			float y){
+		PdfRenderer.Trans trans = renderer.trans;
+		float _x = region.left + x;
+		float _y = region.top + y + fontSize;
+		if (textDesign.font.italic){
+			_x -= fontSize / 13.4;
+			_y += fontSize / 2;
+			contentByte.setTextMatrix(0f, -1f, -1f, 0.3f, trans.x(_x), trans.y(_y));
+		}else{
+			contentByte.setTextMatrix(0f, -1f, -1f, 0f, trans.x(_x), trans.y(_y));
 		}
 	}
 
@@ -448,10 +470,16 @@ public class PdfText {
 		}
 		if (VERTICAL_ROTATE_CHARS.indexOf(c) >= 0){
 			_setRotateTextMatrix(
-					fontSize, x - fontSize / 3,
-					y - _getTextWidth(fontSize, c));
+				fontSize, x - fontSize / 3, y - _getTextWidth(fontSize, c));
+		}else if (VERTICAL_ROTATE2_CHARS.indexOf(c) >= 0){
+			_setRotate2TextMatrix(
+				fontSize, x + fontSize / 3, y - _getTextWidth(fontSize, c));
 		}else if (VERTICAL_SHIFT_CHARS.indexOf(c) >= 0){
-			_setTextMatrix(fontSize, x, y - fontSize / 2);
+			float d = -_getTextWidth(fontSize, c) / 2;
+			if (textDesign.font.italic){
+				d += fontSize / 4;
+			}
+			_setTextMatrix(fontSize, x, y + d);
 		}else{
 			_setTextMatrix(
 			  fontSize, x - _getTextWidth(fontSize, c) / 2, y);
@@ -552,53 +580,6 @@ public class PdfText {
         return renderer.setting.shrinkFontSizeMin;
 	}
 
-	protected List<String> _splitText(boolean wrap){
-		float fontSize = textDesign.font.size;
-		float cw = region.getWidth() - MARGIN_X * 2;
-		List<String> ret = new ArrayList<String>();
-		for(String t: ReportUtil.splitLines(text)){
-			if (wrap && _getTextWidth(fontSize, t) > cw + TOLERANCE){
-				String _t  = t;
-				while(_t.length() > 0){
-					int i;
-					for(i = 2;i <= _t.length();i++){
-						if (_getTextWidth(fontSize, _t.substring(0, i)) > cw + TOLERANCE){
-							break;
-						}
-					}
-					ret.add(_t.substring(0, i - 1));
-					_t = _t.substring(i - 1);
-				}
-			}else{
-				ret.add(t);
-			}
-		}
-		return ret;
-	}
-
-	protected List<String> _splitTextVertical(boolean wrap){
-		float fontSize = textDesign.font.size;
-		float ch = region.getHeight();
-		int yc = (int)((ch + TOLERANCE) / fontSize);
-		List<String> ret = new ArrayList<String>();
-		for(String t: ReportUtil.splitLines(text)){
-			if (wrap){
-				while(true){
-					if (t.length() > yc){
-						ret.add(t.substring(0, yc));
-						t = t.substring(yc);
-					}else{
-						ret.add(t);
-						break;
-					}
-				}
-			}else{
-				ret.add(t);
-			}
-		}
-		return ret;
-	}
-
 	protected float _getTextWidth(
 			float fontSize,
 			String text){
@@ -660,6 +641,27 @@ public class PdfText {
 		return c >= '\ue000' && c <= '\uf8ff';
 	}
 
+	protected static class _TextSplitterByPdfWidth extends TextSplitter{
+		private PdfText _pdfText;
+		public _TextSplitterByPdfWidth(PdfText pdfText){
+			super(!Report.Compatibility._4_34_PdfWrapNoRule);
+			this._pdfText = pdfText;
+		}
+		@Override
+		protected int _getNextWidth(String text) {
+			float cw = this._pdfText.region.getWidth() - MARGIN_X * 2;
+			float fontSize = this._pdfText.textDesign.font.size;
+			if (this._pdfText._getTextWidth(fontSize, text) > cw + TOLERANCE){
+				for(int i = 2;i <= text.length();i++){
+					if (this._pdfText._getTextWidth(fontSize, text.substring(0, i)) > cw + TOLERANCE){
+						return i - 1;
+					}
+				}
+			}
+			return text.length();
+		}
+	}
+	
 	protected static class _FixDec{
 
 		public PdfText pdfText;

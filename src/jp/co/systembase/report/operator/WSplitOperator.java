@@ -5,6 +5,7 @@ import java.util.List;
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.Evaluator;
+import jp.co.systembase.report.component.textsplitter.TextSplitterByWidth;
 import jp.co.systembase.report.expression.IExpression;
 
 public class WSplitOperator implements IOperator {
@@ -19,20 +20,12 @@ public class WSplitOperator implements IOperator {
 		}
 		int w = Cast.toInt(evaluator.eval(params.get(1)));
 		int i = Cast.toInt(evaluator.eval(params.get(2)));
-		int j = 0;
-		for(String t: ReportUtil.splitLines(str)){
-			int b = 0;
-			int e = 0;
-			do{
-				b = e;
-				e = ReportUtil.getWIndex(t, b, w);
-				if (j == i){
-					return ReportUtil.subString(t, b, e - b);
-				}
-				j++;
-			}while(e < t.length());
+		boolean rule = false;
+		if (params.size() >= 4){
+			rule = Cast.toBool(evaluator.eval(params.get(3)));
 		}
-		return null;
+		TextSplitterByWidth sp = new TextSplitterByWidth(w, rule);
+		return sp.getLine(str, i);
 	}
 
 }
