@@ -30,7 +30,7 @@ public class FontStyle {
 			font.setUnderline(XSSFFont.U_SINGLE);
 		}
 		if (this.design.color != null){
-			XSSFColor c = ColorUtil.getColor(this.design.color);
+			XSSFColor c = ColorUtil.getFontColor(this.design.color);
 			if (c != null){
 				font.setColor(c);
 			}
