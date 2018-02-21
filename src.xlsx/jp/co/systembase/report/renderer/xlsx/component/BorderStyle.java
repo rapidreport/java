@@ -10,13 +10,16 @@ public class BorderStyle {
 
 	public enum ELineStyle{
 		THIN,
+		HAIR,
 		DOT,
 		DASH,
 		DASHDOT,
+		DASHDOTDOT,
 		MEDIUM,
-		MEDIUM_DOT,
 		MEDIUM_DASH,
 		MEDIUM_DASHDOT,
+		MEDIUM_DASHDOTDOT,
+		SLANTED_DASHDOT,
 		THICK,
 		DOUBLE
 	}
@@ -25,52 +28,95 @@ public class BorderStyle {
 
 	private BorderStyle(){};
 
-	public static BorderStyle getInstance(ElementDesign desc, ReportDesign reportDesign){
-		float lw = reportDesign.defaultLineWidth;
-		if (!desc.isNull("line_width")){
-			lw = ((BigDecimal)desc.get("line_width")).floatValue();
-		}
-		if (lw == 0f){
-			return null;
-		}
-		BorderStyle ret = new BorderStyle();
-		if (Cast.toBool(desc.get("doublet"))){
-			ret.lineStyle = ELineStyle.DOUBLE;
-		}else{
-			String ls = "solid";
-			if (!desc.isNull("line_style")){
-				ls = (String)desc.get("line_style");
-			}
-			if (ls.equals("dot")){
-				if (lw >= 2.0f){
-					ret.lineStyle = ELineStyle.MEDIUM_DOT;
-				}else{
-					ret.lineStyle = ELineStyle.DOT;
-				}
+	public static BorderStyle getInstance(ElementDesign design, ReportDesign reportDesign){
+		BorderStyle ret = null;
+		if (!design.isNull("xls_line_style")){
+			String ls = (String)design.get("xls_line_style"); 
+			if (ls.equals("thin")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.THIN;
+			}else if (ls.equals("hair")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.HAIR;
+			}else if (ls.equals("dot")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.DOT;
 			}else if (ls.equals("dash")){
-				if (lw >= 2.0f){
-					ret.lineStyle = ELineStyle.MEDIUM_DASH;
-				}else{
-					ret.lineStyle = ELineStyle.DASH;
-				}
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.DASH;
 			}else if (ls.equals("dashdot")){
-				if (lw >= 2.0f){
-					ret.lineStyle = ELineStyle.MEDIUM_DASHDOT;
-				}else{
-					ret.lineStyle = ELineStyle.DASHDOT;
-				}
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.DASHDOT;
+			}else if (ls.equals("medium")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.MEDIUM;
+			}else if (ls.equals("medium_dash")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.MEDIUM_DASH;
+			}else if (ls.equals("medium_dashdot")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.MEDIUM_DASHDOT;
+			}else if (ls.equals("medium_dashdotdot")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.MEDIUM_DASHDOTDOT;
+			}else if (ls.equals("slanted_dashdot")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.SLANTED_DASHDOT;
+			}else if (ls.equals("thick")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.THICK;
+			}else if (ls.equals("double")){
+				ret = new BorderStyle();
+				ret.lineStyle = ELineStyle.DOUBLE;
+			}
+		}
+		if (ret == null){
+			float lw = reportDesign.defaultLineWidth;
+			if (!design.isNull("line_width")){
+				lw = ((BigDecimal)design.get("line_width")).floatValue();
+			}
+			if (lw == 0f){
+				return null;
+			}
+			ret = new BorderStyle();
+			if (Cast.toBool(design.get("doublet"))){
+				ret.lineStyle = ELineStyle.DOUBLE;
 			}else{
-				if (lw >= 3.0f){
-					ret.lineStyle = ELineStyle.THICK;
-				}else if (lw >= 2.0f){
-					ret.lineStyle = ELineStyle.MEDIUM;
+				String ls = "solid";
+				if (!design.isNull("line_style")){
+					ls = (String)design.get("line_style");
+				}
+				if (ls.equals("dot")){
+					if (lw >= 2.0f){
+						ret.lineStyle = ELineStyle.MEDIUM_DASH;
+					}else{
+						ret.lineStyle = ELineStyle.DOT;
+					}
+				}else if (ls.equals("dash")){
+					if (lw >= 2.0f){
+						ret.lineStyle = ELineStyle.MEDIUM_DASH;
+					}else{
+						ret.lineStyle = ELineStyle.DASH;
+					}
+				}else if (ls.equals("dashdot")){
+					if (lw >= 2.0f){
+						ret.lineStyle = ELineStyle.MEDIUM_DASHDOT;
+					}else{
+						ret.lineStyle = ELineStyle.DASHDOT;
+					}
 				}else{
-					ret.lineStyle = ELineStyle.THIN;
+					if (lw >= 3.0f){
+						ret.lineStyle = ELineStyle.THICK;
+					}else if (lw >= 2.0f){
+						ret.lineStyle = ELineStyle.MEDIUM;
+					}else{
+						ret.lineStyle = ELineStyle.THIN;
+					}
 				}
 			}
 		}
-		if (!desc.isNull("color")){
-			ret.lineColor = (String)desc.get("color");
+		if (!design.isNull("color")){
+			ret.lineColor = (String)design.get("color");
 		}
 		return ret;
 	}

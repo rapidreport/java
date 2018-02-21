@@ -19,7 +19,7 @@ public class GridStyle {
 	public void fill(XSSFCellStyle cellStyle, XlsxRenderer renderer){
 		if (this.leftBorder != null){
 			BorderStyle bs = this.leftBorder;
-			cellStyle.setBorderLeft(toHSSFBorderStyle(bs.lineStyle));
+			cellStyle.setBorderLeft(toNPOIBorderStyle(bs.lineStyle));
 			if (bs.lineColor != null){
 				XSSFColor c = ColorUtil.getColor(bs.lineColor);
 				if (c != null){
@@ -29,7 +29,7 @@ public class GridStyle {
 		}
 		if (this.rightBorder != null){
 			BorderStyle bs = this.rightBorder;
-			cellStyle.setBorderRight(toHSSFBorderStyle(bs.lineStyle));
+			cellStyle.setBorderRight(toNPOIBorderStyle(bs.lineStyle));
 			if (bs.lineColor != null){
 				XSSFColor c = ColorUtil.getColor(bs.lineColor);
 				if (c != null){
@@ -39,7 +39,7 @@ public class GridStyle {
 		}
 		if (this.topBorder != null){
 			BorderStyle bs = this.topBorder;
-			cellStyle.setBorderTop(toHSSFBorderStyle(bs.lineStyle));
+			cellStyle.setBorderTop(toNPOIBorderStyle(bs.lineStyle));
 			if (bs.lineColor != null){
 				XSSFColor c = ColorUtil.getColor(bs.lineColor);
 				if (c != null){
@@ -49,7 +49,7 @@ public class GridStyle {
 		}
 		if (this.bottomBorder != null){
 			BorderStyle bs = this.bottomBorder;
-			cellStyle.setBorderBottom(toHSSFBorderStyle(bs.lineStyle));
+			cellStyle.setBorderBottom(toNPOIBorderStyle(bs.lineStyle));
 			if (bs.lineColor != null){
 				XSSFColor c = ColorUtil.getColor(bs.lineColor);
 				if (c != null){
@@ -66,28 +66,34 @@ public class GridStyle {
 		}
 	}
 
-	private static org.apache.poi.ss.usermodel.BorderStyle toHSSFBorderStyle(BorderStyle.ELineStyle ls){
+	private static org.apache.poi.ss.usermodel.BorderStyle toNPOIBorderStyle(BorderStyle.ELineStyle ls){
 		switch(ls){
 		case THIN:
 			return org.apache.poi.ss.usermodel.BorderStyle.THIN;
-		case THICK:
-			return org.apache.poi.ss.usermodel.BorderStyle.THICK;
-		case MEDIUM:
-			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM;
+		case HAIR:
+			return org.apache.poi.ss.usermodel.BorderStyle.HAIR;
 		case DOT:
 			return org.apache.poi.ss.usermodel.BorderStyle.DOTTED;
 		case DASH:
 			return org.apache.poi.ss.usermodel.BorderStyle.DASHED;
 		case DASHDOT:
 			return org.apache.poi.ss.usermodel.BorderStyle.DASH_DOT;
-		case DOUBLE:
-			return org.apache.poi.ss.usermodel.BorderStyle.DOUBLE;
-		case MEDIUM_DOT:
-			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM_DASHED;
+		case DASHDOTDOT:
+			return org.apache.poi.ss.usermodel.BorderStyle.DASH_DOT_DOT;
+		case MEDIUM:
+			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM;
 		case MEDIUM_DASH:
 			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM_DASHED;
 		case MEDIUM_DASHDOT:
-			return org.apache.poi.ss.usermodel.BorderStyle.DASH_DOT;
+			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM_DASH_DOT;
+		case MEDIUM_DASHDOTDOT:
+			return org.apache.poi.ss.usermodel.BorderStyle.MEDIUM_DASH_DOT_DOT;
+		case SLANTED_DASHDOT:
+			return org.apache.poi.ss.usermodel.BorderStyle.SLANTED_DASH_DOT;
+		case THICK:
+			return org.apache.poi.ss.usermodel.BorderStyle.THICK;
+		case DOUBLE:
+			return org.apache.poi.ss.usermodel.BorderStyle.DOUBLE;
 		}
 		return org.apache.poi.ss.usermodel.BorderStyle.NONE;
 	}
