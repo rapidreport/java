@@ -10,6 +10,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
@@ -130,11 +131,12 @@ public class PdfText {
 		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), rows), 1);i++){
 			String t = texts.get(i);
-			List<Float> m  = _getDistributeMap(region.getWidth() - MARGIN_X * 2, t.length(), fontSize);
+			List<Float> m  = _getDistributeMap(region.getWidth() - MARGIN_X * 2, ReportUtil.stringLen(t), fontSize);
+			_draw_preprocess();
             contentByte.setFontAndSize(font, fontSize);
             contentByte.beginText();
-            for(int j = 0;j < t.length();j++){
-            	String c = t.substring(j, j + 1);
+            for(int j = 0;j < ReportUtil.stringLen(t);j++){
+            	String c = ReportUtil.subString2(t, j, j + 1);
                 _drawText(fontSize, c, m.get(j) - _getTextWidth(fontSize, c) / 2 + MARGIN_X, y);
             }
             contentByte.endText();
@@ -171,11 +173,12 @@ public class PdfText {
 	        	_drawVerticalUnderLine(fontSize, x + fontSize / 2, 0, region.getHeight(), lw);
 	        }
 			{
-				List<Float> m = _getDistributeMap(region.getHeight() - MARGIN_BOTTOM, t.length(), fontSize);
+				List<Float> m = _getDistributeMap(region.getHeight() - MARGIN_BOTTOM, ReportUtil.stringLen(t), fontSize);
+				_draw_preprocess();
 				contentByte.setFontAndSize(font, fontSize);
 				contentByte.beginText();
-				for(int j = 0;j < t.length();j++){
-					_drawVerticalChar(fontSize, t.substring(j, j + 1),
+				for(int j = 0;j < ReportUtil.stringLen(t);j++){
+					_drawVerticalChar(fontSize, ReportUtil.subString2(t, j, j + 1),
 							x, m.get(j) - fontSize / 2 + OFFSET_Y);
 	            }
 	            contentByte.endText();
@@ -194,8 +197,8 @@ public class PdfText {
 		{
 			int m = 0;
 			for(String t: texts){
-				if (m < t.length()){
-					m = t.length();
+				if (m < ReportUtil.stringLen(t)){
+					m = ReportUtil.stringLen(t);
 				}
 			}
 			if (m > 0){
@@ -268,8 +271,8 @@ public class PdfText {
 				if (w > cw){
 					String _t = "";
 					float _w = 0;
-					for(int j = 1;j <= t.length();j++){
-						String __t = t.substring(0, j);
+					for(int j = 1;j <= ReportUtil.stringLen(t);j++){
+						String __t = ReportUtil.subString2(t, 0, j);
 						float __w = _getTextWidth(fontSize, __t);
 						if (__w <= cw + TOLERANCE){
 							_t = __t;
@@ -296,6 +299,7 @@ public class PdfText {
 				x = Math.max(x, MARGIN_X);
 				break;
 			}
+			_draw_preprocess();
 			contentByte.setFontAndSize(font, fontSize);
 			contentByte.beginText();
 			_drawText(fontSize, t, x, y);
@@ -335,24 +339,25 @@ public class PdfText {
 				y = 0;
 				break;
 			case CENTER:
-				y = (region.getHeight() - fontSize * t.length()) / 2;
+				y = (region.getHeight() - fontSize * ReportUtil.stringLen(t)) / 2;
 				y = Math.max(y, 0);
 				break;
 			case BOTTOM:
-				y = region.getHeight() - fontSize * t.length() - MARGIN_BOTTOM;
+				y = region.getHeight() - fontSize * ReportUtil.stringLen(t) - MARGIN_BOTTOM;
 				y = Math.max(y, 0);
 				break;
 			}
 			y += OFFSET_Y;
-			int _yc = Math.min(t.length(), rows);
+			int _yc = Math.min(ReportUtil.stringLen(t), rows);
 			if (textDesign.font.underline){
 				float lw = (fontSize / 13.4f) * renderer.setting.underlineWidthCoefficient;
 				_drawVerticalUnderLine(fontSize, x + fontSize / 2, y, _yc * fontSize, lw);
 			}
+			_draw_preprocess();
 			contentByte.setFontAndSize(font, fontSize);
 			contentByte.beginText();
 			for(int j = 0;j < _yc;j++){
-				_drawVerticalChar(fontSize, t.substring(j, j + 1), x, y);
+				_drawVerticalChar(fontSize, ReportUtil.subString2(t, j, j + 1), x, y);
 				y += fontSize;
 			}
 			contentByte.endText();
@@ -431,13 +436,13 @@ public class PdfText {
 			boolean gaiji = false;
 			float _x = x;
 			for(String t: _texts){
-				if (t.length() > 0){
+				if (ReportUtil.stringLen(t) > 0){
 					if (!gaiji){
 						_setTextMatrix(fontSize, _x, y);
 						contentByte.showText(t);
 						_x += font.getWidthPoint(t, fontSize);
 					}else{
-						for(int i = 0;i < t.length();i++){
+						for(int i = 0;i < ReportUtil.stringLen(t);i++){
 							BaseFont f = renderer.setting.gaijiFont;
 							if (gaijiFont != null && gaijiFont.getWidth(t.charAt(i)) > 0){
 								f = gaijiFont;
@@ -447,7 +452,7 @@ public class PdfText {
 							}
 							contentByte.setFontAndSize(f, fontSize);
 							_setTextMatrix(fontSize, _x, y);
-							contentByte.showText(t.substring(i, i + 1));
+							contentByte.showText(ReportUtil.subString2(t, i, i + 1));
 							_x += fontSize;
 						}
 						contentByte.setFontAndSize(font, fontSize);
@@ -527,7 +532,7 @@ public class PdfText {
 	}
 
 	protected boolean _isEmpty(){
-		if (text == null || text.length() == 0){
+		if (text == null || ReportUtil.stringLen(text) == 0){
 			return true;
 		}
 		if (region.getWidth() <= 0 || region.getHeight() <= 0){
@@ -593,11 +598,11 @@ public class PdfText {
 		}else{
 			boolean g = false;
 			for(String t: _texts){
-				if (t.length() > 0){
+				if (ReportUtil.stringLen(t) > 0){
 					if (!g){
 						ret += font.getWidthPoint(t, fontSize);
 					}else{
-						ret += t.length() * fontSize;
+						ret += ReportUtil.stringLen(t) * fontSize;
 					}
 				}
 				g = !g;
@@ -613,26 +618,26 @@ public class PdfText {
 		List<String> ret = null;
 		boolean g = false;
 		int last = 0;
-		for(int i = 0;i < text.length();i++){
+		for(int i = 0;i < ReportUtil.stringLen(text);i++){
 			if (_isGaiji(text.charAt(i))){
 				if (!g){
 					if (ret == null){
 						ret = new ArrayList<String>();
 					}
-					ret.add(text.substring(last, i));
+					ret.add(ReportUtil.subString2(text, last, i));
 					last = i;
 					g = true;
 				}
 			}else{
 				if (g){
-					ret.add(text.substring(last, i));
+					ret.add(ReportUtil.subString2(text, last, i));
 					last = i;
 					g = false;
 				}
 			}
 		}
 		if (ret != null){
-			ret.add(text.substring(last));
+			ret.add(ReportUtil.subString2(text, last));
 		}
 		return ret;
 	}
@@ -652,16 +657,16 @@ public class PdfText {
 			float cw = this._pdfText.region.getWidth() - MARGIN_X * 2;
 			float fontSize = this._pdfText.textDesign.font.size;
 			if (this._pdfText._getTextWidth(fontSize, text) > cw + TOLERANCE){
-				for(int i = 2;i <= text.length();i++){
-					if (this._pdfText._getTextWidth(fontSize, text.substring(0, i)) > cw + TOLERANCE){
+				for(int i = 2;i <= ReportUtil.stringLen(text);i++){
+					if (this._pdfText._getTextWidth(fontSize, ReportUtil.subString2(text, 0, i)) > cw + TOLERANCE){
 						return i - 1;
 					}
 				}
 			}
-			return text.length();
+			return ReportUtil.stringLen(text);
 		}
 	}
-	
+
 	protected static class _FixDec{
 
 		public PdfText pdfText;
@@ -677,7 +682,7 @@ public class PdfText {
 				Matcher m = p.matcher(t);
 				if (m.find()){
 					this.text3 = m.group(0);
-					t = t.substring(0, t.length() - this.text3.length());
+					t = ReportUtil.subString2(t, 0, ReportUtil.stringLen(t) - this.text3.length());
 				}
 			}
 			{
@@ -685,7 +690,7 @@ public class PdfText {
 				Matcher m = p.matcher(t);
 				if (m.find()){
 					this.text2 = m.group(0);
-					this.text1 = t.substring(0, t.length() - this.text2.length());
+					this.text1 = ReportUtil.subString2(t, 0, ReportUtil.stringLen(t) - this.text2.length());
 				}
 			}
 		}
@@ -738,6 +743,7 @@ public class PdfText {
 					x = Math.max(x, MARGIN_X);
 					break;
 				}
+				pdfText._draw_preprocess();
 				pdfText.contentByte.setFontAndSize(pdfText.font, fontSize);
 				pdfText.contentByte.beginText();
 				_drawText_aux(fontSize, x, y, this.text1 + this.text2);
@@ -766,8 +772,8 @@ public class PdfText {
 			if (pdfText._getTextWidth(fontSize, t) > w + TOLERANCE){
 				String _t = "";
 				String __t = "";
-				for(int i = 0;i <= t.length();i++){
-					__t = t.substring(0, i);
+				for(int i = 0;i <= ReportUtil.stringLen(t);i++){
+					__t = ReportUtil.subString2(t, 0, i);
 					if (pdfText._getTextWidth(fontSize, __t) <= w + TOLERANCE){
 						_t = __t;
 					}else{
@@ -776,7 +782,7 @@ public class PdfText {
 				}
 				t = _t;
 			}
-			if (t.length() > 0){
+			if (ReportUtil.stringLen(t) > 0){
 				pdfText._drawText(fontSize, t, _x, y);
 			}
 		}

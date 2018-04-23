@@ -1,7 +1,9 @@
 package jp.co.systembase.report;
 
 import java.math.BigDecimal;
+import java.text.BreakIterator;
 import java.util.Date;
+import java.util.Locale;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.Report.EScaleUnit;
@@ -231,5 +233,41 @@ public class ReportUtil {
 		}
 		return null;
 	}
+
+	public static String subString2(String str, int startIndex){
+		return ReportUtil.subString2(str, startIndex, startIndex + ReportUtil.stringLen(str));
+	}
+
+	public static String subString2(String str, int startIndex, int endIndex){
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.JAPAN);
+		bi.setText(str);
+
+		StringBuffer sb = new StringBuffer();
+
+		int start = bi.first();
+		int end = 0;
+		int count = 0;
+
+		while (bi.next() != BreakIterator.DONE) {
+			end = bi.current();
+			count++;
+			if (count >= (startIndex + 1) && count <= endIndex){
+				sb.append(str.substring(start, end));
+			}
+			start = end;
+		}
+		return sb.toString();
+	}
+
+	public static int stringLen(String str){
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.JAPAN);
+		bi.setText(str);
+		int count = 0;
+		while (bi.next() != BreakIterator.DONE){
+			count++;
+		}
+		return count;
+	}
+
 
 }

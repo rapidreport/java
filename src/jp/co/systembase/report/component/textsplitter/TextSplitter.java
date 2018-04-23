@@ -3,6 +3,8 @@ package jp.co.systembase.report.component.textsplitter;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.co.systembase.report.ReportUtil;
+
 public class TextSplitter {
 
 	private final String WORD_CHARS =
@@ -47,7 +49,7 @@ public class TextSplitter {
 		}
 		return ret;
 	}
-	
+
 	public String getLine(String text, int i){
 		List<String> l = this._getLines(text, i);
 		if (l.size() > i){
@@ -56,7 +58,7 @@ public class TextSplitter {
 			return null;
 		}
 	}
-	
+
 	private void _split(List<String> l, String text, int limit){
 		String t = text;
 		do{
@@ -64,26 +66,26 @@ public class TextSplitter {
 			if (this._BreakRule){
 				w = this._getNextOnRule(t, w);
 			}
-			l.add(t.substring(0, w));
+			l.add(ReportUtil.subString2(t, 0, w));
 			if (limit >= 0 && l.size() > limit){
 				break;
 			}
-			t = t.substring(w);
-		}while(t.length() > 0);
+			t = ReportUtil.subString2(t, w);
+		}while(ReportUtil.stringLen(t) > 0);
 	}
 
 	protected int _getNextWidth(String text){
-		return text.length();
+		return ReportUtil.stringLen(text);
 	}
 
 	private int _getNextOnRule(String text, int w){
-		if (w == text.length()){
+		if (w == ReportUtil.stringLen(text)){
 			return w;
 		}
 		int _w = w;
 		while(_w > 0){
-			String cp = text.substring(_w - 1, _w);
-			String cn = text.substring(_w, _w + 1);
+			String cp = ReportUtil.subString2(text, _w - 1, _w);
+			String cn = ReportUtil.subString2(text, _w, _w + 1);
 			if (WORD_CHARS.contains(cp) && WORD_CHARS.contains(cn)){
 			}else if (OPEN_CHARS.contains(cp)){
 			}else if (CLOSE_CHARS.contains(cn)){
