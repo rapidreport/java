@@ -44,7 +44,7 @@ public class Groups {
 				dataSource = this.report.groupDataProvider.getGroupDataSource(this, data);
 			}
 			if (this.design.sortKeys != null){
-				dataSource = new SortedDataSource(_data, this.design.sortKeys, _data.context.getLogger());
+				dataSource = new SortedDataSource(dataSource, this.design.sortKeys, _data.context.getLogger());
 			}
 			if (dataSource != _data){
 				_data = new ReportData(dataSource, data.report, data.group);
@@ -67,7 +67,7 @@ public class Groups {
 	public void addGroup(ReportData data){
 		this.addGroup(data, null);
 	}
-	
+
 	public void addGroup(ReportData data, Crosstab.State crosstabState){
 		Group g = new Group(this, this.groups.size(), crosstabState);
 		this.groups.add(g);
