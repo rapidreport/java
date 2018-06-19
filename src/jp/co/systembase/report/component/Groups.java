@@ -92,11 +92,12 @@ public class Groups {
 		Region region = parentRegion;
 		int i = 0;
 		boolean isFirst = true;
+		int filledCount = groupRange.getGroupCount();
+		evaluator.GroupLayoutFilledCount = filledCount;
 		int layoutCount = this.design.layout.getCount(evaluator);
 		int lastIndex;
 		int lastIndex2;
-		Region lastRegion = null;
-		int filledCount = groupRange.getGroupCount();
+		Region lastRegion = null;		
 		if (this.design.layout.blank && layoutCount == 0){
 			layoutCount = this.getDefaultGroupCount(parentRegion);
 		}

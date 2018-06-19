@@ -20,6 +20,8 @@ public class Evaluator {
 	public ContentContext contentContext = null;
 	public PageContext pageContext = null;
 
+	public int GroupLayoutFilledCount = -1;
+
 	public static class BasicContext{
 		public Report report;
 		public ReportData data;

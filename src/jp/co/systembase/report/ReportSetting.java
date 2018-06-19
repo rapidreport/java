@@ -20,6 +20,7 @@ import jp.co.systembase.report.method.GlobalScopeMethod;
 import jp.co.systembase.report.method.IMethod;
 import jp.co.systembase.report.method.NextMethod;
 import jp.co.systembase.report.method.PageCountMethod;
+import jp.co.systembase.report.method.PageGroupCountMethod;
 import jp.co.systembase.report.method.PageScopeMethod;
 import jp.co.systembase.report.method.PreviousMethod;
 import jp.co.systembase.report.method.RowCountAtMethod;
@@ -109,6 +110,7 @@ public class ReportSetting  implements Cloneable{
 		this.methodMap.put("var", new VariableMethod());
 		this.methodMap.put("current_time", new CurrentTimeMethod());
 		this.methodMap.put("crosstab", new CrosstabMethod());
+		this.methodMap.put("page_group_count", new PageGroupCountMethod());
 		this.methodMap.put("debug", new DummyMethod());
 		this.operatorMap.put("+", new AddOperator());
 		this.operatorMap.put("-", new SubOperator());
