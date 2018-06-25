@@ -10,10 +10,10 @@ import jp.co.systembase.report.data.DummyDataSource;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
 import jp.co.systembase.report.renderer.pdf.PdfRendererSetting;
 
-public class Test_4_36_IpaFont {
+public class Test_4_36_SurrogatePair {
 
 	public static void main(String[] args) throws Throwable {
-		String name = "test_4_36_ipa_font";
+		String name = "test_4_36_surrogate_pair";
 
 		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
         report.fill(DummyDataSource.getInstance());
