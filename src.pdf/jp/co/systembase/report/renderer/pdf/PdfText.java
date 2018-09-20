@@ -217,14 +217,14 @@ public class PdfText {
 	protected void _draw_fixdec(){
 		_FixDec fd = new _FixDec(this);
 		List<String> texts = new ArrayList<String>();
-		texts.add(fd.getFullText(textDesign.decimalPlace));
+		texts.add(fd.getFullText());
 		fd.drawText(textDesign.font.size);
 	}
 
 	protected void _draw_fixdecShrink(){
 		_FixDec fd = new _FixDec(this);
 		List<String> texts = new ArrayList<String>();
-		texts.add(fd.getFullText(textDesign.decimalPlace));
+		texts.add(fd.getFullText());
 		float fontSize = _getFitFontSize(texts);
 		fd.drawText(fontSize);
 	}
@@ -695,19 +695,19 @@ public class PdfText {
 			}
 		}
 
-		public String getFullText2(int width){
+		public String getFullText2(){
 			String ret = this.text2;
 			if (ret.length() == 0){
 				ret = ".";
 			}
-			while(ret.length() <= width){
+			while(ret.length() <= this.pdfText.textDesign.decimalPlace){
 				ret += "0";
 			}
 			return ret;
 		}
 
-		public String getFullText(int width){
-			return this.text1 + this.getFullText2(width) + this.text3;
+		public String getFullText(){
+			return this.text1 + this.getFullText2() + this.text3;
 		}
 
 		public void drawText(float fontSize){
@@ -725,7 +725,7 @@ public class PdfText {
 			}
 			y += OFFSET_Y;
 			{
-				String t = this.text1 + this.getFullText2(pdfText.textDesign.decimalPlace);
+				String t = this.text1 + this.getFullText2();
 				String ft = t + this.text3;
 				float w = pdfText._getTextWidth(fontSize, t);
 				float fw = pdfText._getTextWidth(fontSize, ft);
