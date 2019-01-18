@@ -50,5 +50,6 @@ public interface IScanner {
     		Region parentRegion,
     		ContentState contentState,
     		Region region,
-            Region paperRegion);
+            Region paperRegion,
+            boolean background);
 }

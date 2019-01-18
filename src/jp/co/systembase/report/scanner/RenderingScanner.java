@@ -86,24 +86,27 @@ public class RenderingScanner extends DefaultScanner {
 			Region parentRegion,
 			ContentState contentState,
 			Region region,
-			Region paperRegion) {
+			Region paperRegion,
+			boolean background) {
 		if (region != null && content.subContents != null){
 			Region _region = new Region(region);
 			_region.maxBottom = _region.bottom;
 			_region.maxRight = _region.right;
 			for(Content c: content.subContents){
-				Evaluator evaluator = new Evaluator(c, contentState);
-				if (c.design.visibilityCond != null){
-					if (!ReportUtil.condition(evaluator.evalTry(c.design.visibilityCond))){
-						continue;
+				if (c.design.background = background){
+					Evaluator evaluator = new Evaluator(c, contentState);
+					if (c.design.visibilityCond != null){
+						if (!ReportUtil.condition(evaluator.evalTry(c.design.visibilityCond))){
+							continue;
+						}
 					}
+					GroupRange gr = null;
+					if (c.groups != null){
+						gr = new GroupRange(c.groups);
+					}
+					c.scan(this, gr, paperRegion, parentRegion, 
+							c.design.layout.getRegion(_region), contentState, evaluator);
 				}
-				GroupRange gr = null;
-				if (c.groups != null){
-					gr = new GroupRange(c.groups);
-				}
-				c.scan(this, gr, paperRegion, parentRegion, 
-						c.design.layout.getRegion(_region), contentState, evaluator);
 			}
 		}
 	}

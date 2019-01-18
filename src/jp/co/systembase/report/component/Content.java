@@ -71,10 +71,12 @@ public class Content {
 						_scanner, groupRange, paperRegion, _region, contentState, evaluator);
 			}
 		}
+		scanner.scanSubContent(
+				this, parentRegion, contentState, _region, paperRegion, true);
 		scanner.afterContent(
 				this, groupRange, parentRegion, contentState, _region, _scanner);
 		scanner.scanSubContent(
-				this, parentRegion, contentState, _region, paperRegion);
+				this, parentRegion, contentState, _region, paperRegion, false);
 		return _region;
 	}
 

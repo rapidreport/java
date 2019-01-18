@@ -66,7 +66,8 @@ public class DefaultScanner implements IScanner {
 			Region parentRegion,
 			ContentState contentState,
 			Region region,
-			Region paperRegion) {
+			Region paperRegion,
+			boolean background) {
 	}
 
 }

@@ -15,6 +15,7 @@ public class ContentDesign {
 	public String id;
 	public ContentSizeDesign size;
 	public SubContentLayoutDesign layout;
+	public boolean background;
 	public boolean aggregateSrc;
 	public boolean everyPage;
 	public String existenceCond;
@@ -62,6 +63,7 @@ public class ContentDesign {
 		}else{
 			this.layout = new SubContentLayoutDesign();
 		}
+		this.background = Cast.toBool(desc.get("background"));
 		this.aggregateSrc = Cast.toBool(desc.get("aggregate_src"));
 		this.everyPage = Cast.toBool(desc.get("every_page"));
 		this.existenceCond = (String)desc.get("existence_cond");
