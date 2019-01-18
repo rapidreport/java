@@ -16,7 +16,7 @@ public class StringLenOperator implements IOperator {
 		if (str == null){
 			return null;
 		}
-		return str.length();
+		return ReportUtil.stringLen(str);
 	}
 
 }

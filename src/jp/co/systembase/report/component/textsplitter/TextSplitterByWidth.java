@@ -13,6 +13,6 @@ public class TextSplitterByWidth extends TextSplitter {
 		if (this._width == 0){
 			return super._getNextWidth(text);
 		}
-		return ReportUtil.getWIndex(text, 0, this._width);
+		return ReportUtil.getWIndex(text, this._width);
 	}
 }

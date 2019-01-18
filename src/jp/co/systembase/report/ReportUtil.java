@@ -110,116 +110,130 @@ public class ReportUtil {
 	}
 
 	public static String subString(String str, int begin){
-		int b = begin;
-		if (b < 0){
-			b = str.length() + b;
-			if (b < 0){
-				b = 0;
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.US);
+		bi.setText(str);
+		int _begin = (begin < 0 ? ReportUtil.stringLen(str) + begin : begin);
+		int b = bi.first();
+		int count = 0;
+		while (bi.next() != BreakIterator.DONE) {
+			if (count >= _begin){
+				break;
 			}
+			b = bi.current();
+			count++;
 		}
-		if (b >= str.length()){
-			return null;
-		}else{
-			return str.substring(b);
-		}
+		return str.substring(b);
 	}
 
 	public static String subString(String str, int begin, int len){
-		int b = begin;
-		int l = len;
-		if (b < 0){
-			b = str.length() + b;
-			if (b < 0){
-				l += b;
-				b = 0;
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.US);
+		bi.setText(str);
+		int _begin = Math.max(begin < 0 ? ReportUtil.stringLen(str) + begin : begin, 0);
+		int b = bi.first();
+		int e = 0;
+		int count = 0;
+		while (bi.next() != BreakIterator.DONE) {
+			if (count >= _begin){
+				if (count < _begin + len){
+					e = bi.current();
+				}else{
+					break;
+				}
+			}else{
+				b = bi.current();
 			}
+			count++;
 		}
-		if (l <= 0 || b >= str.length()){
-			return null;
-		}else if(b + l > str.length()){
-			return str.substring(b);
-		}else{
-			return str.substring(b, b + l);
+		return str.substring(b, e);
+	}
+
+	public static int stringLen(String str){
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.US);
+		bi.setText(str);
+		int count = 0;
+		bi.first();
+		while (bi.next() != BreakIterator.DONE){
+			count++;
 		}
+		return count;
 	}
 
 	public static int wStringLen(String str){
-		int ret = 0;
-		for(int i = 0;i < str.length();i++){
-			char c = str.charAt(i);
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.US);
+		bi.setText(str);
+		int count = 0;
+		int last = bi.first();
+		while (bi.next() != BreakIterator.DONE){
+			String c = str.substring(last, bi.current());
 			if (SINGLE_CHARS.indexOf(c) >= 0){
-				ret += 1;
+				count += 1;
 			}else{
-				ret += 2;
+				count += 2;
 			}
+			last = bi.current();
 		}
-		return ret;
+		return count;
 	}
 
 	public static String wSubString(String str, int begin){
-		int b;
 		if (begin >= 0){
-			b = getWIndex(str, 0, begin);
+			return subString(str, getWIndex(str, begin));
 		}else{
-			b = getWRevIndex(str, str.length(), -begin);
-		}
-		if (b >= str.length()){
-			return null;
-		}else{
-			return str.substring(b);
+			return subString(str, getWRevIndex(str, -begin));
 		}
 	}
 
 	public static String wSubString(String str, int begin, int len){
-		int b;
-		int e;
 		if (begin >= 0){
-			b = getWIndex(str, 0, begin);
-			e = getWIndex(str, b, len);
+			String s = subString(str, getWIndex(str, begin));
+			return subString(s, 0, getWIndex(s, len));
 		}else{
-			int _len = Math.min(-begin, len);
-			e = getWRevIndex(str, str.length(), -(begin + _len));
-			b = getWRevIndex(str, e, _len);
-		}
-		if (e <= b || b >= str.length()){
-			return null;
-		}else if (e >= str.length()){
-			return str.substring(b);
-		}else{
-			return str.substring(b, e);
+			String s = subString(str, getWRevIndex(str, -begin));
+			return subString(s, 0, getWIndex(s, len));
 		}
 	}
 
-	public static int getWIndex(String str, int base, int w){
+	public static int getWIndex(String str, int w){
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.US);
+		bi.setText(str);
+		int last = bi.first();
 		int _w = 0;
-		for(int i = base;i < str.length();i++){
-			char c = str.charAt(i);
+		int ret = 0;
+		while (bi.next() != BreakIterator.DONE){
+			String c = str.substring(last, bi.current());
 			if (SINGLE_CHARS.indexOf(c) >= 0){
 				_w += 1;
 			}else{
 				_w += 2;
 			}
 			if (_w > w){
-				return i;
+				break;
 			}
+			last = bi.current();
+			ret++;
 		}
-		return str.length();
+		return ret;
 	}
 
-	public static int getWRevIndex(String str, int base, int w){
+	public static int getWRevIndex(String str, int w){
+		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.US);
+		bi.setText(str);
+		int last = bi.last();
 		int _w = 0;
-		for(int i = base - 1;i >= 0;i--){
-			char c = str.charAt(i);
+		int ret = 0;
+		while (bi.previous() != BreakIterator.DONE){
+			String c = str.substring(bi.current(), last);
 			if (SINGLE_CHARS.indexOf(c) >= 0){
 				_w += 1;
 			}else{
 				_w += 2;
 			}
+			last = bi.current();
 			if (_w > w){
-				return i + 1;
+				ret++;
 			}
 		}
-		return 0;
+		return ret;
 	}
 
 	public static String objectToString(Object o){
@@ -233,41 +247,5 @@ public class ReportUtil {
 		}
 		return null;
 	}
-
-	public static String subString2(String str, int startIndex){
-		return ReportUtil.subString2(str, startIndex, startIndex + ReportUtil.stringLen(str));
-	}
-
-	public static String subString2(String str, int startIndex, int endIndex){
-		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.JAPAN);
-		bi.setText(str);
-
-		StringBuffer sb = new StringBuffer();
-
-		int start = bi.first();
-		int end = 0;
-		int count = 0;
-
-		while (bi.next() != BreakIterator.DONE) {
-			end = bi.current();
-			count++;
-			if (count >= (startIndex + 1) && count <= endIndex){
-				sb.append(str.substring(start, end));
-			}
-			start = end;
-		}
-		return sb.toString();
-	}
-
-	public static int stringLen(String str){
-		BreakIterator bi = BreakIterator.getCharacterInstance(Locale.JAPAN);
-		bi.setText(str);
-		int count = 0;
-		while (bi.next() != BreakIterator.DONE){
-			count++;
-		}
-		return count;
-	}
-
 
 }

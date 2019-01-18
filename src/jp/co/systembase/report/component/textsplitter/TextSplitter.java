@@ -66,11 +66,11 @@ public class TextSplitter {
 			if (this._BreakRule){
 				w = this._getNextOnRule(t, w);
 			}
-			l.add(ReportUtil.subString2(t, 0, w));
+			l.add(ReportUtil.subString(t, 0, w));
 			if (limit >= 0 && l.size() > limit){
 				break;
 			}
-			t = ReportUtil.subString2(t, w);
+			t = ReportUtil.subString(t, w);
 		}while(ReportUtil.stringLen(t) > 0);
 	}
 
@@ -84,8 +84,8 @@ public class TextSplitter {
 		}
 		int _w = w;
 		while(_w > 0){
-			String cp = ReportUtil.subString2(text, _w - 1, _w);
-			String cn = ReportUtil.subString2(text, _w, _w + 1);
+			String cp = ReportUtil.subString(text, _w - 1, 1);
+			String cn = ReportUtil.subString(text, _w, 1);
 			if (WORD_CHARS.contains(cp) && WORD_CHARS.contains(cn)){
 			}else if (OPEN_CHARS.contains(cp)){
 			}else if (CLOSE_CHARS.contains(cn)){
