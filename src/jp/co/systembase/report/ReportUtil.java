@@ -3,7 +3,9 @@ package jp.co.systembase.report;
 import java.math.BigDecimal;
 import java.text.BreakIterator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.Report.EScaleUnit;
@@ -164,8 +166,7 @@ public class ReportUtil {
 		int count = 0;
 		int last = bi.first();
 		while (bi.next() != BreakIterator.DONE){
-			String c = str.substring(last, bi.current());
-			if (SINGLE_CHARS.indexOf(c) >= 0){
+			if (_isSingleChar(str.substring(last, bi.current()))){
 				count += 1;
 			}else{
 				count += 2;
@@ -200,8 +201,7 @@ public class ReportUtil {
 		int _w = 0;
 		int ret = 0;
 		while (bi.next() != BreakIterator.DONE){
-			String c = str.substring(last, bi.current());
-			if (SINGLE_CHARS.indexOf(c) >= 0){
+			if (_isSingleChar(str.substring(last, bi.current()))){
 				_w += 1;
 			}else{
 				_w += 2;
@@ -222,8 +222,7 @@ public class ReportUtil {
 		int _w = 0;
 		int ret = 0;
 		while (bi.previous() != BreakIterator.DONE){
-			String c = str.substring(bi.current(), last);
-			if (SINGLE_CHARS.indexOf(c) >= 0){
+			if (_isSingleChar(str.substring(bi.current(), last))){
 				_w += 1;
 			}else{
 				_w += 2;
@@ -248,4 +247,15 @@ public class ReportUtil {
 		return null;
 	}
 
+	private static Map<String, Boolean> _SingleCharsMap = null;
+	
+	synchronized private static boolean _isSingleChar(String c){
+		if (_SingleCharsMap == null){
+			_SingleCharsMap = new HashMap<String, Boolean>();
+			for(int i = 0;i < SINGLE_CHARS.length();i++){
+				_SingleCharsMap.put(SINGLE_CHARS.substring(i, i + 1), true);
+			}
+		}
+		return _SingleCharsMap.containsKey(c);
+	}
 }
