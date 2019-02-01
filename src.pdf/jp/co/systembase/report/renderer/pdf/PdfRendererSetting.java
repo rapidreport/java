@@ -29,6 +29,7 @@ public class PdfRendererSetting {
 	public float shrinkFontSizeStep;
 	public float underlineWidthCoefficient = 1.0f;
 	public static boolean skipInitialFontCreate = false;
+	public static boolean useMsFont = true;
 
 	public PdfRendererSetting(){
 		this.dummyElementRenderer = new DummyRenderer();
@@ -42,9 +43,15 @@ public class PdfRendererSetting {
 		this.elementRendererMap.put("subpage", new SubPageRenderer());
 		try {
 			if (!skipInitialFontCreate){
-				this.defaultFont = BaseFont.createFont("HeiseiKakuGo-W5", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED);
-				this.fontMap.put("gothic", this.defaultFont);
-				this.fontMap.put("mincho", BaseFont.createFont("HeiseiMin-W3", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
+				if (useMsFont){
+					this.defaultFont = BaseFont.createFont("MS-Gothic", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED);
+					this.fontMap.put("gothic", this.defaultFont);
+					this.fontMap.put("mincho", BaseFont.createFont("MS-Mincho", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
+				}else{
+					this.defaultFont = BaseFont.createFont("HeiseiKakuGo-W5", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED);
+					this.fontMap.put("gothic", this.defaultFont);
+					this.fontMap.put("mincho", BaseFont.createFont("HeiseiMin-W3", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
+				}
 			}
 			else{
 				this.defaultFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
