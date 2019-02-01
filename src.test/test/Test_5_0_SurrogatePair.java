@@ -23,8 +23,6 @@ public class Test_5_0_SurrogatePair {
 			try{
 				PdfRenderer renderer = new PdfRenderer(fos);
 				renderer.setting.fontMap.put("gothic", BaseFont.createFont("rrpt\\font\\ipamjm.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED));
-				//renderer.setting.fontMap.put("gothic", BaseFont.createFont("MS-Gothic", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
-				//renderer.setting.fontMap.put("mincho", BaseFont.createFont("MS-Mincho", "UniJIS-UCS2-H", BaseFont.NOT_EMBEDDED));
 				pages.render(renderer);
 			}finally{
 				fos.close();
