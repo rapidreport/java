@@ -3,6 +3,7 @@ package jp.co.systembase.report.renderer.pdf.elementrenderer;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.PdfContentByte;
 import jp.co.systembase.core.Cast;
+import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
@@ -34,6 +35,10 @@ public class ImageRenderer implements IElementRenderer {
 		float w = img.getWidth();
 		float h = img.getHeight();
 		float r = 1.0f;
+		if (!Report.Compatibility._4_37_ImagePixelScale){
+			w *= 72.0f / img.getDpiX();
+			h *= 72.0f / img.getDpiY();
+		}
 		if (w > _region.getWidth() || h > _region.getHeight()){
 			float rw = _region.getWidth() / w;
 			float rh = _region.getHeight() / h;
