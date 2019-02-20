@@ -127,7 +127,11 @@ public class Group {
 					groupRange = contentRange.getSubRange(content);
 				}else if (content.groups != null){
 					if (Report.Compatibility._4_37_EveryPageAllData){
-						groupRange = new GroupRange(content.groups);
+						if (content.design.everyPageBlankGroup){
+							groupRange = new GroupRange(content.groups, null, null);
+						}else{
+							groupRange = new GroupRange(content.groups);
+						}
 					}else{
 						groupRange = new GroupRange(content.groups, null, null);
 					}

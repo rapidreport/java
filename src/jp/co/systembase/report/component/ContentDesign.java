@@ -18,6 +18,7 @@ public class ContentDesign {
 	public boolean background;
 	public boolean aggregateSrc;
 	public boolean everyPage;
+	public boolean everyPageBlankGroup;
 	public String existenceCond;
 	public String visibilityCond;
 	public boolean unbreakable;
@@ -66,6 +67,7 @@ public class ContentDesign {
 		this.background = Cast.toBool(desc.get("background"));
 		this.aggregateSrc = Cast.toBool(desc.get("aggregate_src"));
 		this.everyPage = Cast.toBool(desc.get("every_page"));
+		this.everyPageBlankGroup = Cast.toBool(desc.get("every_page_blank_group"));
 		this.existenceCond = (String)desc.get("existence_cond");
 		this.visibilityCond = (String)desc.get("visibility_cond");
 		this.unbreakable = Cast.toBool(desc.get("unbreakable"));
