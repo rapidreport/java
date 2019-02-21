@@ -23,6 +23,15 @@ public class Region {
 		this.maxRight = rg.maxRight;
 	}
 
+	public Region(Region rg, float ml, float mt, float mr, float mb){
+		this.top = rg.top + mt;
+		this.left = rg.left + ml;
+		this.bottom = rg.bottom - mb;
+		this.right = rg.right - mr;
+		this.maxBottom = rg.maxBottom;
+		this.maxRight = rg.maxRight;
+	}
+
 	public Region getMergedRegion(Region rg){
 		Region ret = new Region();
 		if (this.top < rg.top){

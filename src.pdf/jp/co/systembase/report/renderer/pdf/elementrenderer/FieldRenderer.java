@@ -1,5 +1,7 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
+import java.math.BigDecimal;
+
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
@@ -30,8 +32,29 @@ public class FieldRenderer implements IElementRenderer {
 		if (renderer.setting.replaceBackslashToYen){
 			text = text.replaceAll("\\\\", "\u00a5");
 		}
+		Region _region = region;
+		if (!design.isNull("margin")){
+			ElementDesign m = design.child("margin");
+			float ml = 0;
+			float mt = 0;
+			float mr = 0;
+			float mb = 0;
+			if (!m.isNull("left")){
+				ml = ((BigDecimal)m.get("left")).floatValue();
+			}
+			if (!m.isNull("top")){
+				mt = ((BigDecimal)m.get("top")).floatValue();
+			}
+			if (!m.isNull("right")){
+				mr = ((BigDecimal)m.get("right")).floatValue();
+			}
+			if (!m.isNull("bottom")){
+				mb = ((BigDecimal)m.get("bottom")).floatValue();
+			}
+			_region = new Region(region, ml, mt, mr, mb);
+		}
 		PdfText pdfText = new PdfText();
-		pdfText.Initialize(renderer, reportDesign, region, design, text);
+		pdfText.Initialize(renderer, reportDesign, _region, design, text);
 		pdfText.draw();
 	}
 }
