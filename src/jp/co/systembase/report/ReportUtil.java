@@ -166,7 +166,7 @@ public class ReportUtil {
 		int count = 0;
 		int last = bi.first();
 		while (bi.next() != BreakIterator.DONE){
-			if (_isSingleChar(str.substring(last, bi.current()))){
+			if (isSingleChar(str.substring(last, bi.current()))){
 				count += 1;
 			}else{
 				count += 2;
@@ -201,7 +201,7 @@ public class ReportUtil {
 		int _w = 0;
 		int ret = 0;
 		while (bi.next() != BreakIterator.DONE){
-			if (_isSingleChar(str.substring(last, bi.current()))){
+			if (isSingleChar(str.substring(last, bi.current()))){
 				_w += 1;
 			}else{
 				_w += 2;
@@ -222,7 +222,7 @@ public class ReportUtil {
 		int _w = 0;
 		int ret = 0;
 		while (bi.previous() != BreakIterator.DONE){
-			if (_isSingleChar(str.substring(bi.current(), last))){
+			if (isSingleChar(str.substring(bi.current(), last))){
 				_w += 1;
 			}else{
 				_w += 2;
@@ -247,9 +247,24 @@ public class ReportUtil {
 		return null;
 	}
 
+	public static String trimLeft(String str){
+		String ret = str;
+		if (ret != null){
+			int i = 0;
+			while(i < ret.length()){
+				if (ret.charAt(i) != ' ' && ret.charAt(i) != '　'){
+					break;
+				}
+				i++;
+			}
+			ret = ret.substring(i);
+		}
+		return ret;
+	}
+
 	private static Map<String, Boolean> _SingleCharsMap = null;
 	
-	synchronized private static boolean _isSingleChar(String c){
+	synchronized public static boolean isSingleChar(String c){
 		if (_SingleCharsMap == null){
 			_SingleCharsMap = new HashMap<String, Boolean>();
 			for(int i = 0;i < SINGLE_CHARS.length();i++){

@@ -15,6 +15,7 @@ import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.component.textsplitter.TextSplitter;
+import jp.co.systembase.report.component.textsplitter.TextSplitterByDrawingWidth;
 import jp.co.systembase.report.component.textsplitter.TextSplitterByLen;
 import jp.co.systembase.report.renderer.RenderUtil;
 
@@ -27,6 +28,7 @@ public class PdfText {
 	public PdfContentByte contentByte;
 	public BaseFont font;
 	public BaseFont gaijiFont;
+	public boolean isMonospaced;
 	public List<Float> textMatrix = null;
 
 	protected static final float TOLERANCE = 0.1f;
@@ -51,6 +53,11 @@ public class PdfText {
 		this.contentByte = this.renderer.writer.getDirectContent();
 		this.font = this.renderer.setting.getFont(textDesign.font.name);
 		this.gaijiFont = this.renderer.setting.getGaijiFont(textDesign.font.name);
+		if (!Report.Compatibility._4_37_Typeset){
+			this.isMonospaced = (this.textDesign.monospacedFont != null) && this._isMonospacedFont();
+		}else{
+			this.isMonospaced = false;
+		}
 	}
 
 	public void draw(){
@@ -137,7 +144,7 @@ public class PdfText {
             contentByte.beginText();
             for(int j = 0;j < ReportUtil.stringLen(t);j++){
             	String c = ReportUtil.subString(t, j, 1);
-                _drawText(fontSize, c, m.get(j) - _getTextWidth(fontSize, c) / 2 + MARGIN_X, y);
+                _drawChar(fontSize, c, m.get(j) - _getTextWidth(fontSize, c) / 2 + MARGIN_X, y);
             }
             contentByte.endText();
             if (textDesign.font.underline){
@@ -230,18 +237,35 @@ public class PdfText {
 	}
 
 	protected void _draw_shrink(){
-		List<String> texts = (new TextSplitter()).getLines(this.text);
-		float fontSize = _getFitFontSize(texts);
-		_draw_aux(fontSize, texts);
+		if (isMonospaced){
+			List<String> texts = (new TextSplitter()).getLines(this.text);
+			float fontSize = textDesign.getMonospacedFitFontSize(texts, region.getWidth(), renderer.setting.shrinkFontSizeMin);
+			_draw_monospaced(fontSize, texts);
+		}else{
+			List<String> texts = (new TextSplitter()).getLines(this.text);
+			float fontSize = _getFitFontSize(texts);
+			_draw_aux(fontSize, texts);
+		}
 	}
 
 	protected void _draw_wrap(){
-		_draw_aux(textDesign.font.size, (new _TextSplitterByPdfWidth(this)).getLines(this.text));
+		if (isMonospaced){
+			List<String> texts = (new TextSplitterByDrawingWidth(textDesign, region.getWidth(), 0)).getLines(this.text);
+			_draw_monospaced(textDesign.font.size, texts);
+		}else{
+			List<String> texts = (new _TextSplitterByPdfWidth(this)).getLines(this.text);
+			_draw_aux(textDesign.font.size, texts);
+		}
 	}
 
 	protected void _draw(){
-		List<String> texts = (new TextSplitter()).getLines(this.text);
-		_draw_aux(textDesign.font.size, texts);
+		if (isMonospaced){
+			List<String> texts = (new TextSplitterByDrawingWidth(textDesign, 0, region.getWidth())).getLines(this.text);
+			_draw_monospaced(textDesign.font.size, texts);
+		}else{
+			List<String> texts = (new TextSplitter()).getLines(this.text);
+			_draw_aux(textDesign.font.size, texts);
+		}
 	}
 
     protected void _draw_aux(
@@ -253,15 +277,25 @@ public class PdfText {
 			y = 0;
 			break;
 		case CENTER:
-			y = (region.getHeight() - fontSize * texts.size()) / 2;
+			if (!Report.Compatibility._4_37_Typeset){
+				y = (region.getHeight() - fontSize * texts.size() - fontSize * 0.133f) / 2;
+			}else{
+				y = (region.getHeight() - fontSize * texts.size()) / 2;
+			}
 			y = Math.max(y, 0);
 			break;
 		case BOTTOM:
-			y = region.getHeight() - fontSize * texts.size() - MARGIN_BOTTOM;
+			if (!Report.Compatibility._4_37_Typeset){
+				y = region.getHeight() - fontSize * texts.size() - fontSize * 0.133f;
+			}else{
+				y = region.getHeight() - fontSize * texts.size() - MARGIN_BOTTOM;
+			}
 			y = Math.max(y, 0);
 			break;
 		}
-		y += OFFSET_Y;
+		if (Report.Compatibility._4_37_Typeset){
+			y += OFFSET_Y;
+		}
 		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), rows), 1);i++){
 			String t = texts.get(i);
@@ -288,21 +322,84 @@ public class PdfText {
 			float x = 0;
 			switch(textDesign.halign){
 			case LEFT:
-				x = MARGIN_X;
+				if (!Report.Compatibility._4_37_Typeset){
+					x = fontSize / 6;
+				}else{
+					x = MARGIN_X;
+				}
 				break;
 			case CENTER:
-				x = (region.getWidth() - w) / 2;
-				x = Math.max(x, MARGIN_X);
+				if (!Report.Compatibility._4_37_Typeset){
+					x = (region.getWidth() - w) / 2 + fontSize / 6;
+					x = Math.max(x, fontSize / 6);
+				}else{
+					x = (region.getWidth() - w) / 2;
+					x = Math.max(x, MARGIN_X);
+				}
 				break;
 			case RIGHT:
-				x = region.getWidth() - w - MARGIN_X;
-				x = Math.max(x, MARGIN_X);
+				if (!Report.Compatibility._4_37_Typeset){
+					x = region.getWidth() - w + fontSize / 6;
+					x = Math.max(x, fontSize / 6);
+				}else{
+					x = region.getWidth() - w - MARGIN_X;
+					x = Math.max(x, MARGIN_X);
+				}
 				break;
 			}
 			_draw_preprocess();
 			contentByte.setFontAndSize(font, fontSize);
 			contentByte.beginText();
 			_drawText(fontSize, t, x, y);
+			contentByte.endText();
+			if (textDesign.font.underline){
+				float lw = (fontSize / 13.4f) * renderer.setting.underlineWidthCoefficient;
+				_drawUnderline(fontSize, x, y, w, lw);
+			}
+			y += fontSize;
+		}
+	}
+
+    protected void _draw_monospaced(
+			float fontSize,
+			List<String> texts){
+		float y = 0;
+		switch(textDesign.valign){
+		case TOP:
+			y = 0;
+			break;
+		case CENTER:
+			y = (region.getHeight() - fontSize * texts.size() - fontSize * 0.133f) / 2;
+			y = Math.max(y, 0);
+			break;
+		case BOTTOM:
+			y = region.getHeight() - fontSize * texts.size() - fontSize * 0.133f;
+			y = Math.max(y, 0);
+			break;
+		}
+		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
+		for(int i = 0;i < Math.max(Math.min(texts.size(), rows), 1);i++){
+			String t = texts.get(i);
+			float w = textDesign.getMonospacedWidth(t, fontSize);
+			float cs = textDesign.getPdfCharSpacing(t, fontSize);
+			float x = 0;
+			switch(textDesign.halign){
+			case LEFT:
+				x = fontSize / 6;
+				break;
+			case CENTER:
+				x = (region.getWidth() - w) / 2 + fontSize / 6;
+				x = Math.max(x, fontSize / 6);
+				break;
+			case RIGHT:
+				x = region.getWidth() - w + fontSize / 6;
+				x = Math.max(x, fontSize / 6);
+				break;
+			}
+			_draw_preprocess();
+			contentByte.setFontAndSize(font, fontSize);
+			contentByte.beginText();
+			_drawText(fontSize, t, x, y, cs);
 			contentByte.endText();
 			if (textDesign.font.underline){
 				float lw = (fontSize / 13.4f) * renderer.setting.underlineWidthCoefficient;
@@ -371,7 +468,12 @@ public class PdfText {
 			float y){
 		PdfRenderer.Trans trans = renderer.trans;
 		float _x = region.left + x;
-		float _y = (region.top + y + fontSize) - (fontSize / 13.4f);
+		float _y = (region.top + y + fontSize);
+		if (!Report.Compatibility._4_37_Typeset){
+			_y -= fontSize * 0.133;
+		}else{
+			_y -= fontSize / 13.4f;
+		}
 		if (textMatrix != null){
 			contentByte.setTextMatrix(textMatrix.get(0), textMatrix.get(1), textMatrix.get(2), textMatrix.get(3),
 					trans.x(_x), trans.y(_y));
@@ -425,22 +527,38 @@ public class PdfText {
 			String text,
 			float x,
 			float y){
+		_drawText(fontSize, text, x, y, 0);
+	}
+
+	protected void _drawText(
+			float fontSize,
+			String text,
+			float x,
+			float y,
+			float charSpacing){
 		List<String> _texts = null;
 		if (renderer.setting.gaijiFont != null || gaijiFont != null){
 			_texts = _detectGaiji(text);
 		}
 		if (_texts == null){
+			if (charSpacing > 0){
+				contentByte.setCharacterSpacing(charSpacing);
+			}
 			_setTextMatrix(fontSize, x, y);
 			contentByte.showText(text);
 		}else{
 			boolean gaiji = false;
 			float _x = x;
 			for(String t: _texts){
-				if (ReportUtil.stringLen(t) > 0){
+				int l = ReportUtil.stringLen(t);
+				if (l > 0){
 					if (!gaiji){
+						if (charSpacing > 0){
+							contentByte.setCharacterSpacing(charSpacing);
+						}
 						_setTextMatrix(fontSize, _x, y);
 						contentByte.showText(t);
-						_x += font.getWidthPoint(t, fontSize);
+						_x += font.getWidthPoint(t, fontSize) + l * charSpacing;
 					}else{
 						for(int i = 0;i < ReportUtil.stringLen(t);i++){
 							BaseFont f = renderer.setting.gaijiFont;
@@ -453,13 +571,30 @@ public class PdfText {
 							contentByte.setFontAndSize(f, fontSize);
 							_setTextMatrix(fontSize, _x, y);
 							contentByte.showText(ReportUtil.subString(t, i, 1));
-							_x += fontSize;
+							_x += fontSize + charSpacing;
 						}
 						contentByte.setFontAndSize(font, fontSize);
 					}
 				}
 				gaiji = !gaiji;
 			}
+		}
+	}
+
+	protected void _drawChar(
+			float fontSize,
+			String c,
+			float x,
+			float y){
+		boolean gaiji = false;
+		if (renderer.setting.gaijiFont != null && _isGaiji(c.charAt(0))){
+			contentByte.setFontAndSize(renderer.setting.gaijiFont, fontSize);
+			gaiji = true;
+		}
+		_setTextMatrix(fontSize, x, y);
+		contentByte.showText(c);
+		if (gaiji){
+			contentByte.setFontAndSize(font, fontSize);
 		}
 	}
 
@@ -667,6 +802,10 @@ public class PdfText {
 		}
 	}
 
+	protected boolean _isMonospacedFont() {
+		return font.getWidthPoint("i", 1) == font.getWidthPoint("W", 1);
+	}
+
 	protected static class _FixDec{
 
 		public PdfText pdfText;
@@ -788,4 +927,5 @@ public class PdfText {
 		}
 
 	}
+
 }

@@ -2,6 +2,8 @@ package test;
 
 import java.io.FileOutputStream;
 
+import com.lowagie.text.pdf.BaseFont;
+
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.data.DummyDataSource;
@@ -20,6 +22,7 @@ public class Test_5_0_Typeset {
 			FileOutputStream fos = new FileOutputStream("out/" + name + ".pdf");
 			try{
 				PdfRenderer renderer = new PdfRenderer(fos);
+				renderer.setting.gaijiFont = BaseFont.createFont("rrpt/font/eudc.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 				pages.render(renderer);
 			}finally{
 				fos.close();

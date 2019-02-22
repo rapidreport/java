@@ -84,7 +84,9 @@ public class Report {
 		public static boolean _4_32_BlankSubGroup = false;
 		public static boolean _4_34_PdfWrapNoRule = false;
 		public static boolean _4_37_EveryPageAllData = false;
+		public static boolean _4_37_SplittedTextNoTrim = false;
 		public static boolean _4_37_ImagePixelScale = false;
+		public static boolean _4_37_Typeset = false;
 	}
 
 	public static class Context{

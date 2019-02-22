@@ -3,6 +3,7 @@ package jp.co.systembase.report.component.textsplitter;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportUtil;
 
 public class TextSplitter {
@@ -21,21 +22,30 @@ public class TextSplitter {
 		"ぁぃぅぇぉっゃゅょゎゕゖ" +
 		"ㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇷ゚ㇺㇻㇼㇽㇾㇿ々〻〜";
 
-	private boolean _BreakRule;
+	private boolean _breakRule;
 
 	public TextSplitter() {
 		this(false);
 	}
 
 	public TextSplitter(boolean breakRule){
-		this._BreakRule = breakRule;
+		this._breakRule = breakRule;
 	}
 
 	public List<String> getLines(String text){
-		return this._getLines(text, -1);
+		return this._getLines_aux(text, -1);
 	}
 
-	private List<String> _getLines(String text, int limit){
+	public String getLine(String text, int i){
+		List<String> l = this._getLines_aux(text, i);
+		if (l.size() > i){
+			return l.get(i);
+		}else{
+			return null;
+		}
+	}
+	
+	private List<String> _getLines_aux(String text, int limit){
 		List<String> ret = new ArrayList<String>();
 		if (text == null){
 			ret.add(null);
@@ -50,32 +60,43 @@ public class TextSplitter {
 		return ret;
 	}
 
-	public String getLine(String text, int i){
-		List<String> l = this._getLines(text, i);
-		if (l.size() > i){
-			return l.get(i);
-		}else{
-			return null;
-		}
-	}
+	
 
 	private void _split(List<String> l, String text, int limit){
-		String t = text;
-		do{
-			int w = this._getNextWidth(t);
-			if (this._BreakRule){
-				w = this._getNextOnRule(t, w);
+		if (text.isEmpty()){
+			l.add("");
+		}else{
+			String t = text;
+			while(true){
+				int w = _getNextWidth(t);
+				if (w == 0){
+					break;
+				}
+				if (_breakRule){
+					w = _getNextOnRule(t, w);
+				}
+				l.add(_clipText(t, w));
+				if (limit >= 0 && l.size() > limit){
+					break;
+				}
+				if (ReportUtil.stringLen(t) > w){
+					t = ReportUtil.subString(t, w);
+					if (!Report.Compatibility._4_37_SplittedTextNoTrim){
+						t = ReportUtil.trimLeft(t);
+					}
+				}else{
+					break;
+				}
 			}
-			l.add(ReportUtil.subString(t, 0, w));
-			if (limit >= 0 && l.size() > limit){
-				break;
-			}
-			t = ReportUtil.subString(t, w);
-		}while(ReportUtil.stringLen(t) > 0);
+		}
 	}
 
 	protected int _getNextWidth(String text){
 		return ReportUtil.stringLen(text);
+	}
+
+	protected String _clipText(String text, int w){
+		return ReportUtil.subString(text, 0, w);
 	}
 
 	private int _getNextOnRule(String text, int w){
