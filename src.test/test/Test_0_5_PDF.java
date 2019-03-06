@@ -13,6 +13,8 @@ public class Test_0_5_PDF {
 	public static void main(String[] args) throws Throwable {
 		String name = "test_0_5";
 		
+		//Report.Compatibility._4_37_Typeset = true;
+		
 		long t = System.currentTimeMillis();
 		
 		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));

@@ -9,7 +9,7 @@ import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.component.ContentDesign;
 import jp.co.systembase.report.component.FontDesign;
 import jp.co.systembase.report.component.GroupDesign;
-import jp.co.systembase.report.component.MonospacedFontDesign;
+import jp.co.systembase.report.component.MonospacedFontsDesign;
 import jp.co.systembase.report.component.PaperDesign;
 
 public class ReportDesign {
@@ -28,7 +28,7 @@ public class ReportDesign {
 	public List<String> customFieldsKeyList;
 	public GroupDesign groupDesign;
 	public String memo;
-	public MonospacedFontDesign monospacedFontDesign;
+	public MonospacedFontsDesign monospacedFontsDesign;
 
 	private Map<Map<?, ?>, Map<String, byte[]>> imageCache =
 		new HashMap<Map<?, ?>, Map<String, byte[]>>();
@@ -77,10 +77,10 @@ public class ReportDesign {
 			this.customFieldsKeyList = null;
 		}
 		this.memo = (String)desc.get("memo");
-		if (desc.containsKey("monospaced_font")){
-			this.monospacedFontDesign = new MonospacedFontDesign((List<?>)desc.get("monospaced_font"));
+		if (desc.containsKey("monospaced_fonts")){
+			this.monospacedFontsDesign = new MonospacedFontsDesign((List<?>)desc.get("monospaced_fonts"));
 		}else{
-			this.monospacedFontDesign = new MonospacedFontDesign();
+			this.monospacedFontsDesign = new MonospacedFontsDesign();
 		}
 	}
 

@@ -7,17 +7,17 @@ import java.util.Map;
 
 import jp.co.systembase.core.Cast;
 
-public class MonospacedFontDesign {
+public class MonospacedFontsDesign {
 
 	public ItemDesign defaultFont = null;
 	public Map<String, ItemDesign> fontMap = new HashMap<String, ItemDesign>();
 	
-	public MonospacedFontDesign() {
+	public MonospacedFontsDesign() {
 		this(new ArrayList<Object>());
 	}
 	
 	@SuppressWarnings("unchecked")
-	public MonospacedFontDesign(List<?> desc) {
+	public MonospacedFontsDesign(List<?> desc) {
 		for(Map<?, ?> d: (List<Map<?, ?>>)desc){
 			if (d.containsKey("name")){
 				this.fontMap.put((String)d.get("name"), new ItemDesign(d));

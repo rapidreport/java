@@ -24,7 +24,7 @@ public class TextDesign {
 	public boolean shrinkToFit = false;
 	public int decimalPlace = 0;
 	public String xlsFormat = null;
-	public MonospacedFontDesign.DetailDesign monospacedFont = null;
+	public MonospacedFontsDesign.DetailDesign monospacedFont = null;
 
 	public TextDesign(
 			ReportDesign reportDesign,
@@ -67,7 +67,7 @@ public class TextDesign {
 			this.decimalPlace = Cast.toInt(desc.get("decimal_place"));
 		}
 		this.xlsFormat = (String)desc.get("xls_format");
-		this.monospacedFont = reportDesign.monospacedFontDesign.get(this.font);
+		this.monospacedFont = reportDesign.monospacedFontsDesign.get(this.font);
 	}
 
 	public float getMonospacedWidth(String str){
