@@ -330,7 +330,7 @@ public class PdfText {
 				break;
 			case CENTER:
 				if (!Report.Compatibility._4_37_Typeset){
-					x = (region.getWidth() - w) / 2 + fontSize / 6;
+					x = (region.getWidth() - w) / 2;
 					x = Math.max(x, fontSize / 6);
 				}else{
 					x = (region.getWidth() - w) / 2;
@@ -339,7 +339,7 @@ public class PdfText {
 				break;
 			case RIGHT:
 				if (!Report.Compatibility._4_37_Typeset){
-					x = region.getWidth() - w + fontSize / 6;
+					x = region.getWidth() - w - fontSize / 6;
 					x = Math.max(x, fontSize / 6);
 				}else{
 					x = region.getWidth() - w - MARGIN_X;
