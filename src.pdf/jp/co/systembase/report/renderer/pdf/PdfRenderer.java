@@ -18,6 +18,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.RectangleReadOnly;
+import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfWriter;
@@ -32,6 +33,8 @@ public class PdfRenderer implements IRenderer {
 
 	private Map<Map<?, ?>, Map<String, Image>> imageCache =
 		new HashMap<Map<?, ?>, Map<String, Image>>();
+	Map<BaseFont, Boolean> monospacedFontCache = 
+		new HashMap<BaseFont, Boolean>();
 
 	public static class Trans{
 		public float paperHeight;

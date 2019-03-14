@@ -1,5 +1,6 @@
 package jp.co.systembase.report.renderer.pdf;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 
+import jp.co.systembase.core.Round;
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.ReportUtil;
@@ -803,7 +805,12 @@ public class PdfText {
 	}
 
 	protected boolean _isMonospacedFont() {
-		return font.getWidthPoint("i", 1) == font.getWidthPoint("W", 1);
+		if (!renderer.monospacedFontCache.containsKey(font)){
+			renderer.monospacedFontCache.put(font,
+				Round.roundDown(new BigDecimal(font.getWidthPoint("i", 1)), -3)
+				.equals(Round.roundDown(new BigDecimal(font.getWidthPoint("W", 1)), -3)));
+		}
+		return renderer.monospacedFontCache.get(font);
 	}
 
 	protected static class _FixDec{
