@@ -14,6 +14,8 @@ public class Test_5_0_Typeset {
 	public static void main(String[] args) throws Throwable {
 		String name = "test_5_0_typeset";
 
+		// Report.Compatibility._4_37_Typeset = true;
+
 		Report report = new Report(ReadUtil.readJson("rrpt/" + name + ".rrpt"));
 		report.fill(DummyDataSource.getInstance());
 

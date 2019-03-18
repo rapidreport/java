@@ -125,33 +125,53 @@ public class PdfText {
 		float y = 0;
 		switch(textDesign.valign){
 		case TOP:
-			y = 0;
+			if (!Report.Compatibility._4_37_Typeset){
+				y = fontSize * 0.125f;
+			}else{
+				y = 0;
+			}
 			break;
 		case CENTER:
-			y = (region.getHeight() - (fontSize * texts.size())) / 2;
+			if (!Report.Compatibility._4_37_Typeset){
+				y = (region.getHeight() + fontSize * 0.125f - fontSize * texts.size()) / 2;
+			}else{
+				y = (region.getHeight() - fontSize * texts.size()) / 2;
+			}
 			y = Math.max(y, 0);
 			break;
 		case BOTTOM:
-			y = region.getHeight() - (fontSize * texts.size()) - MARGIN_BOTTOM;
+			if (!Report.Compatibility._4_37_Typeset){
+				y = region.getHeight() - fontSize * texts.size();
+			}else{
+				y = region.getHeight() - fontSize * texts.size() - MARGIN_BOTTOM;
+			}
 			y = Math.max(y, 0);
 			break;
 		}
-		y += OFFSET_Y;
+		if (Report.Compatibility._4_37_Typeset){
+			y += OFFSET_Y;
+		}
 		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), rows), 1);i++){
 			String t = texts.get(i);
-			List<Float> m  = _getDistributeMap(region.getWidth() - MARGIN_X * 2, ReportUtil.stringLen(t), fontSize);
+			float mx;
+			if (!Report.Compatibility._4_37_Typeset){
+				mx = fontSize / 3;
+			}else{
+				mx = MARGIN_X * 2;
+			}
+			List<Float> m  = _getDistributeMap(region.getWidth() - mx, ReportUtil.stringLen(t), fontSize);
 			_draw_preprocess();
             contentByte.setFontAndSize(font, fontSize);
             contentByte.beginText();
             for(int j = 0;j < ReportUtil.stringLen(t);j++){
             	String c = ReportUtil.subString(t, j, 1);
-                _drawChar(fontSize, c, m.get(j) - _getTextWidth(fontSize, c) / 2 + MARGIN_X, y);
+                _drawChar(fontSize, c, m.get(j) - _getTextWidth(fontSize, c) / 2 + mx / 2, y);
             }
             contentByte.endText();
             if (textDesign.font.underline){
     			float lw = (fontSize / 13.4f) * renderer.setting.underlineWidthCoefficient;
-    			_drawUnderline(fontSize, MARGIN_X, y, region.getWidth() - MARGIN_X * 2, lw);
+    			_drawUnderline(fontSize, mx / 2, y, region.getWidth() - mx, lw);
     		}
             y += fontSize;
         }
@@ -161,20 +181,26 @@ public class PdfText {
 		float fontSize = textDesign.font.size;
 		List<String> texts = (new TextSplitter()).getLines(this.text);
 		float x = 0;
+		float mx;
+		if (!Report.Compatibility._4_37_Typeset){
+			mx = fontSize / 6;
+		}else{
+			mx = MARGIN_X;
+		}
 		switch(textDesign.halign){
 		case LEFT:
-			x = fontSize * (texts.size() - 1) + fontSize / 2 + MARGIN_X;
-			x = Math.min(x, region.getWidth() - fontSize / 2 - MARGIN_X);
+			x = fontSize * (texts.size() - 1) + fontSize / 2 + mx;
+			x = Math.min(x, region.getWidth() - fontSize / 2 - mx);
 			break;
 		case CENTER:
 			x = (region.getWidth() + (texts.size() - 1) * fontSize) / 2;
-			x = Math.min(x, region.getWidth() - fontSize / 2 - MARGIN_X);
+			x = Math.min(x, region.getWidth() - fontSize / 2 - mx);
 			break;
 		case RIGHT:
-			x = region.getWidth() - fontSize / 2 - MARGIN_X;
+			x = region.getWidth() - fontSize / 2 - mx;
 			break;
 		}
-		int cols = (int)(((region.getWidth() - MARGIN_X * 2) + TOLERANCE) / fontSize);
+		int cols = (int)(((region.getWidth() - mx * 2) + TOLERANCE) / fontSize);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), cols), 1);i++){
 			String t = texts.get(i);
 			if (textDesign.font.underline){
@@ -182,7 +208,13 @@ public class PdfText {
 	        	_drawVerticalUnderLine(fontSize, x + fontSize / 2, 0, region.getHeight(), lw);
 	        }
 			{
-				List<Float> m = _getDistributeMap(region.getHeight() - MARGIN_BOTTOM, ReportUtil.stringLen(t), fontSize);
+				float my;
+				if (!Report.Compatibility._4_37_Typeset){
+					my = 0;
+				}else{
+					my = MARGIN_BOTTOM;
+				}
+				List<Float> m = _getDistributeMap(region.getHeight() - my, ReportUtil.stringLen(t), fontSize);
 				_draw_preprocess();
 				contentByte.setFontAndSize(font, fontSize);
 				contentByte.beginText();
@@ -276,11 +308,15 @@ public class PdfText {
 		float y = 0;
 		switch(textDesign.valign){
 		case TOP:
-			y = 0;
+			if (!Report.Compatibility._4_37_Typeset){
+				y = fontSize * 0.125f;
+			}else{
+				y = 0;
+			}
 			break;
 		case CENTER:
 			if (!Report.Compatibility._4_37_Typeset){
-				y = (region.getHeight() - fontSize * texts.size() - fontSize * 0.133f) / 2;
+				y = (region.getHeight()  + fontSize * 0.125f - fontSize * texts.size()) / 2;
 			}else{
 				y = (region.getHeight() - fontSize * texts.size()) / 2;
 			}
@@ -288,7 +324,7 @@ public class PdfText {
 			break;
 		case BOTTOM:
 			if (!Report.Compatibility._4_37_Typeset){
-				y = region.getHeight() - fontSize * texts.size() - fontSize * 0.133f;
+				y = region.getHeight() - fontSize * texts.size();
 			}else{
 				y = region.getHeight() - fontSize * texts.size() - MARGIN_BOTTOM;
 			}
@@ -303,14 +339,19 @@ public class PdfText {
 			String t = texts.get(i);
 			float w = _getTextWidth(fontSize, t);
 			{
-				float cw = region.getWidth() - MARGIN_X * 2;
-				if (w > cw){
+				float rw;
+				if (!Report.Compatibility._4_37_Typeset){
+					rw = region.getWidth() - fontSize / 3;
+				}else{
+					rw = region.getWidth() - MARGIN_X * 2;
+				}
+				if (w > rw){
 					String _t = "";
 					float _w = 0;
 					for(int j = 1;j <= ReportUtil.stringLen(t);j++){
 						String __t = ReportUtil.subString(t, 0, j);
 						float __w = _getTextWidth(fontSize, __t);
-						if (__w <= cw + TOLERANCE){
+						if (__w <= rw + TOLERANCE){
 							_t = __t;
 							_w = __w;
 						}else{
@@ -366,20 +407,21 @@ public class PdfText {
 			float fontSize,
 			List<String> texts){
 		float y = 0;
+		float h = textDesign.monospacedFont.rowHeight * fontSize;
 		switch(textDesign.valign){
 		case TOP:
-			y = 0;
+			y = fontSize * 0.125f;
 			break;
 		case CENTER:
-			y = (region.getHeight() - fontSize * texts.size() - fontSize * 0.133f) / 2;
+			y = (region.getHeight() + fontSize * 0.125f - h * texts.size()) / 2;
 			y = Math.max(y, 0);
 			break;
 		case BOTTOM:
-			y = region.getHeight() - fontSize * texts.size() - fontSize * 0.133f;
+			y = region.getHeight() - h * texts.size();
 			y = Math.max(y, 0);
 			break;
 		}
-		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
+		int rows = (int)((region.getHeight() + TOLERANCE) / h);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), rows), 1);i++){
 			String t = texts.get(i);
 			float w = textDesign.getMonospacedWidth(t, fontSize);
@@ -407,7 +449,7 @@ public class PdfText {
 				float lw = (fontSize / 13.4f) * renderer.setting.underlineWidthCoefficient;
 				_drawUnderline(fontSize, x, y, w, lw);
 			}
-			y += fontSize;
+			y += h;
 		}
 	}
 
@@ -415,20 +457,26 @@ public class PdfText {
 			float fontSize,
 			List<String> texts){
 		float x = 0;
+		float mx;
+		if (!Report.Compatibility._4_37_Typeset){
+			mx = fontSize / 6;
+		}else{
+			mx = MARGIN_X;
+		}
 		switch(textDesign.halign){
 		case LEFT:
-			x = fontSize * (texts.size() - 1) + fontSize / 2 + MARGIN_X;
-			x = Math.min(x, region.getWidth() - fontSize / 2 - MARGIN_X);
+			x = fontSize * (texts.size() - 1) + fontSize / 2 + mx;
+			x = Math.min(x, region.getWidth() - fontSize / 2 - mx);
 			break;
 		case CENTER:
 			x = (region.getWidth() + (texts.size() - 1) * fontSize) / 2;
-			x = Math.min(x, region.getWidth() - fontSize / 2 - MARGIN_X);
+			x = Math.min(x, region.getWidth() - fontSize / 2 - mx);
 			break;
 		case RIGHT:
-			x = region.getWidth() - fontSize / 2 - MARGIN_X;
+			x = region.getWidth() - fontSize / 2 - mx;
 			break;
 		}
-		int cols = (int)(((region.getWidth() - MARGIN_X * 2) + TOLERANCE) / fontSize);
+		int cols = (int)(((region.getWidth() - mx * 2) + TOLERANCE) / fontSize);
 		int rows = (int)((region.getHeight() + TOLERANCE) / fontSize);
 		for(int i = 0;i < Math.max(Math.min(texts.size(), cols), 1);i++){
 			String t = texts.get(i);
@@ -442,7 +490,11 @@ public class PdfText {
 				y = Math.max(y, 0);
 				break;
 			case BOTTOM:
-				y = region.getHeight() - fontSize * ReportUtil.stringLen(t) - MARGIN_BOTTOM;
+				if (!Report.Compatibility._4_37_Typeset){
+					y = region.getHeight() - fontSize * ReportUtil.stringLen(t);
+				}else{
+					y = region.getHeight() - fontSize * ReportUtil.stringLen(t) - MARGIN_BOTTOM;
+				}
 				y = Math.max(y, 0);
 				break;
 			}
