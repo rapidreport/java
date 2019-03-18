@@ -81,7 +81,7 @@ public class TextSplitter {
 				}
 				if (ReportUtil.stringLen(t) > w){
 					t = ReportUtil.subString(t, w);
-					if (!Report.Compatibility._4_37_SplittedTextNoTrim){
+					if (!Report.Compatibility._4_37_WrappedTextNoTrim){
 						t = ReportUtil.trimLeft(t);
 					}
 				}else{
