@@ -19,6 +19,14 @@ public class ReportUtil {
 		"ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｯｬｭｮﾞﾟｰ｢｣･､｡" +
 		" !@#$%^&*()_+|~-=\\`{}[]:\";'<>?,./\n\r\t";
 
+	private static Map<String, Boolean> _singleCharsMap;
+	static {
+		_singleCharsMap = new HashMap<String, Boolean>();
+		for(int i = 0;i < SINGLE_CHARS.length();i++){
+			_singleCharsMap.put(SINGLE_CHARS.substring(i, i + 1), true);
+		}
+	}
+
 	private ReportUtil(){};
 
 	public static Object regularize(Object v){
@@ -262,15 +270,7 @@ public class ReportUtil {
 		return ret;
 	}
 
-	private static Map<String, Boolean> _SingleCharsMap = null;
-	
-	synchronized public static boolean isSingleChar(String c){
-		if (_SingleCharsMap == null){
-			_SingleCharsMap = new HashMap<String, Boolean>();
-			for(int i = 0;i < SINGLE_CHARS.length();i++){
-				_SingleCharsMap.put(SINGLE_CHARS.substring(i, i + 1), true);
-			}
-		}
-		return _SingleCharsMap.containsKey(c);
+	public static boolean isSingleChar(String c){
+		return _singleCharsMap.containsKey(c);
 	}
 }
