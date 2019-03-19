@@ -2,7 +2,9 @@ package jp.co.systembase.report.renderer.pdf;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,9 +40,28 @@ public class PdfText {
 	protected static final float MARGIN_X = 2.0f;
 	protected static final float MARGIN_BOTTOM = 2.0f;
 
-	protected static final String VERTICAL_ROTATE_CHARS = "…‥｜ーｰ(){}[]<>（）｛｝「」＜＞←→↓⇒⇔↑＝≒";
-	protected static final String VERTICAL_ROTATE2_CHARS = "～";
-	protected static final String VERTICAL_SHIFT_CHARS = "。、，";
+	private static final String VERTICAL_ROTATE_CHARS = "…‥｜ーｰ(){}[]<>（）｛｝「」＜＞←→↓⇒⇔↑＝≒";
+	private static final String VERTICAL_ROTATE2_CHARS = "～";
+	private static final String VERTICAL_SHIFT_CHARS = "。、，";
+
+	private static Map<String, Boolean> _verticalRotateCharsMap;
+	private static Map<String, Boolean> _verticalRotate2CharsMap;
+	private static Map<String, Boolean> _verticalShiftCharsMap;
+
+	static{
+		_verticalRotateCharsMap = new HashMap<String, Boolean>();
+		for(int i = 0;i < VERTICAL_ROTATE_CHARS.length();i++){
+			_verticalRotateCharsMap.put(VERTICAL_ROTATE_CHARS.substring(i, i + 1), true);
+		}
+		_verticalRotate2CharsMap = new HashMap<String, Boolean>();
+		for(int i = 0;i < VERTICAL_ROTATE2_CHARS.length();i++){
+			_verticalRotate2CharsMap.put(VERTICAL_ROTATE2_CHARS.substring(i, i + 1), true);
+		}
+		_verticalShiftCharsMap = new HashMap<String, Boolean>();
+		for(int i = 0;i < VERTICAL_SHIFT_CHARS.length();i++){
+			_verticalShiftCharsMap.put(VERTICAL_SHIFT_CHARS.substring(i, i + 1), true);
+		}
+	}
 
 	public void Initialize(
 			PdfRenderer renderer,
@@ -662,13 +683,13 @@ public class PdfText {
 			contentByte.setFontAndSize(renderer.setting.gaijiFont, fontSize);
 			gaiji = true;
 		}
-		if (VERTICAL_ROTATE_CHARS.indexOf(c) >= 0){
+		if (_verticalRotateCharsMap.containsKey(c)){
 			_setRotateTextMatrix(
 				fontSize, x - fontSize / 3, y - _getTextWidth(fontSize, c));
-		}else if (VERTICAL_ROTATE2_CHARS.indexOf(c) >= 0){
+		}else if (_verticalRotate2CharsMap.containsKey(c)){
 			_setRotate2TextMatrix(
 				fontSize, x + fontSize / 3, y - _getTextWidth(fontSize, c));
-		}else if (VERTICAL_SHIFT_CHARS.indexOf(c) >= 0){
+		}else if (_verticalShiftCharsMap.containsKey(c)){
 			float d = -_getTextWidth(fontSize, c) / 2;
 			if (textDesign.font.italic){
 				d += fontSize / 4;
