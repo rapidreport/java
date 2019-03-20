@@ -278,17 +278,25 @@ public class PdfText {
 
 	protected void _draw_fixdec(){
 		_FixDec fd = new _FixDec(this);
-		List<String> texts = new ArrayList<String>();
-		texts.add(fd.getFullText());
-		fd.drawText(textDesign.font.size);
+		if (isMonospaced){
+			List<String> texts = (new TextSplitterByDrawingWidth(textDesign, 0, region.getWidth())).getLines(fd.getFullText(true)); 
+			_draw_monospaced(textDesign.font.size, texts);
+		}else{
+			fd.drawText(textDesign.font.size);
+		}
 	}
 
 	protected void _draw_fixdecShrink(){
 		_FixDec fd = new _FixDec(this);
-		List<String> texts = new ArrayList<String>();
-		texts.add(fd.getFullText());
-		float fontSize = _getFitFontSize(texts);
-		fd.drawText(fontSize);
+		if (isMonospaced){
+			List<String> texts = (new TextSplitter(true)).getLines(fd.getFullText(true));
+			float fontSize = _getFitFontSize(texts);
+			_draw_monospaced(fontSize, texts);
+		}else{
+			List<String> texts = (new TextSplitter(true)).getLines(fd.getFullText(false));
+			float fontSize = _getFitFontSize(texts);
+			fd.drawText(fontSize);
+		}
 	}
 
 	protected void _draw_shrink(){
@@ -315,8 +323,8 @@ public class PdfText {
 
 	protected void _draw(){
 		if (isMonospaced){
-			List<String> texts = (new TextSplitterByDrawingWidth(textDesign, 0, region.getWidth())).getLines(this.text);
-			_draw_monospaced(textDesign.font.size, texts);
+			_draw_monospaced(textDesign.font.size, 
+					(new TextSplitterByDrawingWidth(textDesign, 0, region.getWidth())).getLines(this.text));
 		}else{
 			List<String> texts = (new TextSplitter()).getLines(this.text);
 			_draw_aux(textDesign.font.size, texts);
@@ -914,19 +922,23 @@ public class PdfText {
 			}
 		}
 
-		public String getFullText2(){
+		public String getFullText2(boolean space){
 			String ret = this.text2;
 			if (ret.length() == 0){
 				ret = ".";
 			}
 			while(ret.length() <= this.pdfText.textDesign.decimalPlace){
-				ret += "0";
+				if (space){
+					ret += " ";
+				}else{
+					ret += "0";
+				}
 			}
 			return ret;
 		}
 
-		public String getFullText(){
-			return this.text1 + this.getFullText2() + this.text3;
+		public String getFullText(boolean space){
+			return this.text1 + this.getFullText2(space) + this.text3;
 		}
 
 		public void drawText(float fontSize){
@@ -944,7 +956,7 @@ public class PdfText {
 			}
 			y += OFFSET_Y;
 			{
-				String t = this.text1 + this.getFullText2();
+				String t = this.text1 + this.getFullText2(false);
 				String ft = t + this.text3;
 				float w = pdfText._getTextWidth(fontSize, t);
 				float fw = pdfText._getTextWidth(fontSize, ft);
