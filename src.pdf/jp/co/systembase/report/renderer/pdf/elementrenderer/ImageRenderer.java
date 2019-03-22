@@ -36,8 +36,10 @@ public class ImageRenderer implements IElementRenderer {
 		float h = img.getHeight();
 		float r = 1.0f;
 		if (!Report.Compatibility._4_37_ImagePixelScale){
-			w *= 72.0f / img.getDpiX();
-			h *= 72.0f / img.getDpiY();
+			int dpix = img.getDpiX();
+			int dpiy = img.getDpiY();
+			w *= 72.0f / (dpix > 0 ? dpix : 96);
+			h *= 72.0f / (dpiy > 0 ? dpiy : 96);
 		}
 		if (w > _region.getWidth() || h > _region.getHeight()){
 			float rw = _region.getWidth() / w;
