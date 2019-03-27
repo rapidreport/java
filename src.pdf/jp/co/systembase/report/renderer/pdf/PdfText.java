@@ -279,7 +279,7 @@ public class PdfText {
 	protected void _draw_fixdec(){
 		_FixDec fd = new _FixDec(this);
 		if (isMonospaced){
-			List<String> texts = (new TextSplitterByDrawingWidth(textDesign, 0, region.getWidth())).getLines(fd.getFullText(true)); 
+			List<String> texts = (new TextSplitterByDrawingWidth(textDesign, 0, region.getWidth())).getLines(fd.getFullText(true));
 			_draw_monospaced(textDesign.font.size, texts);
 		}else{
 			fd.drawText(textDesign.font.size);
@@ -323,7 +323,7 @@ public class PdfText {
 
 	protected void _draw(){
 		if (isMonospaced){
-			_draw_monospaced(textDesign.font.size, 
+			_draw_monospaced(textDesign.font.size,
 					(new TextSplitterByDrawingWidth(textDesign, 0, region.getWidth())).getLines(this.text));
 		}else{
 			List<String> texts = (new TextSplitter()).getLines(this.text);
@@ -337,15 +337,11 @@ public class PdfText {
 		float y = 0;
 		switch(textDesign.valign){
 		case TOP:
-			if (!Report.Compatibility._4_37_Typeset){
-				y = fontSize * 0.125f;
-			}else{
-				y = 0;
-			}
+			y = 0;
 			break;
 		case CENTER:
 			if (!Report.Compatibility._4_37_Typeset){
-				y = (region.getHeight()  + fontSize * 0.125f - fontSize * texts.size()) / 2;
+				y = (region.getHeight() - fontSize * texts.size() - fontSize * 0.125f) / 2;
 			}else{
 				y = (region.getHeight() - fontSize * texts.size()) / 2;
 			}
@@ -353,7 +349,7 @@ public class PdfText {
 			break;
 		case BOTTOM:
 			if (!Report.Compatibility._4_37_Typeset){
-				y = region.getHeight() - fontSize * texts.size();
+				y = region.getHeight() - fontSize * texts.size() - fontSize * 0.125f;
 			}else{
 				y = region.getHeight() - fontSize * texts.size() - MARGIN_BOTTOM;
 			}
@@ -439,14 +435,14 @@ public class PdfText {
 		float h = textDesign.monospacedFont.rowHeight * fontSize;
 		switch(textDesign.valign){
 		case TOP:
-			y = fontSize * 0.125f;
+			y = 0;
 			break;
 		case CENTER:
-			y = (region.getHeight() + fontSize * 0.125f - h * texts.size()) / 2;
+			y = (region.getHeight() - h * texts.size() - fontSize * 0.125f) / 2;
 			y = Math.max(y, 0);
 			break;
 		case BOTTOM:
-			y = region.getHeight() - h * texts.size();
+			y = region.getHeight() - h * texts.size() - fontSize * 0.125f;
 			y = Math.max(y, 0);
 			break;
 		}
