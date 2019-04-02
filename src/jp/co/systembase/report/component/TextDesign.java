@@ -138,7 +138,7 @@ public class TextDesign {
 			}else{
 				w += monospacedFont.fullWidth * font.size;
 			}
-			if ((i > 1 && w >= width) || (i == maxLen)){
+			if ((i > 0 && w >= width) || (i == maxLen)){
 				return i;
 			}
 			i++;
