@@ -921,7 +921,7 @@ public class PdfText {
 		public String getFullText2(boolean space){
 			String ret = this.text2;
 			if (ret.length() == 0){
-				ret = ".";
+				ret = (space) ? " " : ".";
 			}
 			while(ret.length() <= this.pdfText.textDesign.decimalPlace){
 				if (space){
