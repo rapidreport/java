@@ -2,8 +2,6 @@ package test;
 
 import java.io.FileOutputStream;
 
-import com.lowagie.text.pdf.BaseFont;
-
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.data.DummyDataSource;

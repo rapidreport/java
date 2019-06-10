@@ -10,17 +10,17 @@ import jp.co.systembase.report.data.IReportDataSource;
 import jp.co.systembase.report.data.UnknownFieldException;
 
 public class RecordComparator implements Comparator<Integer> {
-	
+
 	public IReportDataSource _dataSource;
 	public List<String> _keys;
 	public IReportLogger _logger;
-	
+
 	public RecordComparator(IReportDataSource dataSource, List<String> keys, IReportLogger logger){
 		this._dataSource = dataSource;
 		this._keys = keys;
 		this._logger = logger;
 	}
-	
+
 	public int compare(Integer i1, Integer i2) {
 		for(String k: this._keys){
 			Object v1 = null;
@@ -58,6 +58,6 @@ public class RecordComparator implements Comparator<Integer> {
 				return ((String)v1).compareTo((String)v2);
 			}
 		}
-		return 0;
+		return i1 - i2;
 	}
 }
