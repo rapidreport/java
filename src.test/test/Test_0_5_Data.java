@@ -8,7 +8,7 @@ public class Test_0_5_Data {
 
 	public static DataTable getDataTable() throws Throwable
     {
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         DataTable ret = new DataTable();
         ret.setFieldNames("bumonCd", "bumon", "uriageDate", "denpyoNo", 
         		"shohinCd", "shohin", "tanka", "suryo");

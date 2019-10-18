@@ -17,9 +17,11 @@ public class Page {
 
 	public Page(XlsRenderer renderer, ReportDesign reportDesign, Region paperRegion){
 		this.renderer = renderer;
-		Grid grid = new Grid();
-		grid.region = paperRegion.toPointScale(reportDesign);
-		this.grids.add(grid);
+		if (paperRegion != null){
+			Grid grid = new Grid();
+			grid.region = paperRegion.toPointScale(reportDesign);
+			this.grids.add(grid);
+		}
 	}
 
 }

@@ -10,11 +10,16 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.ReportPage;
+import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.component.ElementDesign;
+import jp.co.systembase.report.component.GroupRange;
 import jp.co.systembase.report.component.PaperDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.renderer.IRenderer;
+import jp.co.systembase.report.renderer.RenderException;
 import jp.co.systembase.report.renderer.xlsx.XlsxRendererSetting;
 import jp.co.systembase.report.renderer.xlsx.component.Cell;
 import jp.co.systembase.report.renderer.xlsx.component.CellMap;
@@ -24,6 +29,7 @@ import jp.co.systembase.report.renderer.xlsx.component.Page;
 import jp.co.systembase.report.renderer.xlsx.component.RowColUtil;
 import jp.co.systembase.report.renderer.xlsx.component.Shape;
 import jp.co.systembase.report.renderer.xlsx.imageloader.IXlsxImageLoader;
+import jp.co.systembase.report.scanner.PagingScanner;
 
 import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -41,7 +47,9 @@ public class XlsxRenderer implements IRenderer {
 	public Map<BufferedImage, Integer> imagePool;
 	public CellStylePool cellStylePool;
 	public FontPool fontPool;
-	
+
+	private boolean _sheetMode = false;
+
 	private Map<Map<?, ?>, Map<String, BufferedImage>> imageCache =
 			new HashMap<Map<?, ?>, Map<String, BufferedImage>>();
 
@@ -129,7 +137,9 @@ public class XlsxRenderer implements IRenderer {
 					shape.renderer.render(page, shape);
 				}
 				topRow += rowHeights.size();
-				this.sheet.setRowBreak(topRow - 1);
+				if (!_sheetMode){
+					this.sheet.setRowBreak(topRow - 1);
+				}
 			}
 			{
 				XSSFWorkbook w = this.sheet.getWorkbook();
@@ -196,6 +206,21 @@ public class XlsxRenderer implements IRenderer {
 			}catch(Exception e){}
 		}
 		this.imageCache.get(desc).put(key, image);
+	}
+
+	public void renderSheet(Report report) throws RenderException{
+		PagingScanner scanner = new PagingScanner();
+		GroupRange range = new GroupRange(report.groups);
+		report.groups.scan(scanner, range, report.design.paperDesign.getRegion());
+		ReportPage page = new ReportPage(report, range, scanner);
+		ReportPages pages = new ReportPages(report);
+		pages.add(page);
+		try{
+			_sheetMode = true;
+			pages.render(this);
+		}finally{
+			_sheetMode = false;
+		}
 	}
 
 }

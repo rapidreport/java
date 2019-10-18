@@ -10,11 +10,16 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.ReportPage;
+import jp.co.systembase.report.ReportPages;
 import jp.co.systembase.report.component.ElementDesign;
+import jp.co.systembase.report.component.GroupRange;
 import jp.co.systembase.report.component.PaperDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.renderer.IRenderer;
+import jp.co.systembase.report.renderer.RenderException;
 import jp.co.systembase.report.renderer.xls.component.Cell;
 import jp.co.systembase.report.renderer.xls.component.CellMap;
 import jp.co.systembase.report.renderer.xls.component.CellStylePool;
@@ -24,6 +29,7 @@ import jp.co.systembase.report.renderer.xls.component.Page;
 import jp.co.systembase.report.renderer.xls.component.RowColUtil;
 import jp.co.systembase.report.renderer.xls.component.Shape;
 import jp.co.systembase.report.renderer.xls.imageloader.IXlsImageLoader;
+import jp.co.systembase.report.scanner.PagingScanner;
 
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -42,6 +48,8 @@ public class XlsRenderer implements IRenderer {
 	public CellStylePool cellStylePool;
 	public FontPool fontPool;
 	public ColorPool colorPool;
+	
+	private boolean _sheetMode = false;
 	
 	private Map<Map<?, ?>, Map<String, BufferedImage>> imageCache =
 			new HashMap<Map<?, ?>, Map<String, BufferedImage>>();
@@ -132,7 +140,9 @@ public class XlsRenderer implements IRenderer {
 					shape.renderer.render(page, shape);
 				}
 				topRow += rowHeights.size();
-				this.sheet.setRowBreak(topRow - 1);
+				if (!_sheetMode){
+					this.sheet.setRowBreak(topRow - 1);
+				}
 			}
 			{
 				HSSFWorkbook w = this.sheet.getWorkbook();
@@ -199,6 +209,21 @@ public class XlsRenderer implements IRenderer {
 			}catch(Exception e){}
 		}
 		this.imageCache.get(desc).put(key, image);
+	}
+	
+	public void renderSheet(Report report) throws RenderException{
+		PagingScanner scanner = new PagingScanner();
+		GroupRange range = new GroupRange(report.groups);
+		report.groups.scan(scanner, range, report.design.paperDesign.getRegion());
+		ReportPage page = new ReportPage(report, range, scanner);
+		ReportPages pages = new ReportPages(report);
+		pages.add(page);
+		try{
+			_sheetMode = true;
+			pages.render(this);
+		}finally{
+			_sheetMode = false;
+		}
 	}
 
 }
