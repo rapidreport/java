@@ -68,14 +68,22 @@ public class BarcodeRenderer implements IElementRenderer {
 				if (Cast.toBool(design.get("generate_checksum"))){
 					barcode.setGenerateChecksum(true);
 				}
-				String ss = "A";
+				String startCode = "A";
+				String stopCode = "A";
 				if (!design.isNull("codabar_startstop_code")){
-					ss = (String)design.get("codabar_startstop_code");
+					String ss = (String)design.get("codabar_startstop_code");
+					if (ss.length() == 1){
+						startCode = ss;
+						stopCode = ss;
+					}else if (ss.length() > 1){
+						startCode = ss.substring(0, 1);
+						stopCode = ss.substring(1, 2);
+					}
 				}
 				if (Cast.toBool(design.get("codabar_startstop_show"))){
 					barcode.setStartStopText(true);
 				}
-				barcode.setCode(ss + code + ss);
+				barcode.setCode(startCode + code + stopCode);
 				image = barcode.createImageWithBarcode(cb, null, null);
 			}else if (type != null && type.equals("itf")){
 				BarcodeInter25 barcode = new BarcodeInter25();
