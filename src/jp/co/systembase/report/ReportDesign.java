@@ -22,6 +22,7 @@ public class ReportDesign {
 	public PaperDesign paperDesign;
 	public FontDesign defaultFontDesign;
 	public float defaultLineWidth;
+	public float defaultCharSpacing;
 	public int pageCapacity;
 	public boolean resetPageCount;
 	public Map<String, String> customFields;
@@ -59,6 +60,7 @@ public class ReportDesign {
 		}else{
 			this.defaultLineWidth = 1.0f;
 		}
+		this.defaultCharSpacing = Cast.toFloat(desc.get("char_spacing"));
 		this.pageCapacity = Cast.toInt(desc.get("page_capacity"));
 		this.resetPageCount = Cast.toBool(desc.get("reset_page_count"));
 		if (desc.containsKey("custom_fields")){

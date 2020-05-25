@@ -23,6 +23,7 @@ public class TextDesign {
 	public boolean wrap = false;
 	public boolean shrinkToFit = false;
 	public int decimalPlace = 0;
+	public float charSpacing = 0;
 	public String xlsFormat = null;
 	public MonospacedFontsDesign.DetailDesign monospacedFont = null;
 
@@ -67,6 +68,11 @@ public class TextDesign {
 			this.decimalPlace = Cast.toInt(desc.get("decimal_place"));
 		}
 		this.xlsFormat = (String)desc.get("xls_format");
+		if (!desc.isNull("char_spacing")){
+			this.charSpacing = Cast.toFloat(desc.get("char_spacing"));
+		}else{
+			this.charSpacing = reportDesign.defaultCharSpacing;
+		}
 		this.monospacedFont = reportDesign.monospacedFontsDesign.get(this.font);
 	}
 
@@ -79,11 +85,7 @@ public class TextDesign {
 		bi.setText(str);
 		int last = bi.first();
 		while (bi.next() != BreakIterator.DONE){
-			if (ReportUtil.isSingleChar(str.substring(last, bi.current()))){
-				ret += monospacedFont.halfWidth * fontSize;
-			}else{
-				ret += monospacedFont.fullWidth * fontSize;
-			}
+			ret += monoWidth(str.substring(last, bi.current()), fontSize);
 			last = bi.current();
 		}
 		return ret;
@@ -97,9 +99,9 @@ public class TextDesign {
 		int last = bi.first();
 		while (bi.next() != BreakIterator.DONE){
 			if (ReportUtil.isSingleChar(str.substring(last, bi.current()))){
-				cs += monospacedFont.halfWidth - 0.5;
+				cs += _monoHalfWidth() - 0.5;
 			}else{
-				cs += monospacedFont.fullWidth - 1.0;
+				cs += _monoFullWidth() - 1.0;
 			}
 			last = bi.current();
 			c++;
@@ -110,7 +112,7 @@ public class TextDesign {
 			return 0;
 		}
 	}
-	
+
 	public float getMonospacedFitFontSize(List<String> texts, float width, float minSize){
 		float w = 0;
 		for(String t: texts){
@@ -133,11 +135,7 @@ public class TextDesign {
 		int last = bi.first();
 		int i = 0;
 		while (bi.next() != BreakIterator.DONE){
-			if (ReportUtil.isSingleChar(str.substring(last, bi.current()))){
-				w += monospacedFont.halfWidth * font.size;
-			}else{
-				w += monospacedFont.fullWidth * font.size;
-			}
+			w += monoWidth(str.substring(last, bi.current()), font.size);
 			if ((i > 0 && w >= width) || (i == maxLen)){
 				return i;
 			}
@@ -147,4 +145,19 @@ public class TextDesign {
 		return i;
 	}
 
+	private float _monoHalfWidth(){
+		return monospacedFont.halfWidth * (1 + charSpacing);
+	}
+
+	private float _monoFullWidth(){
+		return monospacedFont.fullWidth * (1 + charSpacing);
+	}
+
+	public float monoWidth(String c, float fontSize){
+		if (ReportUtil.isSingleChar(c)){
+			return _monoHalfWidth() * fontSize;
+		}else{
+			return _monoFullWidth() * fontSize;
+		}
+	}
 }
