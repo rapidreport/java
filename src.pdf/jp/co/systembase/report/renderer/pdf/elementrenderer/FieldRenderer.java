@@ -53,8 +53,12 @@ public class FieldRenderer implements IElementRenderer {
 			}
 			_region = new Region(region, ml, mt, mr, mb);
 		}
-		PdfText pdfText = new PdfText();
+		PdfText pdfText = _getPdfText(renderer, reportDesign,  _region, design, text);
 		pdfText.Initialize(renderer, reportDesign, _region, design, text);
 		pdfText.draw();
+	}
+	
+	protected PdfText _getPdfText(PdfRenderer renderer, ReportDesign reportDesign, Region region, ElementDesign design, String text){
+		return new PdfText();
 	}
 }
