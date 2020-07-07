@@ -70,6 +70,7 @@ import jp.co.systembase.report.operator.WLinesOperator;
 import jp.co.systembase.report.operator.WSplitOperator;
 import jp.co.systembase.report.operator.WStringLenOperator;
 import jp.co.systembase.report.operator.WSubStringOperator;
+import jp.co.systembase.report.operator.YbCodeOperator;
 import jp.co.systembase.report.operator.YearOperator;
 import jp.co.systembase.report.search.searchobject.DefaultSearchObject;
 import jp.co.systembase.report.search.searchobject.FieldSearchObject;
@@ -162,6 +163,7 @@ public class ReportSetting  implements Cloneable{
 		this.operatorMap.put("wlines", new WLinesOperator());
 		this.operatorMap.put("digit", new DigitOperator());
 		this.operatorMap.put("trim", new TrimOperator());
+		this.operatorMap.put("ybcode", new YbCodeOperator());
 		this.defaultElementPreprocessor = new DefaultPreprocessor();
 		this.elementPreprocessorMap.put("subpage", new SubPagePreprocessor());
 		this.defaultSearchObject = new DefaultSearchObject();
