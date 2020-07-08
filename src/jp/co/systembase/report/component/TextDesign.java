@@ -69,9 +69,9 @@ public class TextDesign {
 		}
 		this.xlsFormat = (String)desc.get("xls_format");
 		if (!desc.isNull("char_spacing")){
-			this.charSpacing = Cast.toFloat(desc.get("char_spacing"));
+			this.charSpacing = Math.max(Cast.toFloat(desc.get("char_spacing")), 0);
 		}else{
-			this.charSpacing = reportDesign.defaultCharSpacing;
+			this.charSpacing = Math.max(reportDesign.defaultCharSpacing, 0);
 		}
 		this.monospacedFont = reportDesign.monospacedFontsDesign.get(this.font);
 	}
