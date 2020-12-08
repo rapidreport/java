@@ -60,11 +60,11 @@ public class TextFormatterUtil {
 		String ret = "";
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(date);
-		
+
 		int i = 0;
 		int j = 0;
 		Calendar jcal = null;
-		DateFormat jdf = null; 
+		DateFormat jdf = null;
 		if (format.indexOf("gg") != -1 ||
 			format.indexOf("n") != -1 ||
 			format.indexOf("N") != -1){
@@ -88,7 +88,7 @@ public class TextFormatterUtil {
 				w = 4;
 			}else if (t.startsWith("MMM")){
 				p = getMonthEn(cal.get(Calendar.MONTH) + 1);
-				w = 2;
+				w = 3;
 			}else if (t.startsWith("MM")){
 				p = padZero(Integer.toString(cal.get(Calendar.MONTH) + 1));
 				w = 2;
@@ -222,7 +222,7 @@ public class TextFormatterUtil {
 		}
 		return null;
 	}
-	
+
 	private static String getMonthEn(int m){
 		switch(m){
 		case 1:
