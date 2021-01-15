@@ -72,6 +72,7 @@ import jp.co.systembase.report.operator.WStringLenOperator;
 import jp.co.systembase.report.operator.WSubStringOperator;
 import jp.co.systembase.report.operator.YbCodeOperator;
 import jp.co.systembase.report.operator.YearOperator;
+import jp.co.systembase.report.operator.WeekdayOperator;
 import jp.co.systembase.report.search.searchobject.DefaultSearchObject;
 import jp.co.systembase.report.search.searchobject.FieldSearchObject;
 import jp.co.systembase.report.search.searchobject.ISearchObject;
@@ -164,11 +165,12 @@ public class ReportSetting  implements Cloneable{
 		this.operatorMap.put("digit", new DigitOperator());
 		this.operatorMap.put("trim", new TrimOperator());
 		this.operatorMap.put("ybcode", new YbCodeOperator());
+		this.operatorMap.put("weekday", new WeekdayOperator());
 		this.defaultElementPreprocessor = new DefaultPreprocessor();
 		this.elementPreprocessorMap.put("subpage", new SubPagePreprocessor());
 		this.defaultSearchObject = new DefaultSearchObject();
-		this.searchObjectMap.put("field", new FieldSearchObject()); 
-		this.searchObjectMap.put("text", new TextSearchObject()); 
+		this.searchObjectMap.put("field", new FieldSearchObject());
+		this.searchObjectMap.put("text", new TextSearchObject());
 		this.defaultTextFormatter = new DefaultTextFormatter();
 		this.textFormatterMap.put("default", this.defaultTextFormatter);
 	}
@@ -206,7 +208,7 @@ public class ReportSetting  implements Cloneable{
 			return this.defaultSearchObject;
 		}
 	}
-	
+
 	public ITextFormatter getTextFormatter(String key){
 		if (key != null && this.textFormatterMap.containsKey(key)){
 			return this.textFormatterMap.get(key);
