@@ -17,7 +17,7 @@ public class ReportUtil {
 		"abcdefghijklmnopqrstuvwxyz" +
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
 		"ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｯｬｭｮﾞﾟｰ｢｣･､｡" +
-		" !@#$%^&*()_+|~-=\\`{}[]:\";'<>?,./\n\r\t";
+		" !@#$%^&*()_+|~-=\\`{}[]:\";'<>?,./\n\r\t\u00a5";
 
 	private static Map<String, Boolean> _singleCharsMap;
 	static {
