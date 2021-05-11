@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jp.co.systembase.core.Cast;
-import jp.co.systembase.report.component.Region;
 
 
 public class SubContentLayoutDesign {

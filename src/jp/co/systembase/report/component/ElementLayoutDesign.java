@@ -1,7 +1,6 @@
 package jp.co.systembase.report.component;
 
 import jp.co.systembase.core.Cast;
-import jp.co.systembase.report.component.Region;
 
 
 public class ElementLayoutDesign {

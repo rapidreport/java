@@ -3,7 +3,6 @@ package jp.co.systembase.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.systembase.report.Report;
 import jp.co.systembase.report.renderer.IRenderer;
 import jp.co.systembase.report.renderer.RenderException;
 

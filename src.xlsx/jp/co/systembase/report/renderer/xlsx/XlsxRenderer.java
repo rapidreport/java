@@ -10,6 +10,10 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.ReportPage;
@@ -20,7 +24,6 @@ import jp.co.systembase.report.component.PaperDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.renderer.IRenderer;
 import jp.co.systembase.report.renderer.RenderException;
-import jp.co.systembase.report.renderer.xlsx.XlsxRendererSetting;
 import jp.co.systembase.report.renderer.xlsx.component.Cell;
 import jp.co.systembase.report.renderer.xlsx.component.CellMap;
 import jp.co.systembase.report.renderer.xlsx.component.CellStylePool;
@@ -30,10 +33,6 @@ import jp.co.systembase.report.renderer.xlsx.component.RowColUtil;
 import jp.co.systembase.report.renderer.xlsx.component.Shape;
 import jp.co.systembase.report.renderer.xlsx.imageloader.IXlsxImageLoader;
 import jp.co.systembase.report.scanner.PagingScanner;
-
-import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class XlsxRenderer implements IRenderer {
 

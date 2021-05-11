@@ -5,10 +5,9 @@ import java.util.Map;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.Report;
-import jp.co.systembase.report.ReportUtil;
 import jp.co.systembase.report.Report.EPaperType;
 import jp.co.systembase.report.Report.EScaleUnit;
-import jp.co.systembase.report.component.Region;
+import jp.co.systembase.report.ReportUtil;
 
 
 public class PaperDesign {

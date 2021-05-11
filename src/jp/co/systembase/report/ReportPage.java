@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import jp.co.systembase.core.Cast;
-import jp.co.systembase.report.Report;
 import jp.co.systembase.report.component.ContentInstance;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.ElementDesigns;
