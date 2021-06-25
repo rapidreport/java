@@ -110,7 +110,12 @@ public class XlsxRenderer implements IRenderer {
 
 	public void endReport(ReportDesign reportDesign) throws Throwable {
 		List<Float> cols = RowColUtil.createCols(reportDesign, this);
-		List<Integer> colWidths = RowColUtil.createColWidths(cols, 1.26f * this.setting.colWidthCoefficient);
+		List<Integer> colWidths;
+		if (!Report.Compatibility._5_9_XlsxRowColSize) {
+			colWidths = RowColUtil.createColWidths(cols, 1.12f * this.setting.colWidthCoefficient);
+		}else {
+			colWidths = RowColUtil.createColWidths(cols, 1.26f * this.setting.colWidthCoefficient);
+		}
 		for(int i = 0;i < colWidths.size();i++){
 			this.sheet.setColumnWidth(i, colWidths.get(i));
 		}
@@ -119,7 +124,12 @@ public class XlsxRenderer implements IRenderer {
 			for(Page page: this.pages){
 				page.topRow = topRow;
 				List<Float> rows = RowColUtil.createRows(reportDesign, page);
-				List<Short> rowHeights = RowColUtil.createRowHeights(rows, 1.36f * this.setting.rowHeightCoefficient);
+				List<Short> rowHeights;
+				if (!Report.Compatibility._5_9_XlsxRowColSize) {
+					rowHeights = RowColUtil.createRowHeights(rows, 1.24f * this.setting.rowHeightCoefficient);
+				}else {
+					rowHeights = RowColUtil.createRowHeights(rows, 1.36f * this.setting.rowHeightCoefficient);
+				}
 				for(int i = 0;i < rowHeights.size();i++){
 					this.sheet.createRow(topRow + i).setHeight(rowHeights.get(i));
 				}

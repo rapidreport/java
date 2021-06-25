@@ -87,6 +87,7 @@ public class Report {
 		public static boolean _4_37_WrappedTextNoTrim = false;
 		public static boolean _4_37_ImagePixelScale = false;
 		public static boolean _4_37_Typeset = false;
+		public static boolean _5_9_XlsxRowColSize = false;
 	}
 
 	public static class Context{
