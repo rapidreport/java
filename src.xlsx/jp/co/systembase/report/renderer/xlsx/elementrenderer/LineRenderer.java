@@ -1,7 +1,11 @@
 package jp.co.systembase.report.renderer.xlsx.elementrenderer;
 
-import java.math.BigDecimal;
+import org.apache.poi.ss.usermodel.ShapeTypes;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
 
+import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
@@ -13,11 +17,6 @@ import jp.co.systembase.report.renderer.xlsx.component.LineStyles;
 import jp.co.systembase.report.renderer.xlsx.component.Page;
 import jp.co.systembase.report.renderer.xlsx.component.RowColUtil;
 import jp.co.systembase.report.renderer.xlsx.component.Shape;
-
-import org.apache.poi.ss.usermodel.ShapeTypes;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
 
 public class LineRenderer implements IElementRenderer {
 
@@ -80,7 +79,7 @@ public class LineRenderer implements IElementRenderer {
 		public void render(Page page, Shape shape) {
 			float lineWidth = this.reportDesign.defaultLineWidth;
 			if (!design.isNull("line_width")){
-				lineWidth = ((BigDecimal)design.get("line_width")).floatValue();
+				lineWidth = Cast.toFloat(design.get("line_width"));
 				if (lineWidth == 0){
 					return;
 				}

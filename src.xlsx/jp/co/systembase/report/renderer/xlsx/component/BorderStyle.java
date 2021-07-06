@@ -1,7 +1,5 @@
 package jp.co.systembase.report.renderer.xlsx.component;
 
-import java.math.BigDecimal;
-
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
@@ -31,7 +29,7 @@ public class BorderStyle {
 	public static BorderStyle getInstance(ElementDesign design, ReportDesign reportDesign){
 		BorderStyle ret = null;
 		if (!design.isNull("xls_line_style")){
-			String ls = (String)design.get("xls_line_style"); 
+			String ls = (String)design.get("xls_line_style");
 			if (ls.equals("thin")){
 				ret = new BorderStyle();
 				ret.lineStyle = ELineStyle.THIN;
@@ -73,7 +71,7 @@ public class BorderStyle {
 		if (ret == null){
 			float lw = reportDesign.defaultLineWidth;
 			if (!design.isNull("line_width")){
-				lw = ((BigDecimal)design.get("line_width")).floatValue();
+				lw = Cast.toFloat(design.get("line_width"));
 			}
 			if (lw == 0f){
 				return null;

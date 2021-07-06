@@ -1,7 +1,6 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import java.math.BigDecimal;
-
+import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
@@ -19,10 +18,10 @@ public class FieldRenderer implements IElementRenderer {
 			Object data) throws Throwable {
 		if (!design.isNull("rect")){
 			renderer.setting.getElementRenderer("rect").render(
-			  renderer, 
-			  reportDesign, 
-			  region, 
-			  design.child("rect"), 
+			  renderer,
+			  reportDesign,
+			  region,
+			  design.child("rect"),
 			  null);
 		}
 		String text = RenderUtil.format(reportDesign, design.child("formatter"), data);
@@ -40,16 +39,16 @@ public class FieldRenderer implements IElementRenderer {
 			float mr = 0;
 			float mb = 0;
 			if (!m.isNull("left")){
-				ml = ((BigDecimal)m.get("left")).floatValue();
+				ml = Cast.toFloat(m.get("left"));
 			}
 			if (!m.isNull("top")){
-				mt = ((BigDecimal)m.get("top")).floatValue();
+				mt = Cast.toFloat(m.get("top"));
 			}
 			if (!m.isNull("right")){
-				mr = ((BigDecimal)m.get("right")).floatValue();
+				mr = Cast.toFloat(m.get("right"));
 			}
 			if (!m.isNull("bottom")){
-				mb = ((BigDecimal)m.get("bottom")).floatValue();
+				mb = Cast.toFloat(m.get("bottom"));
 			}
 			_region = new Region(region, ml, mt, mr, mb);
 		}
@@ -57,7 +56,7 @@ public class FieldRenderer implements IElementRenderer {
 		pdfText.Initialize(renderer, reportDesign, _region, design, text);
 		pdfText.draw();
 	}
-	
+
 	protected PdfText _getPdfText(PdfRenderer renderer, ReportDesign reportDesign, Region region, ElementDesign design, String text){
 		return new PdfText();
 	}

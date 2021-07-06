@@ -1,10 +1,10 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.lowagie.text.pdf.PdfContentByte;
+
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
@@ -26,7 +26,7 @@ public class LineRenderer implements IElementRenderer {
 		try{
 			float lw = reportDesign.defaultLineWidth;
 			if (!design.isNull("line_width")){
-				lw = ((BigDecimal)design.get("line_width")).floatValue();
+				lw = Cast.toFloat(design.get("line_width"));
 				if (lw == 0){
 					return;
 				}
@@ -122,7 +122,7 @@ public class LineRenderer implements IElementRenderer {
 				cb.stroke();
 				if (startArrow){
 					if (color != null){
-						cb.setRGBColorFill(color[0], color[1], color[2]);	
+						cb.setRGBColorFill(color[0], color[1], color[2]);
 					}
 					cb.moveTo(
 							renderer.trans.x(_region.left + tx(r, w * 2, -w)),
@@ -137,7 +137,7 @@ public class LineRenderer implements IElementRenderer {
 				}
 				if (endArrow){
 					if (color != null){
-						cb.setRGBColorFill(color[0], color[1], color[2]);	
+						cb.setRGBColorFill(color[0], color[1], color[2]);
 					}
 					cb.moveTo(
 							renderer.trans.x(_region.right + tx(r, -w * 2, -w)),

@@ -1,7 +1,10 @@
 package jp.co.systembase.report.renderer.xls.elementrenderer;
 
-import java.math.BigDecimal;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFSimpleShape;
 
+import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
@@ -12,10 +15,6 @@ import jp.co.systembase.report.renderer.xls.component.Grid;
 import jp.co.systembase.report.renderer.xls.component.Page;
 import jp.co.systembase.report.renderer.xls.component.RowColUtil;
 import jp.co.systembase.report.renderer.xls.component.Shape;
-
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFSimpleShape;
 
 public class LineRenderer implements IElementRenderer {
 
@@ -78,7 +77,7 @@ public class LineRenderer implements IElementRenderer {
 		public void render(Page page, Shape shape) {
 			float lineWidth = this.reportDesign.defaultLineWidth;
 			if (!design.isNull("line_width")){
-				lineWidth = ((BigDecimal)design.get("line_width")).floatValue();
+				lineWidth = Cast.toFloat(design.get("line_width"));
 				if (lineWidth == 0){
 					return;
 				}

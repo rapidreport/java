@@ -1,16 +1,16 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lowagie.text.pdf.PdfContentByte;
+
+import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.renderer.RenderUtil;
 import jp.co.systembase.report.renderer.pdf.PdfRenderer;
-
-import com.lowagie.text.pdf.PdfContentByte;
 
 public class CircleRenderer implements IElementRenderer {
 
@@ -28,7 +28,7 @@ public class CircleRenderer implements IElementRenderer {
 			boolean fill = false;
 			float lw = reportDesign.defaultLineWidth;
 			if (!design.isNull("line_width")){
-				lw = ((BigDecimal)design.get("line_width")).floatValue();
+				lw = Cast.toFloat(design.get("line_width"));
 				if (lw == 0){
 					stroke = false;
 				}

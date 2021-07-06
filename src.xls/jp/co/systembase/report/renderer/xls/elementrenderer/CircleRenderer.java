@@ -1,7 +1,10 @@
 package jp.co.systembase.report.renderer.xls.elementrenderer;
 
-import java.math.BigDecimal;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFSimpleShape;
 
+import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
@@ -9,10 +12,6 @@ import jp.co.systembase.report.renderer.xls.XlsRenderer;
 import jp.co.systembase.report.renderer.xls.component.ColorUtil;
 import jp.co.systembase.report.renderer.xls.component.Page;
 import jp.co.systembase.report.renderer.xls.component.Shape;
-
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFSimpleShape;
 
 public class CircleRenderer implements IElementRenderer {
 
@@ -41,7 +40,7 @@ public class CircleRenderer implements IElementRenderer {
 		public void render(Page page, Shape shape) {
 			float lineWidth = this.reportDesign.defaultLineWidth;
 			if (!design.isNull("line_width")){
-				lineWidth = ((BigDecimal)design.get("line_width")).floatValue();
+				lineWidth = Cast.toFloat(design.get("line_width"));
 				if (lineWidth == 0 && design.isNull("fill_color")){
 					return;
 				}
