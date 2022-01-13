@@ -30,12 +30,19 @@ public class ReportUtil {
 	private ReportUtil(){};
 
 	public static Object regularize(Object v){
-		BigDecimal _v = Cast.toBigDecimal(v);
-		if (_v != null){
-			return _v;
-		}else{
-			return v;
+		{
+			BigDecimal _v = Cast.toBigDecimal(v);
+			if (_v != null){
+				return _v;
+			}
 		}
+		{
+			Date _v = Cast.toDate(v);
+			if (_v != null){
+				return _v;
+			}
+		}
+		return v;
 	}
 
 	public static Object eqRegularize(Object v){

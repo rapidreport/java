@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.component.Evaluator;
 import jp.co.systembase.report.expression.IExpression;
 
@@ -14,10 +15,10 @@ public class SecondOperator implements IOperator {
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
 		evaluator.ValidateParamCount(params, 1);
-		Object o = evaluator.eval(params.get(0));
-		if (o instanceof Date){
+		Date d = Cast.toDate(evaluator.eval(params.get(0)));
+		if (d != null){
 			Calendar c = Calendar.getInstance();
-			c.setTime((Date)o);
+			c.setTime(d);
 			return c.get(Calendar.SECOND);
 		}else{
 			return null;

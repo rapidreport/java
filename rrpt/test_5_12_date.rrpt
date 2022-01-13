@@ -1,0 +1,31 @@
+{
+  version: 0,
+  monospaced_fonts: [
+    {bold:{full_width:1.033,half_width:0.536,row_height:1.0},regular:{full_width:1.03,half_width:0.516,row_height:1.0}},
+    {name:"gothic",bold:{full_width:1.033,half_width:0.536,row_height:1.0},regular:{full_width:1.03,half_width:0.516,row_height:1.0}},
+    {name:"mincho",bold:{full_width:1.033,half_width:0.536,row_height:1.0},regular:{full_width:1.03,half_width:0.516,row_height:1.0}}
+  ],
+  paper: {
+    landscape: true,
+    margin: {bottom:20.0,left:20.0,right:20.0,top:20.0},
+    scale_unit: "point",
+    type: "a4"
+  },
+  group: {
+    detail: true,
+    sort_keys: ["v"],
+    contents: [
+      {
+        size: {
+          initial: 20.0
+        },
+        aggregate_src: true,
+        elements: [
+          {type:"field",layout:{x1:0.0,y1:0.0,x2:195.0,y2:20.0},exp:".v",formatter:{format:"yyyy年MM月dd日 hh時mm分ss秒",type:"default"},halign:"left",valign:"center"},
+          {type:"text",layout:{x1:402.0,y1:0.0,x2:802.0,y2:20.0},halign:"left",text:"year:#{(year .v)} month:#{(month .v)} day:#{(day .v)} hour:#{(hour .v)} minute:#{(minute .v)} second:#{(second .v)}",valign:"center"},
+          {type:"field",layout:{x1:195.0,y1:0.0,x2:400.0,y2:20.0},exp:"(dateadd .v 'd' 1)",formatter:{format:"yyyy年MM月dd日 hh時mm分ss秒",type:"default"},halign:"left",valign:"center"}
+        ]
+      }
+    ]
+  }
+}

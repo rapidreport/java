@@ -16,24 +16,24 @@ public class DateAddOperator implements IOperator {
 			Evaluator evaluator,
 			List<IExpression> params) throws Throwable {
 		evaluator.ValidateParamCount(params, 3);
-		Object o = evaluator.eval(params.get(0));
+		Date d = Cast.toDate(evaluator.eval(params.get(0)));
 		String u = ReportUtil.objectToString(evaluator.eval(params.get(1)));
-		int d = Cast.toInt(evaluator.eval(params.get(2)));
-		if (o instanceof Date){
+		int df = Cast.toInt(evaluator.eval(params.get(2)));
+		if (d != null){
 			Calendar c = Calendar.getInstance();
-			c.setTime((Date)o);
+			c.setTime(d);
 			if (u.equals("y")){
-				c.add(Calendar.YEAR, d);
+				c.add(Calendar.YEAR, df);
 			}else if (u.equals("M")){
-				c.add(Calendar.MONTH, d);
+				c.add(Calendar.MONTH, df);
 			}else if (u.equals("d")){
-				c.add(Calendar.DATE, d);
+				c.add(Calendar.DATE, df);
 			}else if (u.equals("h")){
-				c.add(Calendar.HOUR_OF_DAY, d);
+				c.add(Calendar.HOUR_OF_DAY, df);
 			}else if (u.equals("m")){
-				c.add(Calendar.MINUTE, d);
+				c.add(Calendar.MINUTE, df);
 			}else if (u.equals("s")){
-				c.add(Calendar.SECOND, d);
+				c.add(Calendar.SECOND, df);
 			}
 			return c.getTime();
 		}else{

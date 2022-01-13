@@ -2,6 +2,7 @@ package jp.co.systembase.report.data.internal;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import jp.co.systembase.report.IReportLogger;
@@ -54,6 +55,8 @@ public class RecordComparator implements Comparator<Integer> {
 				}
 			}else if (v1 instanceof BigDecimal){
 				return ((BigDecimal)v1).compareTo((BigDecimal)v2);
+			}else if (v1 instanceof Date) {
+				return ((Date)v1).compareTo((Date)v2);
 			}else if (v1 instanceof String){
 				return ((String)v1).compareTo((String)v2);
 			}
