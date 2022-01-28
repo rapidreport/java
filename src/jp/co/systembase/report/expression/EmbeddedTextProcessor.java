@@ -26,7 +26,7 @@ public class EmbeddedTextProcessor {
 			if (ret == null){
 				ret = new ArrayList<String>();
 			}
-			ret.add(this.nextExpression(source));
+			ret.add(extExp(this.nextExpAndMock(source)));
 		}
 		return ret;
 	}
@@ -55,7 +55,7 @@ public class EmbeddedTextProcessor {
 				if (v != null){
 					sb.append(v);
 				}
-				this.nextExpression(source);
+				this.nextExpAndMock(source);
 				i += 1;
 			}
 		}
@@ -83,7 +83,7 @@ public class EmbeddedTextProcessor {
 		}
 	}
 
-	private String nextExpression(String source) throws EvalException{
+	private String nextExpAndMock(String source) throws EvalException{
 		int i = this.index;
 		boolean quoted = false;
 		boolean escaped = false;
@@ -112,6 +112,27 @@ public class EmbeddedTextProcessor {
 			}
 			i += 1;
 		}
+	}
+
+	private String extExp(String expAndMock) {
+		boolean quoted = false;
+		for(int i = 0;i < expAndMock.length();i++) {
+			char c = expAndMock.charAt(i);
+			if (!quoted) {
+				if (c == ',') {
+					return expAndMock.substring(0, i);
+				}else {
+					if (c == '\'') {
+						quoted = true;
+					}
+				}
+			}else {
+				if (c == '\'') {
+					quoted = false;
+				}
+			}
+		}
+		return expAndMock;
 	}
 
 }
