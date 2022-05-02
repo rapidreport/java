@@ -36,9 +36,12 @@ public class Group {
 		}
 	}
 
-	public void fill(ReportData data){
+	public void fill(ReportData data, boolean updateContext){
 		this.data = data;
-		this.data.setGroup(this);
+		this.data.group = this;
+		if (updateContext) {
+			this.data.updateContext();
+		}
 		this.contents = new ArrayList<Content>();
 		for(ContentDesign cd: this.getDesign().contentDesigns){
 			if (cd.existenceCond != null){

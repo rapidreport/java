@@ -71,7 +71,7 @@ public class Groups {
 	public void addGroup(ReportData data, Crosstab.State crosstabState){
 		Group g = new Group(this, this.groups.size(), crosstabState);
 		this.groups.add(g);
-		g.fill(data);
+		g.fill(data, true);
 	}
 
 	public Region scan(
@@ -97,7 +97,7 @@ public class Groups {
 		int layoutCount = this.design.layout.getCount(evaluator);
 		int lastIndex;
 		int lastIndex2;
-		Region lastRegion = null;		
+		Region lastRegion = null;
 		if (this.design.layout.blank && layoutCount == 0){
 			layoutCount = this.getDefaultGroupCount(parentRegion);
 		}
@@ -208,7 +208,7 @@ public class Groups {
 		if (this.parentContent != null){
 			g = this.parentContent.parentGroup;
 		}
-		ret.fill(new ReportData(DummyDataSource.getInstance(), this.report, g));
+		ret.fill(new ReportData(DummyDataSource.getInstance(), this.report, g), false);
 		return ret;
 	}
 

@@ -122,9 +122,8 @@ public class ReportData implements IReportDataSource {
 		}
 	}
 
-	public void setGroup(Group group){
-		this.group = group;
-		GroupDesign groupDesign = group.getDesign();
+	public void updateContext(){
+		GroupDesign groupDesign = this.group.getDesign();
 		if (!this.context.wrapperDataSourceMap.containsKey(groupDesign)){
 			this.context.wrapperDataSourceMap.put(groupDesign, new WrapperDataSource());
 		}
@@ -209,7 +208,7 @@ public class ReportData implements IReportDataSource {
 			return null;
 		}
 	}
-	
+
 	private CustomField findCustomField(String key){
 		Group g = this.group;
 		while(g != null && this.hasSameSource(g.data)){
