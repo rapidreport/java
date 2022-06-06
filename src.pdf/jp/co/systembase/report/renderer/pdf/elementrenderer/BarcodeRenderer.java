@@ -1,15 +1,5 @@
 package jp.co.systembase.report.renderer.pdf.elementrenderer;
 
-import jp.co.systembase.core.Cast;
-import jp.co.systembase.report.ReportDesign;
-import jp.co.systembase.report.component.ElementDesign;
-import jp.co.systembase.report.component.Region;
-import jp.co.systembase.report.renderer.RenderUtil;
-import jp.co.systembase.report.renderer.pdf.PdfRenderer;
-import jp.co.systembase.report.renderer.pdf.barcode.Gs1_128;
-import jp.co.systembase.report.renderer.pdf.barcode.QRCode;
-import jp.co.systembase.report.renderer.pdf.barcode.Yubin;
-
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.Barcode;
 import com.lowagie.text.pdf.Barcode128;
@@ -18,6 +8,17 @@ import com.lowagie.text.pdf.BarcodeCodabar;
 import com.lowagie.text.pdf.BarcodeEAN;
 import com.lowagie.text.pdf.BarcodeInter25;
 import com.lowagie.text.pdf.PdfContentByte;
+
+import jp.co.systembase.core.Cast;
+import jp.co.systembase.report.Report;
+import jp.co.systembase.report.ReportDesign;
+import jp.co.systembase.report.component.ElementDesign;
+import jp.co.systembase.report.component.Region;
+import jp.co.systembase.report.renderer.RenderUtil;
+import jp.co.systembase.report.renderer.pdf.PdfRenderer;
+import jp.co.systembase.report.renderer.pdf.barcode.Gs1_128;
+import jp.co.systembase.report.renderer.pdf.barcode.QRCode;
+import jp.co.systembase.report.renderer.pdf.barcode.Yubin;
 
 public class BarcodeRenderer implements IElementRenderer {
 
@@ -134,10 +135,17 @@ public class BarcodeRenderer implements IElementRenderer {
 			}
 		}catch(Exception ex){}
 		if (image != null){
-			image.scaleAbsolute(_region.getWidth() - 2f, _region.getHeight() - 2f);
-			image.setAbsolutePosition(
-					renderer.trans.x(_region.left + 1),
-					renderer.trans.y(_region.bottom + 1));
+			if (!Report.Compatibility._5_13_PdfBarcode) {
+				image.scaleAbsolute(_region.getWidth() - 4f, _region.getHeight() - 4f);
+				image.setAbsolutePosition(
+						renderer.trans.x(_region.left + 2),
+						renderer.trans.y(_region.bottom - 2));
+			}else {
+				image.scaleAbsolute(_region.getWidth() - 2f, _region.getHeight() - 2f);
+				image.setAbsolutePosition(
+						renderer.trans.x(_region.left + 1),
+						renderer.trans.y(_region.bottom + 1));
+			}
 			cb.addImage(image);
 		}
 	}
