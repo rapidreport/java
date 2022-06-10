@@ -155,7 +155,7 @@ public class RectRenderer implements IElementRenderer {
 		}
 		cb.setLineWidth(lw);
 		if (!design.isNull("color")){
-			short[] c = RenderUtil.getColorRGB((String)design.get("color"));
+			short[] c = RenderUtil.getColor((String)design.get("color"));
 			if (c != null){
 				cb.setRGBColorStroke(c[0], c[1], c[2]);
 			}
@@ -193,7 +193,7 @@ public class RectRenderer implements IElementRenderer {
 
 	private boolean setupFill(PdfContentByte cb, ElementDesign d){
 		if (!d.isNull("fill_color")){
-			short[] c = RenderUtil.getColorRGB((String)d.get("fill_color"));
+			short[] c = RenderUtil.getColor((String)d.get("fill_color"));
 			if (c != null){
 				cb.setRGBColorFill(c[0], c[1], c[2]);
 				return true;

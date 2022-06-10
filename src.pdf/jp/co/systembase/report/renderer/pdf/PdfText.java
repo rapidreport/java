@@ -124,7 +124,7 @@ public class PdfText {
 
 	protected void _draw_preprocess(){
 		if (textDesign.color != null){
-			short[] c = RenderUtil.getColorRGB(textDesign.color);
+			short[] c = RenderUtil.getColor(textDesign.color);
 			if (c != null){
 				contentByte.setRGBColorFill(c[0], c[1], c[2]);
 				contentByte.setRGBColorStroke(c[0], c[1], c[2]);

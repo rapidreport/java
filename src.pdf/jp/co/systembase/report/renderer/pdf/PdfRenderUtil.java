@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.renderer.RenderUtil;
-
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
 
 public class PdfRenderUtil {
 
@@ -39,7 +39,7 @@ public class PdfRenderUtil {
 		cb.saveState();
 		try{
 			if (textDesign.color != null){
-				short[] c = RenderUtil.getColorRGB(textDesign.color);
+				short[] c = RenderUtil.getColor(textDesign.color);
 				if (c != null){
 					cb.setRGBColorFill(c[0], c[1], c[2]);
 					cb.setRGBColorStroke(c[0], c[1], c[2]);

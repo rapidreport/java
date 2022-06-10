@@ -1,6 +1,5 @@
 package jp.co.systembase.report.renderer;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -157,31 +156,30 @@ public class RenderUtil {
 		return colorMap;
 	}
 
-	public static Color getColor(String v){
-		short[] c = getColorRGB(v);
-		if (c != null){
-			return new Color(c[0], c[1], c[2]);
-		}else{
-			return null;
-		}
-	}
-
-	public static short[] getColorRGB(String v){
-		if (v.startsWith("#") && v.length() == 7){
-			String _v = v.substring(1).toLowerCase();
-			for(int i = 0;i < 6;i++){
-				if ("0123456789abcdef".indexOf(_v.charAt(i)) < 0){
-					return null;
+	public static short[] getColor(String v){
+		if (v != null) {
+			try {
+				if (v.startsWith("#")){
+					String _v = v.substring(1).toLowerCase();
+					if (_v.contains(",")){
+						String l[] = _v.split(",");
+						return new short[]{
+								Short.valueOf(l[0]),
+								Short.valueOf(l[1]),
+								Short.valueOf(l[2])};
+					}else {
+						return new short[]{
+								Short.parseShort(_v.substring(0, 2), 16),
+								Short.parseShort(_v.substring(2, 4), 16),
+								Short.parseShort(_v.substring(4, 6), 16)};
+					}
+				}else{
+					Map<String, short[]> colorMap = getColorMap();
+					if (colorMap.containsKey(v)){
+						return colorMap.get(v);
+					}
 				}
-			}
-			return new short[]{
-					Short.parseShort(_v.substring(0, 2), 16),
-					Short.parseShort(_v.substring(2, 4), 16),
-					Short.parseShort(_v.substring(4, 6), 16)};
-		}else{
-			Map<String, short[]> colorMap = getColorMap();
-			if (colorMap.containsKey(v)){
-				return colorMap.get(v);
+			}catch(Exception e) {
 			}
 		}
 		return null;

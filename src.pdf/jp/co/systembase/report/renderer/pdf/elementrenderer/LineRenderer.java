@@ -34,7 +34,7 @@ public class LineRenderer implements IElementRenderer {
 			cb.setLineWidth(lw);
 			short[] color = null;
 			if (!design.isNull("color")){
-				color = RenderUtil.getColorRGB((String)design.get("color"));
+				color = RenderUtil.getColor((String)design.get("color"));
 				if (color != null){
 					cb.setRGBColorStroke(color[0], color[1], color[2]);
 				}

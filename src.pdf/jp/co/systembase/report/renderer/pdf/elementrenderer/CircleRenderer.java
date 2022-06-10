@@ -36,7 +36,7 @@ public class CircleRenderer implements IElementRenderer {
 			if (stroke){
 				cb.setLineWidth(lw);
 				if (!design.isNull("color")){
-					short[] c = RenderUtil.getColorRGB((String)design.get("color"));
+					short[] c = RenderUtil.getColor((String)design.get("color"));
 					if (c != null){
 						cb.setRGBColorStroke(c[0], c[1], c[2]);
 					}
@@ -71,7 +71,7 @@ public class CircleRenderer implements IElementRenderer {
 				}
 			}
 			if (!design.isNull("fill_color")){
-				short[] c = RenderUtil.getColorRGB((String)design.get("fill_color"));
+				short[] c = RenderUtil.getColor((String)design.get("fill_color"));
 				if (c != null){
 					fill = true;
 					cb.setRGBColorFill(c[0], c[1], c[2]);

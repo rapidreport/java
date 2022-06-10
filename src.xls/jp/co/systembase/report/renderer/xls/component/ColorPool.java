@@ -3,9 +3,10 @@ package jp.co.systembase.report.renderer.xls.component;
 import java.util.HashMap;
 import java.util.Map;
 
-import jp.co.systembase.report.renderer.xls.XlsRenderer;
-
 import org.apache.poi.hssf.usermodel.HSSFPalette;
+
+import jp.co.systembase.report.renderer.RenderUtil;
+import jp.co.systembase.report.renderer.xls.XlsRenderer;
 
 public class ColorPool {
 
@@ -21,7 +22,7 @@ public class ColorPool {
 	}
 
 	public short getIndex(String color){
-		short[] t = ColorUtil.getTriplet(color);
+		short[] t = RenderUtil.getColor(color);
 		if (t != null){
 			return this.getIndex(t);
 		}else{

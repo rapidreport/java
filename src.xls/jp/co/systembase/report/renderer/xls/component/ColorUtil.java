@@ -2,37 +2,15 @@ package jp.co.systembase.report.renderer.xls.component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import jp.co.systembase.report.renderer.RenderUtil;
 
 import org.apache.poi.hssf.util.HSSFColor;
 
+import jp.co.systembase.report.renderer.RenderUtil;
+
 public class ColorUtil {
 
-	public static short[] getTriplet(String v){
-		if (v.startsWith("#") && v.length() == 7){
-			String _v = v.substring(1).toLowerCase();
-			for(int i = 0;i < 6;i++){
-				if ("0123456789abcdef".indexOf(_v.charAt(i)) < 0){
-					return null;
-				}
-			}
-			return new short[]{
-					Short.parseShort(_v.substring(0, 2), 16),
-					Short.parseShort(_v.substring(2, 4), 16),
-					Short.parseShort(_v.substring(4, 6), 16)};
-		}else{
-			Map<String, short[]> colorMap = RenderUtil.getColorMap();
-			if (colorMap.containsKey(v)){
-				return colorMap.get(v);
-			}
-		}
-		return null;
-	}
-
 	public static short getIndex(String v){
-		short[] t = getTriplet(v);
+		short[] t = RenderUtil.getColor(v);
 		if (t != null){
 			return getIndex(t);
 		}else{

@@ -8,8 +8,8 @@ import jp.co.systembase.core.Cast;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
 import jp.co.systembase.report.component.Region;
+import jp.co.systembase.report.renderer.RenderUtil;
 import jp.co.systembase.report.renderer.xls.XlsRenderer;
-import jp.co.systembase.report.renderer.xls.component.ColorUtil;
 import jp.co.systembase.report.renderer.xls.component.Page;
 import jp.co.systembase.report.renderer.xls.component.Shape;
 
@@ -50,13 +50,13 @@ public class CircleRenderer implements IElementRenderer {
 			HSSFSimpleShape sp = p.createSimpleShape(shape.getHSSFClientAnchor(page.topRow));
 			sp.setShapeType(HSSFSimpleShape.OBJECT_TYPE_OVAL);
 			if (!this.design.isNull("color")){
-				short[] t = ColorUtil.getTriplet((String)this.design.get("color"));
+				short[] t = RenderUtil.getColor((String)this.design.get("color"));
 				if (t != null){
 					sp.setLineStyleColor(t[0], t[1], t[2]);
 				}
 			}
 			if (!this.design.isNull("fill_color")){
-				short[] t = ColorUtil.getTriplet((String)this.design.get("fill_color"));
+				short[] t = RenderUtil.getColor((String)this.design.get("fill_color"));
 				if (t != null){
 					sp.setFillColor(t[0], t[1], t[2]);
 				}
