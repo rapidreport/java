@@ -22,7 +22,7 @@ public class ColorPool {
 	}
 
 	public short getIndex(String color){
-		short[] t = RenderUtil.getColor(color);
+		short[] t = RenderUtil.getColorTriplet(color);
 		if (t != null){
 			return this.getIndex(t);
 		}else{

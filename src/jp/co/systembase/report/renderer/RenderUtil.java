@@ -1,5 +1,6 @@
 package jp.co.systembase.report.renderer;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,7 +157,15 @@ public class RenderUtil {
 		return colorMap;
 	}
 
-	public static short[] getColor(String v){
+	public static Color getColor(String v){
+		short[] t = getColorTriplet(v);
+		if (t != null) {
+			return new Color(t[0], t[1], t[2]);
+		}
+		return null;
+	}
+
+	public static short[] getColorTriplet(String v){
 		if (v != null) {
 			try {
 				if (v.startsWith("#")){

@@ -1,5 +1,6 @@
 package jp.co.systembase.report.renderer.pdf;
 
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,10 +125,10 @@ public class PdfText {
 
 	protected void _draw_preprocess(){
 		if (textDesign.color != null){
-			short[] c = RenderUtil.getColor(textDesign.color);
+			Color c = RenderUtil.getColor(textDesign.color);
 			if (c != null){
-				contentByte.setRGBColorFill(c[0], c[1], c[2]);
-				contentByte.setRGBColorStroke(c[0], c[1], c[2]);
+				contentByte.setColorFill(c);
+				contentByte.setColorStroke(c);
 			}
 		}
 		if (textDesign.font.bold){

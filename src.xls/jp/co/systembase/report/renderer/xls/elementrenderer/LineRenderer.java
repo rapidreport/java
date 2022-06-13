@@ -87,7 +87,7 @@ public class LineRenderer implements IElementRenderer {
 			HSSFSimpleShape sp = p.createSimpleShape(shape.getHSSFClientAnchor(page.topRow));
 			sp.setShapeType(HSSFSimpleShape.OBJECT_TYPE_LINE);
 			if (!this.design.isNull("color")){
-				short[] t = RenderUtil.getColor((String)this.design.get("color"));
+				short[] t = RenderUtil.getColorTriplet((String)this.design.get("color"));
 				if (t != null){
 					sp.setLineStyleColor(t[0], t[1], t[2]);
 				}

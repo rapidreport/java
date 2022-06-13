@@ -10,7 +10,7 @@ import jp.co.systembase.report.renderer.RenderUtil;
 public class ColorUtil {
 
 	public static short getIndex(String v){
-		short[] t = RenderUtil.getColor(v);
+		short[] t = RenderUtil.getColorTriplet(v);
 		if (t != null){
 			return getIndex(t);
 		}else{
