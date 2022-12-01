@@ -10,6 +10,11 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.PageMargin;
+
 import jp.co.systembase.report.Report;
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.ReportPage;
@@ -31,10 +36,6 @@ import jp.co.systembase.report.renderer.xls.component.Shape;
 import jp.co.systembase.report.renderer.xls.imageloader.IXlsImageLoader;
 import jp.co.systembase.report.scanner.PagingScanner;
 
-import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
 public class XlsRenderer implements IRenderer {
 
 	public XlsRendererSetting setting;
@@ -48,9 +49,9 @@ public class XlsRenderer implements IRenderer {
 	public CellStylePool cellStylePool;
 	public FontPool fontPool;
 	public ColorPool colorPool;
-	
+
 	private boolean _sheetMode = false;
-	
+
 	private Map<Map<?, ?>, Map<String, BufferedImage>> imageCache =
 			new HashMap<Map<?, ?>, Map<String, BufferedImage>>();
 
@@ -105,10 +106,10 @@ public class XlsRenderer implements IRenderer {
 		ps.setHResolution(this.setting.hResolution);
 		{
 			PaperDesign pd = reportDesign.paperDesign;
-			this.sheet.setMargin(HSSFSheet.TopMargin, pd.toPoint(pd.margin.top) / 72);
-			this.sheet.setMargin(HSSFSheet.BottomMargin, pd.toPoint(pd.margin.bottom) / 72);
-			this.sheet.setMargin(HSSFSheet.LeftMargin, pd.toPoint(pd.margin.left) / 72);
-			this.sheet.setMargin(HSSFSheet.RightMargin, pd.toPoint(pd.margin.right) / 72);
+			this.sheet.setMargin(PageMargin.TOP, pd.toPoint(pd.margin.top) / 72);
+			this.sheet.setMargin(PageMargin.BOTTOM, pd.toPoint(pd.margin.bottom) / 72);
+			this.sheet.setMargin(PageMargin.LEFT, pd.toPoint(pd.margin.left) / 72);
+			this.sheet.setMargin(PageMargin.RIGHT, pd.toPoint(pd.margin.right) / 72);
 		}
 	}
 
@@ -210,7 +211,7 @@ public class XlsRenderer implements IRenderer {
 		}
 		this.imageCache.get(desc).put(key, image);
 	}
-	
+
 	public void renderSheet(Report report) throws RenderException{
 		PagingScanner scanner = new PagingScanner();
 		GroupRange range = new GroupRange(report.groups);

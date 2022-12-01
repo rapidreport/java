@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.poi.ss.usermodel.PageMargin;
 import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -101,10 +102,10 @@ public class XlsxRenderer implements IRenderer {
 		ps.setHResolution(this.setting.hResolution);
 		{
 			PaperDesign pd = reportDesign.paperDesign;
-			this.sheet.setMargin(XSSFSheet.TopMargin, pd.toPoint(pd.margin.top) / 72);
-			this.sheet.setMargin(XSSFSheet.BottomMargin, pd.toPoint(pd.margin.bottom) / 72);
-			this.sheet.setMargin(XSSFSheet.LeftMargin, pd.toPoint(pd.margin.left) / 72);
-			this.sheet.setMargin(XSSFSheet.RightMargin, pd.toPoint(pd.margin.right) / 72);
+			this.sheet.setMargin(PageMargin.TOP, pd.toPoint(pd.margin.top) / 72);
+			this.sheet.setMargin(PageMargin.BOTTOM, pd.toPoint(pd.margin.bottom) / 72);
+			this.sheet.setMargin(PageMargin.LEFT, pd.toPoint(pd.margin.left) / 72);
+			this.sheet.setMargin(PageMargin.RIGHT, pd.toPoint(pd.margin.right) / 72);
 		}
 	}
 
