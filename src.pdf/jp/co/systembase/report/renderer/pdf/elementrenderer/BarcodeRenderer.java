@@ -28,111 +28,15 @@ public class BarcodeRenderer implements IElementRenderer {
 			Region region,
 			ElementDesign design,
 			Object data) throws Throwable {
-		String code = RenderUtil.format(reportDesign, design.child("formatter"), data);
+		String code = _getCode(reportDesign, design, data);
 		if (code == null){
 			return;
 		}
 		Region _region = region.toPointScale(reportDesign);
 		Image image = null;
 		PdfContentByte cb = renderer.writer.getDirectContent();
-		String type = (String)design.get("barcode_type");
 		try{
-			if (type != null && type.equals("ean8")){
-				BarcodeEAN barcode = new BarcodeEAN();
-				barcode.setCodeType(Barcode.EAN8);
-				if (Cast.toBool(design.get("without_text"))){
-					barcode.setFont(null);
-				}
-				if(code.length() == 7){
-					barcode.setCode(code + BarcodeEAN.calculateEANParity(code));
-					image = barcode.createImageWithBarcode(cb, null, null);
-				}else if (code.length() == 8){
-					barcode.setCode(code);
-					image = barcode.createImageWithBarcode(cb, null, null);
-				}
-				image = barcode.createImageWithBarcode(cb, null, null);
-			}else if (type != null && type.equals("code39")){
-				Barcode39 barcode = new Barcode39();
-				if (Cast.toBool(design.get("without_text"))){
-					barcode.setFont(null);
-				}
-				if (Cast.toBool(design.get("generate_checksum"))){
-					barcode.setGenerateChecksum(true);
-				}
-				barcode.setCode(code);
-				image = barcode.createImageWithBarcode(cb, null, null);
-			}else if (type != null && type.equals("codabar")){
-				BarcodeCodabar barcode = new BarcodeCodabar();
-				if (Cast.toBool(design.get("without_text"))){
-					barcode.setFont(null);
-				}
-				if (Cast.toBool(design.get("generate_checksum"))){
-					barcode.setGenerateChecksum(true);
-				}
-				String startCode = "A";
-				String stopCode = "A";
-				if (!design.isNull("codabar_startstop_code")){
-					String ss = (String)design.get("codabar_startstop_code");
-					if (ss.length() == 1){
-						startCode = ss;
-						stopCode = ss;
-					}else if (ss.length() > 1){
-						startCode = ss.substring(0, 1);
-						stopCode = ss.substring(1, 2);
-					}
-				}
-				if (Cast.toBool(design.get("codabar_startstop_show"))){
-					barcode.setStartStopText(true);
-				}
-				barcode.setCode(startCode + code + stopCode);
-				image = barcode.createImageWithBarcode(cb, null, null);
-			}else if (type != null && type.equals("itf")){
-				BarcodeInter25 barcode = new BarcodeInter25();
-				if (Cast.toBool(design.get("without_text"))){
-					barcode.setFont(null);
-				}
-				if (Cast.toBool(design.get("generate_checksum"))){
-					barcode.setGenerateChecksum(true);
-				}
-				String _code = code;
-				if (barcode.isGenerateChecksum()){
-					if (code.length() % 2 == 0){
-						_code = "0" + _code;
-					}
-				}else{
-					if (code.length() % 2 == 1){
-						_code = "0" + _code;
-					}
-				}
-				barcode.setCode(_code);
-				image = barcode.createImageWithBarcode(cb, null, null);
-			}else if (type != null && type.equals("code128")){
-				Barcode128 barcode = new Barcode128();
-				if (Cast.toBool(design.get("without_text"))){
-					barcode.setFont(null);
-				}
-				barcode.setCode(code);
-				image = barcode.createImageWithBarcode(cb, null, null);
-			}else if (type != null && type.equals("gs1_128")){
-				image = Gs1_128.getImage(cb, _region, design, code);
-			}else if (type != null && type.equals("yubin")){
-				image = Yubin.getImage(cb, _region, design, code);
-			}else if (type != null && type.equals("qrcode")){
-				image = QRCode.getImage(cb, _region, design, code);
-			}else{
-				BarcodeEAN barcode = new BarcodeEAN();
-				barcode.setCodeType(Barcode.EAN13);
-				if (Cast.toBool(design.get("without_text"))){
-					barcode.setFont(null);
-				}
-				if(code.length() == 12){
-					barcode.setCode(code + BarcodeEAN.calculateEANParity(code));
-					image = barcode.createImageWithBarcode(cb, null, null);
-				}else if (code.length() == 13){
-					barcode.setCode(code);
-					image = barcode.createImageWithBarcode(cb, null, null);
-				}
-			}
+			image = _createImage(_region, design, code, cb);
 		}catch(Exception ex){}
 		if (image != null){
 			if (!Report.Compatibility._5_13_PdfBarcode) {
@@ -147,6 +51,107 @@ public class BarcodeRenderer implements IElementRenderer {
 						renderer.trans.y(_region.bottom + 1));
 			}
 			cb.addImage(image);
+		}
+	}
+
+	protected String _getCode(ReportDesign reportDesign, ElementDesign design, Object data) {
+		return RenderUtil.format(reportDesign, design.child("formatter"), data);
+	}
+
+	protected Image _createImage(Region region, ElementDesign design, String code, PdfContentByte cb) throws Throwable {
+		String type = (String)design.get("barcode_type");
+		if (type != null && type.equals("ean8")){
+			BarcodeEAN barcode = new BarcodeEAN();
+			barcode.setCodeType(Barcode.EAN8);
+			if (Cast.toBool(design.get("without_text"))){
+				barcode.setFont(null);
+			}
+			if(code.length() == 7){
+				barcode.setCode(code + BarcodeEAN.calculateEANParity(code));
+			}else if (code.length() == 8){
+				barcode.setCode(code);
+			}
+			return barcode.createImageWithBarcode(cb, null, null);
+		}else if (type != null && type.equals("code39")){
+			Barcode39 barcode = new Barcode39();
+			if (Cast.toBool(design.get("without_text"))){
+				barcode.setFont(null);
+			}
+			if (Cast.toBool(design.get("generate_checksum"))){
+				barcode.setGenerateChecksum(true);
+			}
+			barcode.setCode(code);
+			return barcode.createImageWithBarcode(cb, null, null);
+		}else if (type != null && type.equals("codabar")){
+			BarcodeCodabar barcode = new BarcodeCodabar();
+			if (Cast.toBool(design.get("without_text"))){
+				barcode.setFont(null);
+			}
+			if (Cast.toBool(design.get("generate_checksum"))){
+				barcode.setGenerateChecksum(true);
+			}
+			String startCode = "A";
+			String stopCode = "A";
+			if (!design.isNull("codabar_startstop_code")){
+				String ss = (String)design.get("codabar_startstop_code");
+				if (ss.length() == 1){
+					startCode = ss;
+					stopCode = ss;
+				}else if (ss.length() > 1){
+					startCode = ss.substring(0, 1);
+					stopCode = ss.substring(1, 2);
+				}
+			}
+			if (Cast.toBool(design.get("codabar_startstop_show"))){
+				barcode.setStartStopText(true);
+			}
+			barcode.setCode(startCode + code + stopCode);
+			return barcode.createImageWithBarcode(cb, null, null);
+		}else if (type != null && type.equals("itf")){
+			BarcodeInter25 barcode = new BarcodeInter25();
+			if (Cast.toBool(design.get("without_text"))){
+				barcode.setFont(null);
+			}
+			if (Cast.toBool(design.get("generate_checksum"))){
+				barcode.setGenerateChecksum(true);
+			}
+			String _code = code;
+			if (barcode.isGenerateChecksum()){
+				if (code.length() % 2 == 0){
+					_code = "0" + _code;
+				}
+			}else{
+				if (code.length() % 2 == 1){
+					_code = "0" + _code;
+				}
+			}
+			barcode.setCode(_code);
+			return barcode.createImageWithBarcode(cb, null, null);
+		}else if (type != null && type.equals("code128")){
+			Barcode128 barcode = new Barcode128();
+			if (Cast.toBool(design.get("without_text"))){
+				barcode.setFont(null);
+			}
+			barcode.setCode(code);
+			return barcode.createImageWithBarcode(cb, null, null);
+		}else if (type != null && type.equals("gs1_128")){
+			return Gs1_128.getImage(cb, region, design, code);
+		}else if (type != null && type.equals("yubin")){
+			return Yubin.getImage(cb, region, design, code);
+		}else if (type != null && type.equals("qrcode")){
+			return QRCode.getImage(cb, region, design, code);
+		}else{
+			BarcodeEAN barcode = new BarcodeEAN();
+			barcode.setCodeType(Barcode.EAN13);
+			if (Cast.toBool(design.get("without_text"))){
+				barcode.setFont(null);
+			}
+			if(code.length() == 12){
+				barcode.setCode(code + BarcodeEAN.calculateEANParity(code));
+			}else if (code.length() == 13){
+				barcode.setCode(code);
+			}
+			return barcode.createImageWithBarcode(cb, null, null);
 		}
 	}
 }

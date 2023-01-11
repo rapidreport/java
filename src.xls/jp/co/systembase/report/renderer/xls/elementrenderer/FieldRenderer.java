@@ -17,14 +17,7 @@ public class FieldRenderer implements IElementRenderer {
 			Region region,
 			ElementDesign design,
 			Object data) throws Throwable {
-		if (!design.isNull("rect")){
-			renderer.setting.getElementRenderer("rect").collect(
-			  renderer, 
-			  reportDesign, 
-			  region, 
-			  design.child("rect"), 
-			  null);
-		}
+		_renderRect(renderer, reportDesign, region, design);
 		Region _region = region.toPointScale(reportDesign);
 		if (_region.getWidth() <= 0 || _region.getHeight() <= 0){
 			return;
@@ -36,11 +29,25 @@ public class FieldRenderer implements IElementRenderer {
 			if (field.style.textDesign.xlsFormat != null){
 				field.data = data;
 			}else{
-				field.data = RenderUtil.format(reportDesign, design.child("formatter"), data);
+				field.data = _getText(reportDesign, design, data);
 			}
 		}
-
 		renderer.currentPage.fields.add(field);
+	}
+
+	protected void _renderRect(XlsRenderer renderer, ReportDesign reportDesign, Region region, ElementDesign design) throws Throwable {
+		if (!design.isNull("rect")){
+			renderer.setting.getElementRenderer("rect").collect(
+			  renderer,
+			  reportDesign,
+			  region,
+			  design.child("rect"),
+			  null);
+		}
+	}
+
+	protected String _getText(ReportDesign reportDesign, ElementDesign design, Object data) {
+		return RenderUtil.format(reportDesign, design.child("formatter"), data);
 	}
 
 }

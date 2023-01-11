@@ -4,6 +4,7 @@ import java.util.List;
 
 import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.component.ElementDesign;
+import jp.co.systembase.report.component.EvalException;
 import jp.co.systembase.report.component.Region;
 import jp.co.systembase.report.component.TextDesign;
 import jp.co.systembase.report.expression.EmbeddedTextProcessor;
@@ -19,14 +20,7 @@ public class TextRenderer implements IElementRenderer {
 			Region region,
 			ElementDesign design,
 			Object data) throws Throwable {
-		if (!design.isNull("rect")){
-			renderer.setting.getElementRenderer("rect").collect(
-			  renderer, 
-			  reportDesign, 
-			  region, 
-			  design.child("rect"), 
-			  null);
-		}
+		_renderRect(renderer, reportDesign, region, design);
 		Region _region = region.toPointScale(reportDesign);
 		if (_region.getWidth() <= 0 || _region.getHeight() <= 0){
 			return;
@@ -34,13 +28,28 @@ public class TextRenderer implements IElementRenderer {
 		Field field = new Field();
 		field.region = _region;
 		field.style = new FieldStyle(new TextDesign(reportDesign, design));
-		String text = (String)design.get("text");
+		field.data = _getText(reportDesign, design, data);
+		renderer.currentPage.fields.add(field);
+	}
+
+	protected void _renderRect(XlsxRenderer renderer, ReportDesign reportDesign, Region region, ElementDesign design) throws Throwable {
+		if (!design.isNull("rect")){
+			renderer.setting.getElementRenderer("rect").collect(
+			  renderer,
+			  reportDesign,
+			  region,
+			  design.child("rect"),
+			  null);
+		}
+	}
+
+	protected String _getText(ReportDesign reportDesign, ElementDesign design, Object data) throws EvalException {
+		String ret = (String)design.get("text");
 		if (data != null){
 			EmbeddedTextProcessor textProcessor = new EmbeddedTextProcessor();
-			text = textProcessor.embedData(reportDesign, design.child("formatter"), text, (List<?>)data);
+			ret = textProcessor.embedData(reportDesign, design.child("formatter"), ret, (List<?>)data);
 		}
-		field.data = text;
-		renderer.currentPage.fields.add(field);
+		return ret;
 	}
 
 }
