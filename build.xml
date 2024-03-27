@@ -36,7 +36,7 @@
 		       encoding="UTF-8"
 		       verbose="off"
 		       debug="true"
-		       target="1.8"
+		       release="8"
 		       debuglevel="lines"
 		       includeantruntime="false"/>
 		<copy todir="${class_report}">
@@ -52,7 +52,7 @@
 		       encoding="UTF-8"
 		       verbose="off"
 		       debug="true"
-		       target="1.8"
+		       release="8"
 		       debuglevel="lines"
 		       includeantruntime="false"/>
 		<copy todir="${class_pdf}">
@@ -68,7 +68,7 @@
 		       encoding="UTF-8"
 		       verbose="off"
 		       debug="true"
-		       target="1.8"
+		       release="8"
 		       debuglevel="lines"
 		       includeantruntime="false"/>
 		<copy todir="${class_xls}">
@@ -84,7 +84,7 @@
 		       encoding="UTF-8"
 		       verbose="off"
 		       debug="true"
-		       target="1.8"
+		       release="8"
 		       debuglevel="lines"
 		       includeantruntime="false"/>
 		<copy todir="${class_xlsx}">
