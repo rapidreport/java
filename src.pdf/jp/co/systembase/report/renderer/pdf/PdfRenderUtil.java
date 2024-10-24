@@ -815,7 +815,7 @@ public class PdfRenderUtil {
 			float width,
 			float lineWidth){
 		float _x1 = region.left + x;
-		float _x2= _x1 + width;
+		float _x2= _x1 + width - 5;
 		float _y = (region.top + y + fontSize) - OFFSET_Y;
 		_x1 = Math.max(_x1, region.left + MARGIN_X);
 		_x2 = Math.min(_x2, region.right - MARGIN_X);

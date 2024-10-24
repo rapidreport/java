@@ -136,6 +136,9 @@ public class PdfText {
 			if (!Report.Compatibility._4_6_PdfFontBold){
 				contentByte.setLineWidth(textDesign.font.size * 0.01f);
             }
+			if (textDesign.boldWidth > 0) {
+				contentByte.setLineWidth(textDesign.boldWidth);
+			}
 		}else{
 			contentByte.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
 		}
@@ -719,7 +722,7 @@ public class PdfText {
 			float lineWidth){
 		PdfRenderer.Trans trans = renderer.trans;
 		float _x1 = region.left + x;
-		float _x2= _x1 + width;
+		float _x2= _x1 + width - fontSize * 0.3f;
 		float _y = (region.top + y + fontSize) - OFFSET_Y;
 		_x1 = Math.max(_x1, region.left + MARGIN_X);
 		_x2 = Math.min(_x2, region.right - MARGIN_X);

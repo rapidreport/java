@@ -7,9 +7,9 @@ import java.util.Locale;
 
 import jp.co.systembase.core.Cast;
 import jp.co.systembase.core.Round;
-import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.Report.EHAlign;
 import jp.co.systembase.report.Report.EVAlign;
+import jp.co.systembase.report.ReportDesign;
 import jp.co.systembase.report.ReportUtil;
 
 public class TextDesign {
@@ -26,6 +26,7 @@ public class TextDesign {
 	public float charSpacing = 0;
 	public String xlsFormat = null;
 	public MonospacedFontsDesign.DetailDesign monospacedFont = null;
+	public float boldWidth = 0;
 
 	public TextDesign(
 			ReportDesign reportDesign,
@@ -68,6 +69,7 @@ public class TextDesign {
 			this.decimalPlace = Cast.toInt(desc.get("decimal_place"));
 		}
 		this.xlsFormat = (String)desc.get("xls_format");
+		this.boldWidth = Cast.toFloat(desc.get("bold_width"));
 		if (!desc.isNull("char_spacing")){
 			this.charSpacing = Math.max(Cast.toFloat(desc.get("char_spacing")), 0);
 		}else{
