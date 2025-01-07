@@ -41,7 +41,7 @@ public class PdfText {
 	protected static final float MARGIN_X = 2.0f;
 	protected static final float MARGIN_BOTTOM = 2.0f;
 
-	private static final String VERTICAL_ROTATE_CHARS = "…‥｜ーｰ(){}[]<>（）｛｝「」＜＞←→↓⇒⇔↑＝≒";
+	private static final String VERTICAL_ROTATE_CHARS = "…‥｜ーｰ(){}[]<>（）｛｝「」＜＞〈〉《》『』〔〕←→↓⇒⇔↑＝≒";
 	private static final String VERTICAL_ROTATE2_CHARS = "～";
 	private static final String VERTICAL_SHIFT_CHARS = "。、，";
 
