@@ -44,6 +44,7 @@ import jp.co.systembase.report.operator.GreaterOperator;
 import jp.co.systembase.report.operator.HourOperator;
 import jp.co.systembase.report.operator.IOperator;
 import jp.co.systembase.report.operator.IfOperator;
+import jp.co.systembase.report.operator.IndexOfOperator;
 import jp.co.systembase.report.operator.LessEqOperator;
 import jp.co.systembase.report.operator.LessOperator;
 import jp.co.systembase.report.operator.MaxOperator;
@@ -170,6 +171,7 @@ public class ReportSetting  implements Cloneable{
 		this.operatorMap.put("digit", new DigitOperator());
 		this.operatorMap.put("trim", new TrimOperator());
 		this.operatorMap.put("ybcode", new YbCodeOperator());
+		this.operatorMap.put("indexof", new IndexOfOperator());
 		this.defaultElementPreprocessor = new DefaultPreprocessor();
 		this.elementPreprocessorMap.put("subpage", new SubPagePreprocessor());
 		this.defaultSearchObject = new DefaultSearchObject();
