@@ -91,7 +91,7 @@ public class Evaluator {
 		{
 			ContentDesign cd = this.contentContext.content.design;
 			if (cd.variables != null){
-				for(String k: cd.variables.keySet()){
+				for(String k: cd.variablesKeyList){
 					this.pageContext.variables.put(k, this.evalTry(cd.variables.get(k)));
 				}
 			}
