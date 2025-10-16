@@ -73,13 +73,21 @@ public class ReportDataSource implements IReportDataSource {
 		for(Method m: methods){
 			if (m.getName().length() > 2 && m.getName().startsWith("is") &&
 				m.getReturnType() == boolean.class){
-				String k = m.getName().substring(2);
-				String _k = k.substring(0, 1).toLowerCase() + k.substring(1);
-				if (!mc.containsKey(k)){
-					mc.put(k, m);
+				{
+					String k = m.getName();
+					if (!mc.containsKey(k)){
+						mc.put(k, m);
+					}
 				}
-				if (!mc.containsKey(_k)){
-					mc.put(_k, m);
+				{
+					String k = m.getName().substring(2);
+					String _k = k.substring(0, 1).toLowerCase() + k.substring(1);
+					if (!mc.containsKey(k)){
+						mc.put(k, m);
+					}
+					if (!mc.containsKey(_k)){
+						mc.put(_k, m);
+					}
 				}
 			}
 		}
