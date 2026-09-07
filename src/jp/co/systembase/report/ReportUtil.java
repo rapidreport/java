@@ -161,7 +161,11 @@ public class ReportUtil {
 			}
 			count++;
 		}
-		return str.substring(b, e);
+		if (b >= str.length()) {
+			return null;
+		}else {
+			return str.substring(b, e);
+		}
 	}
 
 	public static int stringLen(String str){
