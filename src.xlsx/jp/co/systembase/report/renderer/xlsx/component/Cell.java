@@ -3,10 +3,10 @@ package jp.co.systembase.report.renderer.xlsx.component;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.ss.util.CellRangeAddress;
 
 public class Cell {
 
@@ -38,7 +38,7 @@ public class Cell {
 		}
 		if (this.mergedCell == this &&
 			(this.range.row1 < this.range.row2 - 1 || this.range.col1 < this.range.col2 - 1)){
-			s.addMergedRegion(new CellRangeAddress(
+			s.addMergedRegionUnsafe(new CellRangeAddress(
 					page.topRow + this.range.row1,
 					page.topRow + this.range.row2 - 1,
 					this.range.col1,
